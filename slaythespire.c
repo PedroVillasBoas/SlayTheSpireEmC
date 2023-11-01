@@ -55,6 +55,7 @@ typedef struct Fase
 
 void mostrarMenuPrincipal(Fase* faseAtual, Carta** cartas);
 void escolherDificuldade();
+void instrucoes();
 void jogarTurno(Fase* faseAtual, Carta** cartas); 
 Monstro* criarMonstro(char* nome, int hp, int defesa, int acao);
 void definirIntencoesMonstros(Monstro* listaMonstros);
@@ -136,7 +137,7 @@ void mostrarMenuPrincipal(Fase* faseAtual, Carta** cartas)
                 escolherDificuldade();
                 break;
             case 3:
-                // Aqui adicionar as instruções de como jogar
+                instrucoes();
                 break;
             case 4:
                 printf("Saindo...\n");
@@ -172,6 +173,15 @@ void escolherDificuldade()
     {
         printf("Opcao invalida! Por favor, escolha novamente.\n");
     }
+}
+
+void instrucoes(){
+    printf("Você é um guerreiro em ascenção e foi designado para proteger o reino contra o Rei Demônio e suas tropas.\n");
+    printf("Nesse mundo há três fases e cada fase há um quantidade de monstros a serem derrotados(a depender da dificuldade escolhida ");
+    printf(" os monstros terão mais ou menos vida)\n. Para derrotar os inimigos você escolherá quais as suas ações de acordo com a sua quantidade ");
+    printf("de energia até o seu turno acabar. Quando terminar  o seu turno, os monstros também farão suas ações contra ti. ");
+    printf("\nDerrote os monstros em cada fase e enfrente o Rei Demônio na fase final para salvar o reino.");
+    printf("O jogo finaliza ou quando você morrer ou quando derrotar o Rei Demõnio.");
 }
 
 // Criação do Monstro
@@ -400,8 +410,8 @@ void jogarCarta(Carta* carta, Monstro* monstro, Fase* faseAtual)
             case ATAQUEMULT:
                 while (monstroAtual != NULL)
                 {
-                    monstro->hp -= 2;
-                    printf("Voce causou 2 de dano ao monstro %s!\n", monstro->nome);
+                    monstroAtual->hp -= 2;
+                    printf("Voce causou 2 de dano ao monstro %s!\n", monstroAtual->nome);
                     monstroAtual = monstroAtual->proximo; // Ver porque o dano ta sendo aplicado no mesmo mob e nao em todos
                 }
                 free(monstroAtual);
