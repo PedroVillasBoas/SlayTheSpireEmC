@@ -1,3 +1,1 @@
 # SlayTheSpire Em C
-
-Reimaginando o jogo Slay the Spire...
