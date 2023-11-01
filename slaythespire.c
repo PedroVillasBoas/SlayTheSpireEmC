@@ -60,6 +60,12 @@ Monstro* criarMonstro(int hp);
 Carta* criarCarta(int energia);
 Fase* criarFase();
 void jogarTurno(Fase* faseAtual, Carta** cartas); 
+void mostrarInformacoesTurno(Fase* faseAtual, Carta** cartas);
+void jogarCarta(Carta* carta, Monstro* monstro);
+void escolherEJogarCarta(Fase* faseAtual, Carta** cartas);
+int verificarFimDeJogo();
+int verificarFimDeTurno(Fase* faseAtual);
+
 
 // Variaveis globais
 int dificuldade; // Salvar a escolha da dificuldade
@@ -251,11 +257,139 @@ Fase* criarFase()
     return novaFase;
 }
 
-// Vai mudar o struct "jogador" que vai deixar de existir
 void jogarTurno(Fase* faseAtual, Carta** cartas) 
 {
+    mostrarInformacoesTurno(faseAtual, cartas);
+}
+
+void mostrarInformacoesTurno(Fase* faseAtual, Carta** cartas) 
+{
+    printf("HP do Jogador: %d\n", hpJogador);
+    printf("Energia: %d\n", energiaJogador);
+    
+    printf("Monstros:\n");
+    Monstro* monstroAtual = faseAtual->monstros;
+    while (monstroAtual != NULL) 
+    {
+        printf("Nome: %s, HP: %d\n", monstroAtual->nome, monstroAtual->hp);
+        monstroAtual = monstroAtual->proximo;
+    }
+    
+    printf("Suas Cartas:\n");
+    for (int i = 0; i < 6; i++) 
+    {
+        printf("Nome: %s, Energia: %d, Descricao: %s\n", 
+               cartas[i]->nome, 
+               cartas[i]->energia, 
+               cartas[i]->descricao);
+    }
+}
+
+void jogarCarta(Carta* carta, Monstro* monstro) 
+{
+    if (energiaJogador >= carta->energia) 
+    {
+        energiaJogador -= carta->energia;
+        // Aplica efeito da carta no monstro
+        // O que tem aqui é so um exemplo
+        // Depois a gente tem que implementar as ações de cada carta
+    } 
+    else 
+    {
+        printf("Energia insuficiente para jogar esta carta!\n");
+    }
+}
+
+void escolherEJogarCarta(Fase* faseAtual, Carta** cartas) 
+{
     printf("HP do Jogador: %d, Energia: %d\n", hpJogador, energiaJogador);
-    // Mostrar informações das cartas
-    // Mostrar informações dos monstros
-    // Lógica do turno do jogador
+
+    //Mostra as cartas e pede para o jogador escolher uma
+    printf("Escolha uma carta para jogar (digite o número correspondente):\n");
+    for (int i = 0; i < 6; i++) 
+    {
+        printf("%d. %s (Custo: %d, Descrição: %s)\n", i+1, cartas[i]->nome, cartas[i]->energia, cartas[i]->descricao);
+    }
+
+    int escolhaCarta;
+    scanf("%d", &escolhaCarta);
+
+    if (escolhaCarta < 1 || escolhaCarta > 6) 
+    {
+        printf("Escolha inválida!\n");
+        return;
+    }
+
+    Carta* cartaEscolhida = cartas[escolhaCarta - 1];
+
+    // Verifica se o jogador tem energia suficiente pra usar a carta
+    if (energiaJogador < cartaEscolhida->energia) 
+    {
+        printf("Você não tem energia suficiente para jogar essa carta!\n");
+        return;
+    }
+
+    // Mostra os monstros e pede para o jogador escolher um (Isso depois vai ser sempre no inicio do turno junto com o hp e energia)
+    printf("Escolha um monstro para usar a carta (digite o número correspondente):\n");
+    Monstro* monstroAtual = faseAtual->monstros;
+    int contadorMonstros = 1;
+    while (monstroAtual != NULL) 
+    {
+        printf("%d. %s (HP: %d)\n", contadorMonstros, monstroAtual->nome, monstroAtual->hp);
+        monstroAtual = monstroAtual->proximo;
+        contadorMonstros++;
+    }
+
+    int escolhaMonstro;
+    scanf("%d", &escolhaMonstro);
+
+    // Aplica o efeito da carta no monstro que o jogador escolheu
+    monstroAtual = faseAtual->monstros;
+    for (int i = 1; i < escolhaMonstro; i++) 
+    {
+        if (monstroAtual != NULL) 
+        {
+            monstroAtual = monstroAtual->proximo;
+        }
+    }
+
+    if (monstroAtual == NULL) 
+    {
+        printf("Escolha inválida!\n");
+        return;
+    }
+
+    // Aqui a gente aplica o efeito da carta no monstro.
+    // Isso vai depender de como a gente vai implementar as ações das cartas e dos monstros.
+    // Um exemplo:
+    monstroAtual->hp -= cartaEscolhida->acao;
+
+    // Atualiza a energia do jogador
+    energiaJogador -= cartaEscolhida->energia;
+    printf("Você usou a carta %s no monstro %s.\n", cartaEscolhida->nome, monstroAtual->nome);
+}
+
+int verificarFimDeJogo() 
+{
+    if (hpJogador <= 0) 
+    {
+        printf("Você morreu! Fim de jogo.\n");
+        return 1;
+    }
+    return 0;
+}
+
+int verificarFimDeTurno(Fase* faseAtual) 
+{
+    Monstro* monstroAtual = faseAtual->monstros;
+    while (monstroAtual != NULL) 
+    {
+        if (monstroAtual->hp > 0) 
+        {
+            return 0; // Ainda tem monstros vivos
+        }
+        monstroAtual = monstroAtual->proximo;
+    }
+    printf("Todos os monstros estão mortos! Você venceu!\n");
+    return 1;
 }
