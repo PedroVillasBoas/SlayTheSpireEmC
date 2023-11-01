@@ -1,6 +1,24 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+// O que falta fazer:
+    // Monstros e cartas:
+    // Adicionar os monstros com todos os campos (que eles tem do Struct) preenchidos;
+    // Adicionar mecanica das ações dos monstros;
+    // Adicionar as cartas com todos os campos (que eles tem do Struct) preenchidos;
+    // Adicionar mecanica das ações das cartas;
+
+    // Turno e Jogabilidade:
+    // Adicionar como funciona mecanica de turno;
+    // Adicionar condição para fim do turno;
+    // Adicionar condição para fim do jogo;
+
+    // Fases:
+    // Adicionar mecanica para mudança de fase;
+
+    // Caso eu tenha esquecido de algo, coloca aqui:
+
+
 // Estrutura para representar o monstro
 typedef struct Monstro 
 {
@@ -30,14 +48,6 @@ typedef struct Fase
     struct Fase* proxima;
 } Fase;
 
-// Estrutura para representar o jogador
-typedef struct Jogador 
-{
-    int hp;
-    int energia;
-    Carta* cartas;
-} Jogador;
-
 // Destruir essa estrutura depois e fazer as variaveis de hp e de energia separadas e globais
 // AS cartas serão utilizadas de forma em um array com as estuturas
 
@@ -49,11 +59,13 @@ void mostrarInstrucoes();
 Monstro* criarMonstro(int hp);
 Carta* criarCarta(int energia);
 Fase* criarFase();
-void jogarTurno(Jogador* jogador, Fase* faseAtual, Carta** cartas); 
+void jogarTurno(Fase* faseAtual, Carta** cartas); 
 
-// Variavel global para salvar a escolha da dificuldade
-int dificuldade;
-// fazer um int pra o turno
+// Variaveis globais
+int dificuldade; // Salvar a escolha da dificuldade
+int hpJogador; // Salvar o hp do jogador
+int energiaJogador; // Salvar a energia do jogador
+int turnoAtual; // Turno em que o jogador está
 
 // Como a gente pode fazer pra de acordo com a dificuldade, mudar o hp dos monstros?
 int main() 
@@ -84,14 +96,13 @@ int main()
 
 void iniciarJogo(Fase* faseAtual, Carta** cartas) 
 {
-    Jogador jogador;
-    jogador.hp = 10; // ou qualquer valor inicial
-    jogador.energia = 3; // ou qualquer valor inicial
-    jogador.cartas = NULL; // ou inicialize com as cartas do jogador, se necessário
+    hpJogador = 10;
+    energiaJogador = 3;
+    turnoAtual = 1;
 
-    while (jogador.hp > 0 && faseAtual != NULL) 
+    while (hpJogador > 0 && faseAtual != NULL) 
     {
-        printf("HP do Jogador: %d, Energia: %d\n", jogador.hp, jogador.energia);
+        printf("HP do Jogador: %d, Energia: %d\n", hpJogador, energiaJogador);
         // Mostrar informações das cartas
         // Mostrar informações dos monstros
         // Loop do turno do jogador
@@ -112,7 +123,7 @@ void iniciarJogo(Fase* faseAtual, Carta** cartas)
 
         // Lógica do turno dos monstros
         // Renovar a energia do jogador
-        jogador.energia = 3; // ou qualquer valor de energia máxima
+        energiaJogador = 3; // ou qualquer valor de energia máxima
         // Verificar se a fase foi concluída
             // A fase vai ser conluida quando os monstros acabarem ou o jogador morrer
     }
@@ -241,13 +252,10 @@ Fase* criarFase()
 }
 
 // Vai mudar o struct "jogador" que vai deixar de existir
-void jogarTurno(Jogador* jogador, Fase* faseAtual, Carta** cartas) 
+void jogarTurno(Fase* faseAtual, Carta** cartas) 
 {
-    printf("HP do Jogador: %d, Energia: %d\n", jogador->hp, jogador->energia);
+    printf("HP do Jogador: %d, Energia: %d\n", hpJogador, energiaJogador);
     // Mostrar informações das cartas
     // Mostrar informações dos monstros
     // Lógica do turno do jogador
 }
-
-// Sempre vai aparecer na tela:
-    // O HP do jogador / A energia atual / E o turno atual
