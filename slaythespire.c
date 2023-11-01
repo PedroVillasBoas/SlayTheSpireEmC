@@ -68,14 +68,13 @@ void clearScreen();
 void mostrarMenuPrincipal(Fase* faseAtual, Carta** cartas);
 void escolherDificuldade();
 void instrucoes();
-void jogarTurno(Fase* faseAtual, Carta** cartas); 
 Monstro* criarMonstro(char* nome, int hp, int defesa, int acao);
 void definirIntencoesMonstros(Monstro* listaMonstros);
 TipoAcaoMonstro acaoMonstro();
 Carta* criarCarta(char* nome, int energia, int acao, char* descricao); 
 Fase* criarFase(int nivel, char* descricao, Monstro* listaMonstros);
-void iniciarJogo(Fase* faseAtual, Carta** cartas);
-void jogarTurno(Fase* faseAtual, Carta** cartas); 
+void iniciarJogo(Fase** faseAtual, Carta** cartas);
+void jogarTurno(Fase** faseAtual, Carta** cartas); 
 void finalizarTurno(Monstro* listaMonstros);
 void mostrarInformacoesTurnoJogador(Carta** cartas); 
 void mostrarInformacoesTurnoMonstros(Fase* faseAtual); 
@@ -100,16 +99,38 @@ int main()
 {
     srand(time(NULL)); // Inicializa a semente do gerador de números aleatórios
 
-    // Criando 3 monstros
-    Monstro* monstro1 = criarMonstro("Goblin", 2, 0, DEFAULTMONSTRO);
-    Monstro* monstro2 = criarMonstro("Orc", 3, 0, DEFAULTMONSTRO);
-    Monstro* monstro3 = criarMonstro("Dragao", 4, 0, DEFAULTMONSTRO);
+    // Criando 3 monstros para fase 1
+    Monstro* monstro1 = criarMonstro("Goblin Guerreiro", 2, 0, DEFAULTMONSTRO);
+    Monstro* monstro2 = criarMonstro("Goblin Arqueiro", 3, 0, DEFAULTMONSTRO);
+    Monstro* monstro3 = criarMonstro("Orc Guerreiro", 4, 0, DEFAULTMONSTRO);
+
+    // Criando 3 monstros para fase 2
+    Monstro* monstro4 = criarMonstro("Hobgoblin", 2, 0, DEFAULTMONSTRO);
+    Monstro* monstro5 = criarMonstro("Elfo Mago", 3, 0, DEFAULTMONSTRO);
+    Monstro* monstro6 = criarMonstro("Succubus", 4, 0, DEFAULTMONSTRO);
+
+    // Criando 2 monstros e o Boss para fase 3
+    Monstro* monstro7 = criarMonstro("Succubus", 2, 0, DEFAULTMONSTRO);
+    Monstro* monstro8 = criarMonstro("Dragao", 3, 0, DEFAULTMONSTRO);
+    Monstro* monstro9 = criarMonstro("Rei Demonio", 4, 0, DEFAULTMONSTRO);
 
     // Conectando os monstros em uma lista duplamente encadeada
     monstro1->proximo = monstro2;
     monstro2->anterior = monstro1;
     monstro2->proximo = monstro3;
     monstro3->anterior = monstro2;
+
+    // Conectando os monstros em uma lista duplamente encadeada
+    monstro4->proximo = monstro5;
+    monstro5->anterior = monstro4;
+    monstro5->proximo = monstro6;
+    monstro6->anterior = monstro5;
+
+    // Conectando os monstros em uma lista duplamente encadeada
+    monstro7->proximo = monstro8;
+    monstro8->anterior = monstro7;
+    monstro8->proximo = monstro9;
+    monstro9->anterior = monstro8;
 
     // Criando 6 cartas
     Carta* cartas[6];
@@ -122,6 +143,13 @@ int main()
 
     // Criando uma fase
     Fase* fase1 = criarFase(1, "A caverna escura", monstro1);
+    Fase* fase2 = criarFase(1, "O calabouco da castelo", monstro4);
+    Fase* fase3 = criarFase(1, "Castelo do Rei Demonio", monstro7);
+
+    // Conectando as fases em uma lista simplesmente encadeada
+    fase1->proxima = fase2;
+    fase2->proxima = fase3;
+    fase3->proxima = NULL;
 
     mostrarMenuPrincipal(fase1, cartas);
     return 0;
@@ -149,7 +177,7 @@ void mostrarMenuPrincipal(Fase* faseAtual, Carta** cartas)
         {
             case 1:
                 // Adicione aqui o código para iniciar o jogo
-                iniciarJogo(faseAtual, cartas);
+                iniciarJogo(&faseAtual, cartas);
                 printf("Jogo iniciado!\n");
                 break;
             case 2:
@@ -296,27 +324,31 @@ Fase* criarFase(int nivel, char* descricao, Monstro* listaMonstros)
     return novaFase;
 }
 
-void iniciarJogo(Fase* faseAtual, Carta** cartas) 
+void iniciarJogo(Fase** faseAtual, Carta** cartas) 
 {
-    while(fimDeJogo != 0 || hpJogador >= 0)
+    while(fimDeJogo == 0 && hpJogador > 0)
     {
         jogarTurno(faseAtual, cartas);
     }
     
 }
 
-void jogarTurno(Fase* faseAtual, Carta** cartas) 
+void jogarTurno(Fase** faseAtual, Carta** cartas) 
 {
     while(turnoFinalizado == 0)
     {
         clearScreen();
-        verificarMonstroVivo(faseAtual);
-        definirIntencoesMonstros(faseAtual->monstros);
+        verificarMonstroVivo(*faseAtual);
+        definirIntencoesMonstros((*faseAtual)->monstros);
         mostrarInformacoesTurnoJogador(cartas);
-        mostrarInformacoesTurnoMonstros(faseAtual);
-        escolherEJogarCarta(faseAtual, cartas);
+        mostrarInformacoesTurnoMonstros(*faseAtual);
+        escolherEJogarCarta(*faseAtual, cartas);
+        if((*faseAtual)->monstros == NULL)
+        {
+            *faseAtual = (*faseAtual)->proxima;
+        }
     }
-    finalizarTurno(faseAtual->monstros);
+    finalizarTurno((*faseAtual)->monstros);
 }
 
 void finalizarTurno(Monstro* listaMonstros) 
