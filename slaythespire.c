@@ -6,6 +6,7 @@ typedef struct Monstro
 {
     char nome[20];
     int hp;
+    int acao;
     struct Monstro* proximo;
     struct Monstro* anterior;
 } Monstro;
@@ -25,7 +26,7 @@ typedef struct Carta
 typedef struct Fase 
 {
     Monstro* monstros;
-   // char descricaoFase[100];  // Precisa?
+    char descricaoFase[100];
     struct Fase* proxima;
 } Fase;
 
@@ -36,6 +37,9 @@ typedef struct Jogador
     int energia;
     Carta* cartas;
 } Jogador;
+
+// Destruir essa estrutura depois e fazer as variaveis de hp e de energia separadas e globais
+// AS cartas serão utilizadas de forma em um array com as estuturas
 
 // Protótipos das funções
 void iniciarJogo(Fase* faseAtual, Carta** cartas);
@@ -49,6 +53,7 @@ void jogarTurno(Jogador* jogador, Fase* faseAtual, Carta** cartas);
 
 // Variavel global para salvar a escolha da dificuldade
 int dificuldade;
+// fazer um int pra o turno
 
 // Como a gente pode fazer pra de acordo com a dificuldade, mudar o hp dos monstros?
 int main() 
@@ -147,6 +152,7 @@ void mostrarMenuPrincipal(Fase* faseInicial, Carta** cartas)
 // Escolha da dificuldade aqui
 void escolherDificuldade(Fase* faseInicial, Carta** cartas) 
 {
+    // Colocar um print com a dificuldade default e mostrar pro player em qual dificuldade atualmente ele esta
     printf("A dificuldade afeta apenas a quantidade de HP que cada monstro vai possuir...\n");
     printf("Dito isso, qual dificuldade voce gostaria de jogar?\n");
     printf("1. Facil\n");
@@ -234,6 +240,7 @@ Fase* criarFase()
     return novaFase;
 }
 
+// Vai mudar o struct "jogador" que vai deixar de existir
 void jogarTurno(Jogador* jogador, Fase* faseAtual, Carta** cartas) 
 {
     printf("HP do Jogador: %d, Energia: %d\n", jogador->hp, jogador->energia);
@@ -241,3 +248,6 @@ void jogarTurno(Jogador* jogador, Fase* faseAtual, Carta** cartas)
     // Mostrar informações dos monstros
     // Lógica do turno do jogador
 }
+
+// Sempre vai aparecer na tela:
+    // O HP do jogador / A energia atual / E o turno atual
