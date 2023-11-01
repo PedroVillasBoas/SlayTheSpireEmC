@@ -53,6 +53,7 @@ typedef struct Fase
 
 // Protótipos das funções
 
+void clearScreen();
 void mostrarMenuPrincipal(Fase* faseAtual, Carta** cartas);
 void escolherDificuldade();
 void instrucoes();
@@ -114,8 +115,14 @@ int main()
     return 0;
 }
 
+void clearScreen() 
+{
+    printf("\033[H\033[J");
+}
+
 void mostrarMenuPrincipal(Fase* faseAtual, Carta** cartas) 
 {
+    clearScreen();
     int opcao;
     do 
     {
@@ -151,6 +158,7 @@ void mostrarMenuPrincipal(Fase* faseAtual, Carta** cartas)
 // Escolha da dificuldade aqui
 void escolherDificuldade() 
 {
+    clearScreen();
     int opcao;
     printf("A dificuldade afeta apenas a quantidade de HP que cada monstro vai possuir...\n");
     printf("Dificuldade atual: %d\n", dificuldade);
@@ -164,9 +172,11 @@ void escolherDificuldade()
     if(opcao >= 1 && opcao <= 3) 
     {
         dificuldade = opcao;
+        clearScreen();
     } 
     else if(opcao == 4) 
     {
+        clearScreen();
         return;
     } 
     else 
@@ -175,13 +185,16 @@ void escolherDificuldade()
     }
 }
 
-void instrucoes(){
-    printf("Você é um guerreiro em ascenção e foi designado para proteger o reino contra o Rei Demônio e suas tropas.\n");
-    printf("Nesse mundo há três fases e cada fase há um quantidade de monstros a serem derrotados(a depender da dificuldade escolhida ");
-    printf(" os monstros terão mais ou menos vida)\n. Para derrotar os inimigos você escolherá quais as suas ações de acordo com a sua quantidade ");
-    printf("de energia até o seu turno acabar. Quando terminar  o seu turno, os monstros também farão suas ações contra ti. ");
-    printf("\nDerrote os monstros em cada fase e enfrente o Rei Demônio na fase final para salvar o reino.");
-    printf("O jogo finaliza ou quando você morrer ou quando derrotar o Rei Demõnio.");
+void instrucoes()
+{
+    clearScreen();
+    printf("Voce eh um guerreiro em ascenção e foi designado para proteger o reino contra o Rei Demonio e suas tropas.\n"
+        "Nesse mundo ha tres fases e cada fase há um quantidade de monstros a serem derrotados (a depender da dificuldade escolhida,"
+        "os monstros terao mais ou menos vida)\n. Para derrotar os inimigos você escolhera quais as suas acoes de acordo com a sua quantidade "
+        "de energia ate o seu turno acabar. Quando terminar  o seu turno, os monstros também farao suas acoes contra ti. "
+        "\nDerrote os monstros em cada fase e enfrente o Rei Demonio na fase final para salvar o reino.\n"
+        "O jogo finaliza ou quando você morrer ou quando derrotar o Rei Demonio.");
+
 }
 
 // Criação do Monstro
@@ -286,6 +299,7 @@ void jogarTurno(Fase* faseAtual, Carta** cartas)
 {
     while(turnoFinalizado == 0)
     {
+        clearScreen();
         definirIntencoesMonstros(faseAtual->monstros);
         mostrarInformacoesTurnoJogador(cartas);
         mostrarInformacoesTurnoMonstros(faseAtual);
