@@ -143,8 +143,8 @@ int main()
 
     // Criando uma fase
     Fase* fase1 = criarFase(1, "A caverna escura", monstro1);
-    Fase* fase2 = criarFase(1, "O calabouco da castelo", monstro4);
-    Fase* fase3 = criarFase(1, "Castelo do Rei Demonio", monstro7);
+    Fase* fase2 = criarFase(2, "O calabouco da castelo", monstro4);
+    Fase* fase3 = criarFase(3, "Castelo do Rei Demonio", monstro7);
 
     // Conectando as fases em uma lista simplesmente encadeada
     fase1->proxima = fase2;
