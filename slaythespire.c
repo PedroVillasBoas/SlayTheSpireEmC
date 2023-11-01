@@ -111,12 +111,12 @@ int main()
 
     // Criando 6 cartas
     Carta* cartas[6];
-    cartas[0] = criarCarta("Espada", 1, 1, "Uma espada brilhante");
-    cartas[1] = criarCarta("Escudo", 1, 3, "Um escudo resistente");
-    cartas[2] = criarCarta("Pocao de Cura", 3, 4, "Restaura a vida");
-    cartas[3] = criarCarta("Arco", 2, 2, "Um arco para ataques a distancia");
-    cartas[4] = criarCarta("Flecha Envenenada", 2, 1, "Uma flecha letal");
-    cartas[5] = criarCarta("Magia de Fogo", 3, 2, "Uma poderosa bola de fogo");
+    cartas[0] = criarCarta("Espada", 1, ATAQUESING, "Uma espada brilhante");
+    cartas[1] = criarCarta("Escudo", 1, DEFESA, "Um escudo resistente");
+    cartas[2] = criarCarta("Pocao de Cura", 3, CURA, "Restaura a vida");
+    cartas[3] = criarCarta("Arco", 2, ATAQUEMULT, "Um arco para ataques a distancia");
+    cartas[4] = criarCarta("Flecha Envenenada", 2, ATAQUESING, "Uma flecha letal");
+    cartas[5] = criarCarta("Magia de Fogo", 3, ATAQUEMULT, "Uma poderosa bola de fogo");
 
     // Criando uma fase
     Fase* fase1 = criarFase(1, "A caverna escura", monstro1);
