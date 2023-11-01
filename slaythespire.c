@@ -25,6 +25,7 @@ typedef enum
 //Enum para cada tipo de ação dos monstros
 typedef enum
 {
+    DEFAULTMONSTRO = 0,
     ATAQUEMONSTRO = 1,
     DEFESAMONSTRO = 2
 } TipoAcaoMonstro;
@@ -80,6 +81,7 @@ void mostrarInformacoesTurnoJogador(Carta** cartas);
 void mostrarInformacoesTurnoMonstros(Fase* faseAtual); 
 void escolherEJogarCarta(Fase* faseAtual, Carta** cartas);
 void jogarCarta(Carta* carta, Monstro* monstro, Fase* faseAtual);
+void verificarMonstroVivo(Fase* faseAtual); 
 
 
 // Variaveis globais
@@ -99,9 +101,9 @@ int main()
     srand(time(NULL)); // Inicializa a semente do gerador de números aleatórios
 
     // Criando 3 monstros
-    Monstro* monstro1 = criarMonstro("Goblin", rand() % 101, rand() % 101, rand() % 2);
-    Monstro* monstro2 = criarMonstro("Orc", rand() % 101, rand() % 101, rand() % 2);
-    Monstro* monstro3 = criarMonstro("Dragao", rand() % 101, rand() % 101, rand() % 2);
+    Monstro* monstro1 = criarMonstro("Goblin", 2, 0, DEFAULTMONSTRO);
+    Monstro* monstro2 = criarMonstro("Orc", 3, 0, DEFAULTMONSTRO);
+    Monstro* monstro3 = criarMonstro("Dragao", 4, 0, DEFAULTMONSTRO);
 
     // Conectando os monstros em uma lista duplamente encadeada
     monstro1->proximo = monstro2;
@@ -308,6 +310,7 @@ void jogarTurno(Fase* faseAtual, Carta** cartas)
     while(turnoFinalizado == 0)
     {
         clearScreen();
+        verificarMonstroVivo(faseAtual);
         definirIntencoesMonstros(faseAtual->monstros);
         mostrarInformacoesTurnoJogador(cartas);
         mostrarInformacoesTurnoMonstros(faseAtual);
@@ -452,5 +455,34 @@ void jogarCarta(Carta* carta, Monstro* monstro, Fase* faseAtual)
     else 
     {
         printf("Energia insuficiente para jogar esta carta!\n");
+    }
+}
+
+void verificarMonstroVivo(Fase* faseAtual) 
+{
+    Monstro* monstroAtual = faseAtual->monstros;
+    Monstro* monstroAnterior = NULL;
+    
+    while(monstroAtual != NULL) 
+    {
+        if(monstroAtual->hp <= 0) 
+        {
+            if(monstroAnterior != NULL) 
+            {
+                monstroAnterior->proximo = monstroAtual->proximo;
+            } 
+            else 
+            {
+                faseAtual->monstros = monstroAtual->proximo;
+            }
+            Monstro* monstroParaLiberar = monstroAtual;
+            monstroAtual = monstroAtual->proximo;
+            free(monstroParaLiberar);
+        } 
+        else 
+        {
+            monstroAnterior = monstroAtual;
+            monstroAtual = monstroAtual->proximo;
+        }
     }
 }
