@@ -203,7 +203,7 @@ void instrucoes()
         "os monstros terao mais ou menos vida).\nPara derrotar os inimigos voce escolhera quais as suas acoes de acordo com a sua quantidade"
         " de energia ate o seu turno acabar.\nQuando terminar  o seu turno, os monstros também farao suas acoes contra ti."
         "\nDerrote os monstros em cada fase e enfrente o Rei Demonio na fase final para salvar o reino.\n"
-        "O jogo finaliza ou quando você morrer ou quando derrotar o Rei Demonio.");
+        "O jogo finaliza ou quando voce morrer ou quando derrotar o Rei Demonio.");
 
 }
 
