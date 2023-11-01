@@ -248,12 +248,10 @@ TipoAcaoMonstro acaoMonstro()
 
     if (numeroAleatorio <= 50) 
     {
-        printf("O monstro escolheu atacar!");
         return ATAQUEMONSTRO;
     } 
     else 
     {
-        printf("O monstro escolheu defender!");
         return DEFESAMONSTRO;
     }
 }
