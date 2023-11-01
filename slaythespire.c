@@ -8,10 +8,10 @@
         // Verificação se existe escudo no monstro antes do player bater
     // Comunicação entre a ação dos monstros e o player
         // Verificação se existe escudo no player antes do monstro bater
-    // Verificação de termino de fase (Se todos os monstros da fase morreram)
-    // Troca de fase após a verificação
+    // Verificação de termino de fase (Se todos os monstros da fase morreram) [OK]
+    // Troca de fase após a verificação [OK]
     // Condição do player ganhar o jogo
-    // Definir e construir o boss
+    // Definir e construir o boss [OK]
 
 // Enum para cada tipo de ação das cartas
 typedef enum 
