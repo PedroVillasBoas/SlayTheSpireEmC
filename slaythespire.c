@@ -400,8 +400,8 @@ void jogarCarta(Carta* carta, Monstro* monstro, Fase* faseAtual)
             case ATAQUEMULT:
                 while (monstroAtual != NULL)
                 {
-                    monstro->hp -= 2;
-                    printf("Voce causou 2 de dano ao monstro %s!\n", monstro->nome);
+                    monstroAtual->hp -= 2;
+                    printf("Voce causou 2 de dano ao monstro %s!\n", monstroAtual->nome);
                     monstroAtual = monstroAtual->proximo; // Ver porque o dano ta sendo aplicado no mesmo mob e nao em todos
                 }
                 free(monstroAtual);
