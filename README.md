@@ -1,1 +1,1 @@
-# SlayTheSpireEmC
+# SlayTheSpire Em C
