@@ -82,12 +82,9 @@ int hpJogador = 10; // Salvar o hp do jogador
 int energiaJogador = 3; // Salvar a energia do jogador
 int defesaJogador = 0; // Salvar a defesa acumulada das cartas que o jogador jogou
 
-// Como a gente pode fazer pra de acordo com a dificuldade, mudar o hp dos monstros?
 int main() 
 {
     srand(time(NULL)); // Inicializa a semente do gerador de números aleatórios
-    // A criação das cartas tem que ser feito de forma individual igual aos monstros
-    // Ja que cada uma vai ter um custo, uma ação e uma descrição
 
     // Criando 3 monstros
     Monstro* monstro1 = criarMonstro("Goblin", rand() % 101, rand() % 101, rand() % 2);
@@ -268,7 +265,7 @@ Fase* criarFase(int nivel, char* descricao, Monstro* listaMonstros)
 
 void iniciarJogo(Fase* faseAtual, Carta** cartas) 
 {
-    while(fimDeJogo != 0 || hpJogador > 0)
+    while(fimDeJogo != 0 || hpJogador >= 0)
     {
         jogarTurno(faseAtual, cartas);
     }
@@ -405,6 +402,7 @@ void jogarCarta(Carta* carta, Monstro* monstro, Fase* faseAtual)
                 {
                     monstro->hp -= 2;
                     printf("Voce causou 2 de dano ao monstro %s!\n", monstro->nome);
+                    monstroAtual = monstroAtual->proximo; // Ver porque o dano ta sendo aplicado no mesmo mob e nao em todos
                 }
                 free(monstroAtual);
                 break;
