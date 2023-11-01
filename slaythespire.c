@@ -198,12 +198,12 @@ void escolherDificuldade()
 void instrucoes()
 {
     clearScreen();
-    printf("Voce eh um guerreiro em ascenção e foi designado para proteger o reino contra o Rei Demonio e suas tropas.\n"
-        "Nesse mundo ha tres fases e cada fase há um quantidade de monstros a serem derrotados (a depender da dificuldade escolhida,"
-        "os monstros terao mais ou menos vida).\nPara derrotar os inimigos voce escolhera quais as suas acoes de acordo com a sua quantidade"
-        " de energia ate o seu turno acabar.\nQuando terminar  o seu turno, os monstros também farao suas acoes contra ti."
+    printf("Voce eh um guerreiro em ascencao e foi designado para proteger o reino contra o Rei Demonio e suas tropas.\n"
+        "Nesse mundo ha tres fases e cada fase ha um quantidade de monstros a serem derrotados (a depender da dificuldade escolhida,"
+        "os monstros terao mais ou menos vida).\nPara derrotar os inimigos voce escolhera quais as suas acoes de acordo com as suas cartas"
+        " e quantidade de energia ate o seu turno acabar.\nQuando voce escolher terminar o seu turno, os monstros, entao, farao as suas acoes contra voce."
         "\nDerrote os monstros em cada fase e enfrente o Rei Demonio na fase final para salvar o reino.\n"
-        "O jogo finaliza ou quando voce morrer ou quando derrotar o Rei Demonio.");
+        "O jogo finaliza Se quando voce morrer ou quando derrotar o Rei Demonio.\n");
 
 }
 
