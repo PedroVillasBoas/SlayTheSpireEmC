@@ -1,36 +1,32 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <time.h>
 
-// O que falta fazer:
-    // Monstros e cartas:
-    // Adicionar os monstros com todos os campos (que eles tem do Struct) preenchidos;
-    // Adicionar mecanica das ações dos monstros;
-    // Adicionar as cartas com todos os campos (que eles tem do Struct) preenchidos;
-    // Adicionar mecanica das ações das cartas;
-
-    // Turno e Jogabilidade:
-    // Adicionar como funciona mecanica de turno;
-    // Adicionar condição para fim do turno;
-    // Adicionar condição para fim do jogo;
-
-    // Fases:
-    // Adicionar mecanica para mudança de fase;
-
-    // Caso eu tenha esquecido de algo, coloca aqui:
-
+// Enum para cada tipo de ação das cartas
 typedef enum 
 {
-    ATAQUE,
-    DEFESA,
-    CURA,
+    ATAQUESING = 1,
+    ATAQUEMULT = 2,
+    DEFESA = 3,
+    CURA = 4,
 } TipoAcao;
+
+//Enum para cada tipo de ação dos monstros
+typedef enum
+{
+    ATAQUEMONSTRO = 1,
+    DEFESAMONSTRO = 2
+} TipoAcaoMonstro;
 
 // Estrutura para representar o monstro
 typedef struct Monstro 
 {
     char nome[20];
     int hp;
-    TipoAcao acao;
+    int defesa;
+    TipoAcaoMonstro acao;
+    int intencaoDefinida; // 1 se a intenção já foi definida para o turno atual, 0 caso contrário
     struct Monstro* proximo;
     struct Monstro* anterior;
 } Monstro;
@@ -49,173 +45,140 @@ typedef struct Carta
 // Estrutura para representar uma fase
 typedef struct Fase 
 {
+    int nivelFase;
     Monstro* monstros;
-    char descricaoFase[100];
+    char descricao[100];
     struct Fase* proxima;
 } Fase;
 
-// Destruir essa estrutura depois e fazer as variaveis de hp e de energia separadas e globais
-// AS cartas serão utilizadas de forma em um array com as estuturas
-
 // Protótipos das funções
-void iniciarJogo(Fase* faseAtual, Carta** cartas);
-void mostrarMenuPrincipal(Fase* faseInicial, Carta** cartas);
-void escolherDificuldade(Fase* faseInicial, Carta** cartas);
-void mostrarInstrucoes();
-Monstro* criarMonstro(int hp);
-Carta* criarCarta(int energia);
-Fase* criarFase();
+
+void mostrarMenuPrincipal(Fase* faseAtual, Carta** cartas);
+void escolherDificuldade();
 void jogarTurno(Fase* faseAtual, Carta** cartas); 
-void mostrarInformacoesTurno(Fase* faseAtual, Carta** cartas);
-void jogarCarta(Carta* carta, Monstro* monstro);
+Monstro* criarMonstro(char* nome, int hp, int defesa, int acao);
+void definirIntencoesMonstros(Monstro* listaMonstros);
+TipoAcaoMonstro acaoMonstro();
+Carta* criarCarta(char* nome, int energia, int acao, char* descricao); 
+Fase* criarFase(int nivel, char* descricao, Monstro* listaMonstros);
+void iniciarJogo(Fase* faseAtual, Carta** cartas);
+void jogarTurno(Fase* faseAtual, Carta** cartas); 
+void finalizarTurno(Monstro* listaMonstros);
+void mostrarInformacoesTurnoJogador(Carta** cartas); 
+void mostrarInformacoesTurnoMonstros(Fase* faseAtual); 
 void escolherEJogarCarta(Fase* faseAtual, Carta** cartas);
-int verificarFimDeJogo();
-int verificarFimDeTurno(Fase* faseAtual);
+void jogarCarta(Carta* carta, Monstro* monstro, Fase* faseAtual);
 
 
 // Variaveis globais
-int dificuldade; // Salvar a escolha da dificuldade
-int hpJogador; // Salvar o hp do jogador
-int energiaJogador; // Salvar a energia do jogador
-int defesaJogador; // Salvar a defesa acumulada das cartas que o jogador jogou
+// Do jogo
+int dificuldade = 2; // Salvar a escolha da dificuldade
 int turnoAtual; // Turno em que o jogador está
+int turnoFinalizado = 0; // Se o jogador escolheu terminar o seu turno
+int fimDeJogo = 0; // Se o jogo acabou Ou por HP do jogador == 0 ou Jogador ganhou o jogo!
+
+// Atributos do Jogador
+int hpJogador = 10; // Salvar o hp do jogador
+int energiaJogador = 3; // Salvar a energia do jogador
+int defesaJogador = 0; // Salvar a defesa acumulada das cartas que o jogador jogou
 
 // Como a gente pode fazer pra de acordo com a dificuldade, mudar o hp dos monstros?
 int main() 
 {
-    Fase* fase1 = criarFase();
-    Fase* fase2 = criarFase();
-    Fase* fase3 = criarFase();
-
-    fase1->monstros = criarMonstro(5); // Supondo 5 de HP para cada monstro, só um exemplo
-    fase2->monstros = criarMonstro(7);
-    fase3->monstros = criarMonstro(10);
-
-    fase1->proxima = fase2;
-    fase2->proxima = fase3;
-
+    srand(time(NULL)); // Inicializa a semente do gerador de números aleatórios
     // A criação das cartas tem que ser feito de forma individual igual aos monstros
     // Ja que cada uma vai ter um custo, uma ação e uma descrição
-    Carta* cartas[6];
-    Carta cartaAtaque = {"Ataque Espada", 3, ATAQUE}; // Exemplo de carta de ataque
-    Carta cartaDefesa = {"Escudo", 2, DEFESA}; // Exemplo de carta de defesa
-    Carta cartaCura = {"Poção de Cura", 4, CURA}; // Exemplo de carta de cura
 
+    // Criando 3 monstros
+    Monstro* monstro1 = criarMonstro("Goblin", rand() % 101, rand() % 101, rand() % 2);
+    Monstro* monstro2 = criarMonstro("Orc", rand() % 101, rand() % 101, rand() % 2);
+    Monstro* monstro3 = criarMonstro("Dragao", rand() % 101, rand() % 101, rand() % 2);
+
+    // Conectando os monstros em uma lista duplamente encadeada
+    monstro1->proximo = monstro2;
+    monstro2->anterior = monstro1;
+    monstro2->proximo = monstro3;
+    monstro3->anterior = monstro2;
+
+    // Criando 6 cartas
+    Carta* cartas[6];
+    cartas[0] = criarCarta("Espada", 1, 1, "Uma espada brilhante");
+    cartas[1] = criarCarta("Escudo", 1, 3, "Um escudo resistente");
+    cartas[2] = criarCarta("Pocao de Cura", 3, 4, "Restaura a vida");
+    cartas[3] = criarCarta("Arco", 2, 2, "Um arco para ataques a distancia");
+    cartas[4] = criarCarta("Flecha Envenenada", 2, 1, "Uma flecha letal");
+    cartas[5] = criarCarta("Magia de Fogo", 3, 2, "Uma poderosa bola de fogo");
+
+    // Criando uma fase
+    Fase* fase1 = criarFase(1, "A caverna escura", monstro1);
 
     mostrarMenuPrincipal(fase1, cartas);
     return 0;
 }
 
-void iniciarJogo(Fase* faseAtual, Carta** cartas) 
-{
-    hpJogador = 10;
-    energiaJogador = 3;
-    turnoAtual = 1;
-
-    while (hpJogador > 0 && faseAtual != NULL) 
-    {
-        printf("HP do Jogador: %d, Energia: %d\n", hpJogador, energiaJogador);
-        // Mostrar informações das cartas
-        // Mostrar informações dos monstros
-        // Loop do turno do jogador
-        while (1) 
-        {
-            // Lógica do turno do jogador
-            // Como a gente pode fazer pra mostrar e escolher a carta?
-            // Como aplicar a logica da carta no monstro?
-
-            char escolha;
-            printf("Deseja encerrar o seu turno? (s/n): ");
-            scanf(" %c", &escolha); // espaço antes de %c consome qualquer whitespace
-            if (escolha == 's' || escolha == 'S') 
-            {
-                break;
-            }
-        }
-
-        // Lógica do turno dos monstros
-        // Renovar a energia do jogador
-        energiaJogador = 3; // ou qualquer valor de energia máxima
-        // Verificar se a fase foi concluída
-            // A fase vai ser conluida quando os monstros acabarem ou o jogador morrer
-    }
-}
-
-
-void mostrarMenuPrincipal(Fase* faseInicial, Carta** cartas) 
+void mostrarMenuPrincipal(Fase* faseAtual, Carta** cartas) 
 {
     int opcao;
-    printf("1. Iniciar Jogo\n");
-    printf("2. Escolher Dificuldade\n");
-    printf("3. Instrucoes\n");
-    printf("4. Sair\n");
-    printf("Escolha uma opcao: ");
-    scanf("%d", &opcao);
-
-    switch (opcao) 
+    do 
     {
-        case 1:
-            iniciarJogo(faseInicial, cartas);
-            break;
-        case 2:
-            escolherDificuldade(faseInicial, cartas);
-            break;
-        case 3:
-            mostrarInstrucoes();
-            break;
-        case 4:
-            printf("Saindo do jogo...\n");
-            exit(0);
-        default:
-            printf("Opcao invalida! Por favor, escolha novamente.\n");
-            mostrarMenuPrincipal(faseInicial, cartas);
-    }
+        printf("Menu Principal\n");
+        printf("1. Jogar\n");
+        printf("2. Escolher Dificuldade (Atual: %d)\n", dificuldade);
+        printf("3. Como jogar?\n");
+        printf("4. Sair\n");
+        printf("Escolha uma opcao: ");
+        scanf("%d", &opcao);
+        switch(opcao) 
+        {
+            case 1:
+                // Adicione aqui o código para iniciar o jogo
+                iniciarJogo(faseAtual, cartas);
+                printf("Jogo iniciado!\n");
+                break;
+            case 2:
+                escolherDificuldade();
+                break;
+            case 3:
+                // Aqui adicionar as instruções de como jogar
+                break;
+            case 4:
+                printf("Saindo...\n");
+                break;
+            default:
+                printf("Opcao invalida! Por favor, escolha novamente.\n");
+        }
+    } while(opcao != 4);
 }
 
 // Escolha da dificuldade aqui
-void escolherDificuldade(Fase* faseInicial, Carta** cartas) 
+void escolherDificuldade() 
 {
-    // Colocar um print com a dificuldade default e mostrar pro player em qual dificuldade atualmente ele esta
+    int opcao;
     printf("A dificuldade afeta apenas a quantidade de HP que cada monstro vai possuir...\n");
-    printf("Dito isso, qual dificuldade voce gostaria de jogar?\n");
+    printf("Dificuldade atual: %d\n", dificuldade);
     printf("1. Facil\n");
     printf("2. Medio\n");
     printf("3. Dificil\n");
     printf("4. Voltar\n");
     printf("Escolha uma opcao: ");
-    scanf("%d", &dificuldade);
+    scanf("%d", &opcao);
 
-    switch (dificuldade) 
+    if(opcao >= 1 && opcao <= 3) 
     {
-        case 1:
-            mostrarMenuPrincipal(faseInicial, cartas);
-            break;
-        case 2:
-            mostrarMenuPrincipal(faseInicial, cartas);
-            break;
-        case 3:
-            mostrarMenuPrincipal(faseInicial, cartas);
-            break;
-        case 4:
-            mostrarMenuPrincipal(faseInicial, cartas);
-            break;
-        default:
-            printf("Opção inválida! Por favor, escolha novamente.\n");
-            escolherDificuldade(faseInicial, cartas);
+        dificuldade = opcao;
+    } 
+    else if(opcao == 4) 
+    {
+        return;
+    } 
+    else 
+    {
+        printf("Opcao invalida! Por favor, escolha novamente.\n");
     }
 }
 
-// Instruções do jogo aqui
-void mostrarInstrucoes() 
-{
-    
-}
-
-// Monstro possui:
-    // Nome;
-    // HP;
-    // Ação que irá tomar.
-Monstro* criarMonstro(int hp) 
+// Criação do Monstro
+Monstro* criarMonstro(char* nome, int hp, int defesa, int acao) 
 {
     Monstro* novoMonstro = (Monstro*)malloc(sizeof(Monstro));
     if (!novoMonstro) 
@@ -223,18 +186,50 @@ Monstro* criarMonstro(int hp)
         printf("Erro ao alocar memória para o monstro.\n");
         exit(1);
     }
+    strncpy(novoMonstro->nome, nome, sizeof(novoMonstro->nome));
+    novoMonstro->nome[sizeof(novoMonstro->nome) - 1] = '\0'; // Garante que a string é terminada em '\0'
     novoMonstro->hp = hp;
-    // Inicializar outras propriedades 
+    novoMonstro->defesa = defesa;
+    novoMonstro->acao = acao;
+    novoMonstro->intencaoDefinida = 0;
+
     novoMonstro->proximo = NULL;
     novoMonstro->anterior = NULL;
     return novoMonstro;
 }
-// Carta possui:
-    // Nome;
-    // Custo de energia;
-    // Ação que a carta faz.
-    // A descrição da ação pro player.
-Carta* criarCarta(int energia) 
+
+void definirIntencoesMonstros(Monstro* listaMonstros) 
+{
+    Monstro* monstroAtual = listaMonstros;
+    while (monstroAtual != NULL) 
+    {
+        if (!monstroAtual->intencaoDefinida) 
+        {
+            monstroAtual->acao = acaoMonstro();
+            monstroAtual->intencaoDefinida = 1;
+        }
+        monstroAtual = monstroAtual->proximo;
+    }
+}
+
+TipoAcaoMonstro acaoMonstro() 
+{
+    int numeroAleatorio = rand() % 100 + 1; // Gera um número aleatório entre 1 e 100
+
+    if (numeroAleatorio <= 50) 
+    {
+        printf("O monstro escolheu atacar!");
+        return ATAQUEMONSTRO;
+    } 
+    else 
+    {
+        printf("O monstro escolheu defender!");
+        return DEFESAMONSTRO;
+    }
+}
+
+// Criação da carta
+Carta* criarCarta(char* nome, int energia, int acao, char* descricao) 
 {
     Carta* novaCarta = (Carta*)malloc(sizeof(Carta));
     if (!novaCarta) 
@@ -242,14 +237,20 @@ Carta* criarCarta(int energia)
         printf("Erro ao alocar memória para a carta.\n");
         exit(1);
     }
+    strncpy(novaCarta->nome, nome, sizeof(novaCarta->nome));
+    novaCarta->nome[sizeof(novaCarta->nome) - 1] = '\0'; // Garante que a string é terminada em '\0'
     novaCarta->energia = energia;
-    // Inicializar outras propriedades 
+    novaCarta->acao = acao;
+    strncpy(novaCarta->descricao, descricao, sizeof(novaCarta->descricao));
+    novaCarta->descricao[sizeof(novaCarta->descricao) - 1] = '\0';
+
     novaCarta->proximo = NULL;
     novaCarta->anterior = NULL;
     return novaCarta;
 }
 
-Fase* criarFase() 
+// Criação da Fase
+Fase* criarFase(int nivel, char* descricao, Monstro* listaMonstros) 
 {
     Fase* novaFase = (Fase*)malloc(sizeof(Fase));
     if (!novaFase) 
@@ -257,95 +258,164 @@ Fase* criarFase()
         printf("Erro ao alocar memória para a fase.\n");
         exit(1);
     }
-    // Inicializar as propriedades da fase 
-    novaFase->monstros = NULL;
+    novaFase->nivelFase = nivel;
+    strncpy(novaFase->descricao, descricao, sizeof(novaFase->descricao));
+    novaFase->descricao[sizeof(novaFase->descricao) - 1] = '\0';
+    novaFase->monstros = listaMonstros;
     novaFase->proxima = NULL;
     return novaFase;
 }
 
-void jogarTurno(Fase* faseAtual, Carta** cartas) 
+void iniciarJogo(Fase* faseAtual, Carta** cartas) 
 {
-    mostrarInformacoesTurno(faseAtual, cartas);
+    while(fimDeJogo != 0 || hpJogador > 0)
+    {
+        jogarTurno(faseAtual, cartas);
+    }
+    
 }
 
-void mostrarInformacoesTurno(Fase* faseAtual, Carta** cartas) 
+void jogarTurno(Fase* faseAtual, Carta** cartas) 
+{
+    while(turnoFinalizado == 0)
+    {
+        definirIntencoesMonstros(faseAtual->monstros);
+        mostrarInformacoesTurnoJogador(cartas);
+        mostrarInformacoesTurnoMonstros(faseAtual);
+        escolherEJogarCarta(faseAtual, cartas);
+    }
+    finalizarTurno(faseAtual->monstros);
+}
+
+void finalizarTurno(Monstro* listaMonstros) 
+{
+    Monstro* monstroAtual = listaMonstros;
+    while (monstroAtual != NULL) 
+    {
+        monstroAtual->intencaoDefinida = 0;
+        monstroAtual = monstroAtual->proximo;
+    }
+
+    energiaJogador = 3;
+    defesaJogador = 0;
+    turnoFinalizado = 0;
+}
+
+// Mostra as informações do jogador no turno atual
+void mostrarInformacoesTurnoJogador(Carta** cartas) 
 {
     printf("HP do Jogador: %d\n", hpJogador);
     printf("Energia: %d\n", energiaJogador);
-    
-    printf("Monstros:\n");
-    Monstro* monstroAtual = faseAtual->monstros;
-    while (monstroAtual != NULL) 
-    {
-        printf("Nome: %s, HP: %d\n", monstroAtual->nome, monstroAtual->hp);
-        monstroAtual = monstroAtual->proximo;
-    }
+    printf("Escudos: %d\n", defesaJogador);
     
     printf("Suas Cartas:\n");
     for (int i = 0; i < 6; i++) 
     {
-        printf("Nome: %s, Energia: %d, Descricao: %s\n", 
-               cartas[i]->nome, 
-               cartas[i]->energia, 
-               cartas[i]->descricao);
+        printf("[%d]Nome: %s, Energia: %d, Descricao: %s\n", 
+        i+1,
+        cartas[i]->nome, 
+        cartas[i]->energia, 
+        cartas[i]->descricao);
     }
 }
 
-void jogarCarta(Carta* carta, Monstro* monstro) 
+// Mostra as informações dos monstros no turno atual
+void mostrarInformacoesTurnoMonstros(Fase* faseAtual)
 {
-    if (energiaJogador >= carta->energia) 
-    {
-        energiaJogador -= carta->energia;
-        // Aplica efeito da carta no monstro
-        // O que tem aqui é so um exemplo
-        // Depois a gente tem que implementar as ações de cada carta
-    } 
-    else 
-    {
-        printf("Energia insuficiente para jogar esta carta!\n");
-    }
+    printf("Monstros:\n");
+        Monstro* monstroAtual = faseAtual->monstros;
+        while (monstroAtual != NULL) 
+        {
+            printf("Nome: %s, HP: %d\n", monstroAtual->nome, monstroAtual->hp);
+            if(faseAtual->nivelFase == 1)
+            {
+                if(monstroAtual->acao == 1)
+                {
+                    printf("%s, vai atacar com 2 de dano!\n", monstroAtual->nome);
+                }
+                else
+                {
+                    printf("%s, vai defender com 2 de defesa!\n", monstroAtual->nome);
+                }
+            }
+            else if(faseAtual->nivelFase == 2)
+            {
+                if(monstroAtual->acao == 1)
+                {
+                    printf("%s, vai atacar com 4 de dano!\n", monstroAtual->nome);
+                }
+                else
+                {
+                    printf("%s, vai defender com 3 de defesa!\n", monstroAtual->nome);
+                }
+            }
+            else // Depois ver como a gente vai fazer pra saber do dano e defesa do boss
+            {
+                if(monstroAtual->acao == 1)
+                {
+                    printf("%s, vai atacar com 4 de dano!\n", monstroAtual->nome);
+                }
+                else
+                {
+                    printf("%s, vai defender com 4 de defesa!\n", monstroAtual->nome);
+                }
+            }
+            monstroAtual = monstroAtual->proximo;
+        }
 }
 
 void escolherEJogarCarta(Fase* faseAtual, Carta** cartas) 
 {
-    mostrarInformacoesTurno(faseAtual, cartas);
     
     int escolha;
-    printf("Escolha uma carta para jogar (1-6): ");
+    printf("Escolha uma carta para jogar (1-6) OU [7] Para encerrar o turno: ");
     scanf("%d", &escolha);
     
-    if (escolha < 1 || escolha > 6) 
+    if (escolha < 1 || escolha > 7) 
     {
-        printf("Escolha inválida! Tente novamente.\n");
+        printf("Escolha invalida! Tente novamente.\n");
         return;
+    }
+
+    if(escolha == 7)
+    {
+        turnoFinalizado = 1;
     }
     
     Carta* cartaEscolhida = cartas[escolha - 1];
-    jogarCarta(cartaEscolhida, faseAtual->monstros); // Exemplo: jogando a carta no primeiro monstro
+    jogarCarta(cartaEscolhida, faseAtual->monstros, faseAtual); // Exemplo: jogando a carta no primeiro monstro
 }
 
-void jogarCarta(Carta* carta, Monstro* monstro)
+void jogarCarta(Carta* carta, Monstro* monstro, Fase* faseAtual)
 {
+    Monstro* monstroAtual = faseAtual->monstros;
     if (energiaJogador >= carta->energia) 
     {
         energiaJogador -= carta->energia;
-        printf("Você jogou a carta %s!\n", carta->nome);
+        printf("Voce jogou a carta %s!\n", carta->nome);
         
         switch (carta->acao) 
         {
-            case ATAQUE:
-                monstro->hp -= 5; // Substitua 5 pelo valor real de dano
-                printf("Você causou 5 de dano ao monstro %s!\n", monstro->nome);
+            case ATAQUESING:
+                monstro->hp -= 2;
+                printf("Voce causou 2 de dano ao monstro %s!\n", monstro->nome);
+                break;
+            case ATAQUEMULT:
+                while (monstroAtual != NULL)
+                {
+                    monstro->hp -= 2;
+                    printf("Voce causou 2 de dano ao monstro %s!\n", monstro->nome);
+                }
+                free(monstroAtual);
                 break;
             case DEFESA:
-                // Implementar a lógica para defesa aqui
+                defesaJogador += 3;
                 break;
             case CURA:
-                // Implementar a lógica para cura aqui
+                hpJogador += 2;
                 break;
-            // Adicionar casos para outros tipos de ações (se a gente tiver, como o de atacar varios monstros de uma so vez)
             default:
-                printf("Ação desconhecida!\n");
+                printf("Açao desconhecida!\n");
                 break;
         }
     } 
@@ -353,29 +423,4 @@ void jogarCarta(Carta* carta, Monstro* monstro)
     {
         printf("Energia insuficiente para jogar esta carta!\n");
     }
-}
-
-int verificarFimDeJogo() 
-{
-    if (hpJogador <= 0) 
-    {
-        printf("Você morreu! Fim de jogo.\n");
-        return 1;
-    }
-    return 0;
-}
-
-int verificarFimDeTurno(Fase* faseAtual) 
-{
-    Monstro* monstroAtual = faseAtual->monstros;
-    while (monstroAtual != NULL) 
-    {
-        if (monstroAtual->hp > 0) 
-        {
-            return 0; // Ainda tem monstros vivos
-        }
-        monstroAtual = monstroAtual->proximo;
-    }
-    printf("Todos os monstros estão mortos! Você venceu!\n");
-    return 1;
 }
