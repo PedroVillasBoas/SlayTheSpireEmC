@@ -4,6 +4,7 @@
 #include <time.h>
 
 // O que falta fazer:
+    // Ordenação dos monstros com o menor HP ficar sempre na frente
     // Comunicação entre a ação da carta e os monstros
         // Verificação se existe escudo no monstro antes do player bater
     // Comunicação entre a ação dos monstros e o player
