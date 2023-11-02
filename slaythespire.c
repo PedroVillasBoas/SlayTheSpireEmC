@@ -5,13 +5,14 @@
 
 // O que falta fazer:
     // Ordenação dos monstros com o menor HP ficar sempre na frente
-    // Comunicação entre a ação da carta e os monstros
+    // Comunicação entre a ação da carta e os monstros [OK]
         // Verificação se existe escudo no monstro antes do player bater
-    // Comunicação entre a ação dos monstros e o player
+    // Comunicação entre a ação dos monstros e o player[OK]
         // Verificação se existe escudo no player antes do monstro bater
     // Verificação de termino de fase (Se todos os monstros da fase morreram) [OK]
     // Troca de fase após a verificação [OK]
     // Condição do player ganhar o jogo
+    // Encerrar o programa quando o HP do player chegar a 0 [OK]
     // Definir e construir o boss [OK]
 
 // Enum para cada tipo de ação das cartas
@@ -331,6 +332,12 @@ void iniciarJogo(Fase** faseAtual, Carta** cartas)
     {
         jogarTurno(faseAtual, cartas);
     }
+
+    if(hpJogador <= 0)
+    {
+        printf("Voce morreu!");
+        exit(0);
+    }
     
 }
 
@@ -357,6 +364,11 @@ void finalizarTurno(Monstro* listaMonstros)
     Monstro* monstroAtual = listaMonstros;
     while (monstroAtual != NULL) 
     {
+        if(monstroAtual->acao == ATAQUEMONSTRO)
+        {
+            hpJogador -= 2;
+        }
+
         monstroAtual->intencaoDefinida = 0;
         monstroAtual = monstroAtual->proximo;
     }
