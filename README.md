@@ -2,7 +2,7 @@
 
 ## Introdução:
 Este projeto consiste em um jogo de cartas baseado em turnos onde o jogador enfrenta monstros em diferentes fases. O jogo é dividido em três fases, cada uma com seus respectivos monstros. O jogador pode escolher cartas de sua mão para atacar os monstros ou defender-se de seus ataques.
-O jogo é baseado no jogo Slay the Spire que é um roguelike de construção de deck de cartas. Ele foi desenvolvido pelo estudio indie americano Mega Crit e publicado pelo Humble Bundle.
+O *SlayTheSpireEmC* é baseado no jogo Slay the Spire que é um roguelike de construção de deck de cartas. Ele foi desenvolvido pelo estudio indie americano Mega Crit e publicado pelo Humble Bundle.
 
 ## Estrutura do Código
 O código é organizado nas seguintes partes principais:
