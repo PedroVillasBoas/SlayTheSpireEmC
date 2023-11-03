@@ -8,10 +8,10 @@ O *SlayTheSpireEmC* é baseado no jogo Slay the Spire que é um roguelike de con
 O código é organizado nas seguintes partes principais:
 
 ## Inicialização:
-Geração de números aleatórios é inicializada.
-Monstros são criados para cada fase em uma lista duplamente encadeada.
-Cartas são criadas para o jogador em um array.
-Fases são criadas e encadeadas em uma lista simplesmente encadeada.
+* Geração de números aleatórios é inicializada.
+* Monstros são criados para cada fase em uma lista duplamente encadeada.
+* Cartas são criadas para o jogador em um array.
+* Fases são criadas e encadeadas em uma lista simplesmente encadeada.
 
 ## Menu Principal:
 O jogador pode optar por começar o jogo, escolher a dificuldade, aprender como jogar ou sair do jogo.
