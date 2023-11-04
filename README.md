@@ -1,4 +1,4 @@
-# SlayTheSpire Em C
+# Slay The Spire Em C
 
 ## Introdução:
 * Este projeto consiste em um jogo de cartas baseado em turnos onde o jogador enfrenta monstros em diferentes fases. 
