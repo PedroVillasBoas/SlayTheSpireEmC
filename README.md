@@ -35,7 +35,7 @@ Funções adicionais para limpar a tela, mostrar instruções, gerenciar o estad
 
 ## Funcionalidades Futuras
 * Adicionar mais tipos de cartas e monstros para aumentar a variedade do jogo.
-* Implementar um sistema de progressão onde o jogador pode ganhar experiência e subir de nível.
+* Implementar um sistema de progressão onde o jogador pode ganhar experiência e adicionar mais cartas ao baralho.
 
 ## Licença
 Este projeto é licenciado sob a licença MIT - veja o arquivo LICENSE para mais detalhes.
