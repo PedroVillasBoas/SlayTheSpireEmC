@@ -14,6 +14,7 @@
     // Condição do player ganhar o jogo
     // Encerrar o programa quando o HP do player chegar a 0 [OK]
     // Definir e construir o boss [OK]
+    // EXTRA --> Criar o arquivo de high score que vai ser a partir da quantidad ede turnos que foram necessarios para acaber o jogo
 
 // Enum para cada tipo de ação das cartas
 typedef enum 
@@ -88,7 +89,7 @@ void verificarMonstroVivo(Fase* faseAtual);
 // Variaveis globais
 // Do jogo
 int dificuldade = 2; // Salvar a escolha da dificuldade
-int turnoAtual; // Turno em que o jogador está
+int numTurno = 1; // Quantidade de turnos que passaram desde que o jogador começou o jogo
 int turnoFinalizado = 0; // Se o jogador escolheu terminar o seu turno
 int fimDeJogo = 0; // Se o jogo acabou Ou por HP do jogador == 0 ou Jogador ganhou o jogo!
 
@@ -328,6 +329,7 @@ Fase* criarFase(int nivel, char* descricao, Monstro* listaMonstros)
 
 void iniciarJogo(Fase** faseAtual, Carta** cartas) 
 {
+    clearScreen();
     while(fimDeJogo == 0 && hpJogador > 0)
     {
         jogarTurno(faseAtual, cartas);
@@ -345,7 +347,7 @@ void jogarTurno(Fase** faseAtual, Carta** cartas)
 {
     while(turnoFinalizado == 0)
     {
-        clearScreen();
+        //clearScreen();
         verificarMonstroVivo(*faseAtual);
         definirIntencoesMonstros((*faseAtual)->monstros);
         mostrarInformacoesTurnoJogador(cartas);
@@ -366,6 +368,9 @@ void finalizarTurno(Monstro* listaMonstros)
     {
         if(monstroAtual->acao == ATAQUEMONSTRO)
         {
+            // Aqui vai ter um if(defesaJogador > 0) e dar o dano dos monstros no shield antes de ir pro hp
+            // Temos que adicionar na struct do monstro 2 campos: 1. shield do monstro 2. o dano de cada monstro (assim a gente resolve o dano do boss e consegue
+            // balancear o jogo da forma que a gente quiser)
             hpJogador -= 2;
         }
 
@@ -375,15 +380,20 @@ void finalizarTurno(Monstro* listaMonstros)
 
     energiaJogador = 3;
     defesaJogador = 0;
+    numTurno++;
     turnoFinalizado = 0;
+    clearScreen();
 }
 
 // Mostra as informações do jogador no turno atual
 void mostrarInformacoesTurnoJogador(Carta** cartas) 
 {
+    printf("Turno Atual: %d\n", numTurno);
     printf("HP do Jogador: %d\n", hpJogador);
     printf("Energia: %d\n", energiaJogador);
     printf("Escudos: %d\n", defesaJogador);
+
+    printf("================================== / /  / / ==================================\n");
     
     printf("Suas Cartas:\n");
     for (int i = 0; i < 6; i++) 
@@ -394,59 +404,61 @@ void mostrarInformacoesTurnoJogador(Carta** cartas)
         cartas[i]->energia, 
         cartas[i]->descricao);
     }
+    printf("================================== / /  / / ==================================\n");
 }
 
 // Mostra as informações dos monstros no turno atual
 void mostrarInformacoesTurnoMonstros(Fase* faseAtual)
 {
     printf("Monstros:\n");
-        Monstro* monstroAtual = faseAtual->monstros;
-        while (monstroAtual != NULL) 
+    Monstro* monstroAtual = faseAtual->monstros;
+    while (monstroAtual != NULL) 
+    {
+        printf("Nome: %s, |HP: %d| \n", monstroAtual->nome, monstroAtual->hp);
+        if(faseAtual->nivelFase == 1)
         {
-            printf("Nome: %s, HP: %d\n", monstroAtual->nome, monstroAtual->hp);
-            if(faseAtual->nivelFase == 1)
+            if(monstroAtual->acao == 1)
             {
-                if(monstroAtual->acao == 1)
-                {
-                    printf("%s, vai atacar com 2 de dano!\n", monstroAtual->nome);
-                }
-                else
-                {
-                    printf("%s, vai defender com 2 de defesa!\n", monstroAtual->nome);
-                }
+                printf("%s, vai atacar com 2 de dano!\n", monstroAtual->nome);
             }
-            else if(faseAtual->nivelFase == 2)
+            else
             {
-                if(monstroAtual->acao == 1)
-                {
-                    printf("%s, vai atacar com 4 de dano!\n", monstroAtual->nome);
-                }
-                else
-                {
-                    printf("%s, vai defender com 3 de defesa!\n", monstroAtual->nome);
-                }
+                printf("%s, vai defender com 2 de defesa!\n", monstroAtual->nome);
             }
-            else // Depois ver como a gente vai fazer pra saber do dano e defesa do boss
-            {
-                if(monstroAtual->acao == 1)
-                {
-                    printf("%s, vai atacar com 4 de dano!\n", monstroAtual->nome);
-                }
-                else
-                {
-                    printf("%s, vai defender com 4 de defesa!\n", monstroAtual->nome);
-                }
-            }
-            monstroAtual = monstroAtual->proximo;
         }
+        else if(faseAtual->nivelFase == 2)
+        {
+            if(monstroAtual->acao == 1)
+            {
+                printf("%s, vai atacar com 4 de dano!\n", monstroAtual->nome);
+            }
+            else
+            {
+                printf("%s, vai defender com 3 de defesa!\n", monstroAtual->nome);
+            }
+        }
+        else // Depois ver como a gente vai fazer pra saber do dano e defesa do boss
+        {
+            if(monstroAtual->acao == 1)
+            {
+                printf("%s, vai atacar com 4 de dano!\n", monstroAtual->nome);
+            }
+            else
+            {
+                printf("%s, vai defender com 4 de defesa!\n", monstroAtual->nome);
+            }
+        }
+        monstroAtual = monstroAtual->proximo;
+    }
 }
 
 void escolherEJogarCarta(Fase* faseAtual, Carta** cartas) 
 {
-    
     int escolha;
     printf("Escolha uma carta para jogar (1-6) OU [7] Para encerrar o turno: ");
     scanf("%d", &escolha);
+
+    printf("================================== Consequencias das suas acoes ==================================\n");
     
     if (escolha < 1 || escolha > 7) 
     {
@@ -476,15 +488,17 @@ void jogarCarta(Carta* carta, Monstro* monstro, Fase* faseAtual)
             case ATAQUESING:
                 monstro->hp -= 2;
                 printf("Voce causou 2 de dano ao monstro %s!\n", monstro->nome);
+                printf("================================== / /  / / ==================================\n");
                 break;
             case ATAQUEMULT:
                 while (monstroAtual != NULL)
                 {
                     monstroAtual->hp -= 2;
                     printf("Voce causou 2 de dano ao monstro %s!\n", monstroAtual->nome);
-                    monstroAtual = monstroAtual->proximo; // Ver porque o dano ta sendo aplicado no mesmo mob e nao em todos
+                    monstroAtual = monstroAtual->proximo;
                 }
                 free(monstroAtual);
+                printf("================================== / /  / / ==================================\n");
                 break;
             case DEFESA:
                 defesaJogador += 3;
