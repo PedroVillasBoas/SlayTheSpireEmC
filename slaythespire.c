@@ -3,19 +3,6 @@
 #include <string.h>
 #include <time.h>
 
-// O que falta fazer:
-    // Ordenação dos monstros com o menor HP ficar sempre na frente
-    // Comunicação entre a ação da carta e os monstros [OK]
-        // Verificação se existe escudo no monstro antes do player bater
-    // Comunicação entre a ação dos monstros e o player[OK]
-        // Verificação se existe escudo no player antes do monstro bater
-    // Verificação de termino de fase (Se todos os monstros da fase morreram) [OK]
-    // Troca de fase após a verificação [OK]
-    // Condição do player ganhar o jogo
-    // Encerrar o programa quando o HP do player chegar a 0 [OK]
-    // Definir e construir o boss [OK]
-    // EXTRA --> Criar o arquivo de high score que vai ser a partir da quantidad ede turnos que foram necessarios para acaber o jogo
-
 // Enum para cada tipo de ação das cartas
 typedef enum 
 {
@@ -117,19 +104,19 @@ int main()
     Monstro* monstro8 = criarMonstro("Dragao", 3, 0, DEFAULTMONSTRO);
     Monstro* monstro9 = criarMonstro("Rei Demonio", 4, 0, DEFAULTMONSTRO);
 
-    // Conectando os monstros em uma lista duplamente encadeada
+    // Conectando os monstros da fase 1 em uma lista duplamente encadeada
     monstro1->proximo = monstro2;
     monstro2->anterior = monstro1;
     monstro2->proximo = monstro3;
     monstro3->anterior = monstro2;
 
-    // Conectando os monstros em uma lista duplamente encadeada
+    // Conectando os monstros da fase 2 em uma lista duplamente encadeada
     monstro4->proximo = monstro5;
     monstro5->anterior = monstro4;
     monstro5->proximo = monstro6;
     monstro6->anterior = monstro5;
 
-    // Conectando os monstros em uma lista duplamente encadeada
+    // Conectando os monstros da fase 3 em uma lista duplamente encadeada
     monstro7->proximo = monstro8;
     monstro8->anterior = monstro7;
     monstro8->proximo = monstro9;
@@ -179,7 +166,6 @@ void mostrarMenuPrincipal(Fase* faseAtual, Carta** cartas)
         switch(opcao) 
         {
             case 1:
-                // Adicione aqui o código para iniciar o jogo
                 iniciarJogo(&faseAtual, cartas);
                 printf("Jogo iniciado!\n");
                 break;
@@ -231,12 +217,16 @@ void escolherDificuldade()
 void instrucoes()
 {
     clearScreen();
-    printf("Voce eh um guerreiro em ascencao e foi designado para proteger o reino contra o Rei Demonio e suas tropas.\n"
-        "Nesse mundo ha tres fases e cada fase ha um quantidade de monstros a serem derrotados (a depender da dificuldade escolhida,"
-        "os monstros terao mais ou menos vida).\nPara derrotar os inimigos voce escolhera quais as suas acoes de acordo com as suas cartas"
-        " e quantidade de energia ate o seu turno acabar.\nQuando voce escolher terminar o seu turno, os monstros, entao, farao as suas acoes contra voce."
-        "\nDerrote os monstros em cada fase e enfrente o Rei Demonio na fase final para salvar o reino.\n"
-        "O jogo finaliza Se quando voce morrer ou quando derrotar o Rei Demonio.\n");
+    printf("Voce eh um(a) guerreiro(a) em ascencao e foi designado(a) para proteger o reino contra o Rei Demonio e suas tropas.\n"
+            "O conselheiro do rei escalou voce para ir ate ao castelo, chegar ao topo e destruir todo o mal.\n"
+            "O jogo eh dividido em 3 fases contendo, cada uma, 3 monstros.\n"
+            "Os monstros podem escolher lhe atacar ou se defender de seus ataques.\n"
+            "Voce vai utilizar suas cartas para destruir os monstros, se defender ou recuperar seu HP.\n"
+            "Mas cuidado! Voce apenas possui 3 de energia por turno e suas cartas custam energia!\n"
+            "Porem, tambem nao se preocupe que ao encerrar o turno, a sua energia sera restaurada totalmente.\n"
+            "Voce deve concluir as 3 fases na menor quantidade de turnos possiveis. Por isso, pense com cuidado em suas acoes.\n"
+            "Boa sorte, guerreiro(a)!\n"
+            "================================== / /  / / ==================================\n");
 
 }
 
@@ -347,9 +337,9 @@ void jogarTurno(Fase** faseAtual, Carta** cartas)
 {
     while(turnoFinalizado == 0)
     {
-        //clearScreen();
         verificarMonstroVivo(*faseAtual);
         definirIntencoesMonstros((*faseAtual)->monstros);
+        printf("Fase Atual: %d\n", (*faseAtual)->nivelFase);
         mostrarInformacoesTurnoJogador(cartas);
         mostrarInformacoesTurnoMonstros(*faseAtual);
         escolherEJogarCarta(*faseAtual, cartas);
@@ -366,12 +356,14 @@ void finalizarTurno(Monstro* listaMonstros)
     Monstro* monstroAtual = listaMonstros;
     while (monstroAtual != NULL) 
     {
+        monstroAtual->defesa = 0;
         if(monstroAtual->acao == ATAQUEMONSTRO)
         {
-            // Aqui vai ter um if(defesaJogador > 0) e dar o dano dos monstros no shield antes de ir pro hp
-            // Temos que adicionar na struct do monstro 2 campos: 1. shield do monstro 2. o dano de cada monstro (assim a gente resolve o dano do boss e consegue
-            // balancear o jogo da forma que a gente quiser)
             hpJogador -= 2;
+        }
+        else
+        {
+            monstroAtual->defesa += 2;
         }
 
         monstroAtual->intencaoDefinida = 0;
@@ -414,7 +406,7 @@ void mostrarInformacoesTurnoMonstros(Fase* faseAtual)
     Monstro* monstroAtual = faseAtual->monstros;
     while (monstroAtual != NULL) 
     {
-        printf("Nome: %s, |HP: %d| \n", monstroAtual->nome, monstroAtual->hp);
+        printf("Nome: %s, |HP: %d| |Escudos: %d|\n", monstroAtual->nome, monstroAtual->hp, monstroAtual->defesa);
         if(faseAtual->nivelFase == 1)
         {
             if(monstroAtual->acao == 1)
@@ -437,7 +429,7 @@ void mostrarInformacoesTurnoMonstros(Fase* faseAtual)
                 printf("%s, vai defender com 3 de defesa!\n", monstroAtual->nome);
             }
         }
-        else // Depois ver como a gente vai fazer pra saber do dano e defesa do boss
+        else
         {
             if(monstroAtual->acao == 1)
             {
@@ -472,7 +464,7 @@ void escolherEJogarCarta(Fase* faseAtual, Carta** cartas)
     }
     
     Carta* cartaEscolhida = cartas[escolha - 1];
-    jogarCarta(cartaEscolhida, faseAtual->monstros, faseAtual); // Exemplo: jogando a carta no primeiro monstro
+    jogarCarta(cartaEscolhida, faseAtual->monstros, faseAtual);
 }
 
 void jogarCarta(Carta* carta, Monstro* monstro, Fase* faseAtual)
@@ -545,3 +537,30 @@ void verificarMonstroVivo(Fase* faseAtual)
         }
     }
 }
+
+// O que falta fazer:
+    // Ordenação dos monstros com o menor HP ficar sempre na frente
+    // Comunicação entre a ação da carta e os monstros [OK]
+        // Verificação se existe escudo no monstro antes do player bater
+    // Comunicação entre a ação dos monstros e o player[OK]
+        // Verificação se existe escudo no player antes do monstro bater
+    // Verificação de termino de fase (Se todos os monstros da fase morreram) [OK]
+    // Troca de fase após a verificação [OK]
+    // Condição do player ganhar o jogo
+    // Encerrar o programa quando o HP do player chegar a 0 [OK]
+    // Definir e construir o boss [OK]
+    // EXTRA --> Criar o arquivo de high score que vai ser a partir da quantidad ede turnos que foram necessarios para acaber o jogo
+
+
+// Prototipo da funcionalidade de dano no escudo do monstro (deve funcionar da mesma forma para o player)
+//      if(monstro->defesa > 0)
+//      int danoTempPlayer = dano da carta
+//      monstro->defesa -= dano da carta
+//          if(monstro->defesa < 0)
+//          danoTempPlayer = | monstro->defesa | (transforma o dano extra no escudo em modulo)
+//          monstro->defesa = 0 (reseta o shield do monstro pra 0)
+// monstro->hp -= danoTempPlayer
+
+// O que eu acho que precisa ser mudado / Adicionado
+// Adicionar mais um campo nas cartas para poder ter um valor de dano/cura/escudo para poder aplicar nos monstros
+// Adicionar mais um campo nos monstros para poder ter um valor de dano para cada monstro para poder aplicar no player e diferenciar seus ataques
