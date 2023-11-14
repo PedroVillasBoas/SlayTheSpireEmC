@@ -23,10 +23,12 @@ typedef enum
 // Estrutura para representar o monstro
 typedef struct Monstro 
 {
-    char nome[20];
-    int hp;
-    int defesa;
-    TipoAcaoMonstro acao;
+    char nome[20]; // Nome do monstro
+    int hp; // HP do monstro
+    int defesa; // Defesa acumulada do monstro
+    TipoAcaoMonstro acao; // 1 para ataque, 2 para defesa
+    int danoAtaqueMonstro; // Dano que o monstro vai causar ao jogador
+    int defesaMonstro; // Defesa que o monstro vai ter
     int intencaoDefinida; // 1 se a intenção já foi definida para o turno atual, 0 caso contrário
     struct Monstro* proximo;
     struct Monstro* anterior;
@@ -35,10 +37,11 @@ typedef struct Monstro
 // Estrutura para representar a carta
 typedef struct Carta 
 {
-    char nome[20];
-    int energia;
-    TipoAcao acao;
-    char descricao [100];
+    char nome[20]; // Nome da carta
+    int energia; // Energia que a carta custa para ser jogada
+    TipoAcao acao; // 1 para ataque, 2 para defesa, 3 para cura
+    int quantidadeAcao; // Quantidade de dano/cura/escudo que a carta vai aplicar
+    char descricao [100]; // Descrição da carta
     struct Carta* proximo;
     struct Carta* anterior;
 } Carta;
@@ -58,10 +61,10 @@ void clearScreen();
 void mostrarMenuPrincipal(Fase* faseAtual, Carta** cartas);
 void escolherDificuldade();
 void instrucoes();
-Monstro* criarMonstro(char* nome, int hp, int defesa, int acao);
+Monstro* criarMonstro(char* nome, int hp, int defesa, int acao, int danoAtaqueMonstro, int defesaMonstro);
 void definirIntencoesMonstros(Monstro* listaMonstros);
 TipoAcaoMonstro acaoMonstro();
-Carta* criarCarta(char* nome, int energia, int acao, char* descricao); 
+Carta* criarCarta(char* nome, int energia, int acao, int quantidadeAcao, char* descricao); 
 Fase* criarFase(int nivel, char* descricao, Monstro* listaMonstros);
 void iniciarJogo(Fase** faseAtual, Carta** cartas);
 void jogarTurno(Fase** faseAtual, Carta** cartas); 
@@ -71,6 +74,8 @@ void mostrarInformacoesTurnoMonstros(Fase* faseAtual);
 void escolherEJogarCarta(Fase* faseAtual, Carta** cartas);
 void jogarCarta(Carta* carta, Monstro* monstro, Fase* faseAtual);
 void verificarMonstroVivo(Fase* faseAtual); 
+int max(int a, int b);
+int min(int a, int b);
 
 
 // Variaveis globais
@@ -90,19 +95,19 @@ int main()
     srand(time(NULL)); // Inicializa a semente do gerador de números aleatórios
 
     // Criando 3 monstros para fase 1
-    Monstro* monstro1 = criarMonstro("Goblin Guerreiro", 2, 0, DEFAULTMONSTRO);
-    Monstro* monstro2 = criarMonstro("Goblin Arqueiro", 3, 0, DEFAULTMONSTRO);
-    Monstro* monstro3 = criarMonstro("Orc Guerreiro", 4, 0, DEFAULTMONSTRO);
+    Monstro* monstro1 = criarMonstro("Goblin Guerreiro", 2, 0, DEFAULTMONSTRO, 2, 1);
+    Monstro* monstro2 = criarMonstro("Goblin Arqueiro", 3, 0, DEFAULTMONSTRO, 2, 1);
+    Monstro* monstro3 = criarMonstro("Orc Guerreiro", 4, 0, DEFAULTMONSTRO, 3, 2);
 
     // Criando 3 monstros para fase 2
-    Monstro* monstro4 = criarMonstro("Hobgoblin", 2, 0, DEFAULTMONSTRO);
-    Monstro* monstro5 = criarMonstro("Elfo Mago", 3, 0, DEFAULTMONSTRO);
-    Monstro* monstro6 = criarMonstro("Succubus", 4, 0, DEFAULTMONSTRO);
+    Monstro* monstro4 = criarMonstro("Hobgoblin", 2, 0, DEFAULTMONSTRO, 3, 2);
+    Monstro* monstro5 = criarMonstro("Elfo Mago", 3, 0, DEFAULTMONSTRO, 3, 1);
+    Monstro* monstro6 = criarMonstro("Succubus", 4, 0, DEFAULTMONSTRO, 4, 2);
 
     // Criando 2 monstros e o Boss para fase 3
-    Monstro* monstro7 = criarMonstro("Succubus", 2, 0, DEFAULTMONSTRO);
-    Monstro* monstro8 = criarMonstro("Dragao", 3, 0, DEFAULTMONSTRO);
-    Monstro* monstro9 = criarMonstro("Rei Demonio", 4, 0, DEFAULTMONSTRO);
+    Monstro* monstro7 = criarMonstro("Succubus", 2, 0, DEFAULTMONSTRO, 4, 2);
+    Monstro* monstro8 = criarMonstro("Dragao", 3, 0, DEFAULTMONSTRO, 5, 3);
+    Monstro* monstro9 = criarMonstro("Rei Demonio", 4, 0, DEFAULTMONSTRO, 6, 4);
 
     // Conectando os monstros da fase 1 em uma lista duplamente encadeada
     monstro1->proximo = monstro2;
@@ -124,12 +129,12 @@ int main()
 
     // Criando 6 cartas
     Carta* cartas[6];
-    cartas[0] = criarCarta("Espada", 1, ATAQUESING, "Uma espada brilhante");
-    cartas[1] = criarCarta("Escudo", 1, DEFESA, "Um escudo resistente");
-    cartas[2] = criarCarta("Pocao de Cura", 3, CURA, "Restaura a vida");
-    cartas[3] = criarCarta("Arco", 2, ATAQUEMULT, "Um arco para ataques a distancia");
-    cartas[4] = criarCarta("Flecha Envenenada", 2, ATAQUESING, "Uma flecha letal");
-    cartas[5] = criarCarta("Magia de Fogo", 3, ATAQUEMULT, "Uma poderosa bola de fogo");
+    cartas[0] = criarCarta("Espada", 1, ATAQUESING, 2, "Uma espada brilhante que aplica 2 de dano a um inimigo");
+    cartas[1] = criarCarta("Escudo", 1, DEFESA, 3, "Um escudo resistente que bloqueia 3 de dano");
+    cartas[2] = criarCarta("Pocao de Cura", 3, 2,CURA, "Uma pocao que restaura 2 ao seu HP");
+    cartas[3] = criarCarta("Arco", 2, ATAQUEMULT, 1, "Um arco para ataques a distancia que aplica 1 de dano a todos os inimigos");
+    cartas[4] = criarCarta("Flecha Envenenada", 2, 3, ATAQUESING, "Uma flecha letal que aplica 3 de dano a um inimigo");
+    cartas[5] = criarCarta("Magia de Fogo", 3, 1, ATAQUEMULT, "Uma poderosa bola de fogo que aplica 1 de dano a todos os inimigos");
 
     // Criando uma fase
     Fase* fase1 = criarFase(1, "A caverna escura", monstro1);
@@ -156,6 +161,7 @@ void mostrarMenuPrincipal(Fase* faseAtual, Carta** cartas)
     int opcao;
     do 
     {
+        //printf("\033[1;44mThis text has a blue background\033[0m\n");
         printf("Menu Principal\n");
         printf("1. Jogar\n");
         printf("2. Escolher Dificuldade (Atual: %d)\n", dificuldade);
@@ -231,7 +237,7 @@ void instrucoes()
 }
 
 // Criação do Monstro
-Monstro* criarMonstro(char* nome, int hp, int defesa, int acao) 
+Monstro* criarMonstro(char* nome, int hp, int defesa, int acao, int danoAtaqueMonstro, int defesaMonstro) 
 {
     Monstro* novoMonstro = (Monstro*)malloc(sizeof(Monstro));
     if (!novoMonstro) 
@@ -245,6 +251,8 @@ Monstro* criarMonstro(char* nome, int hp, int defesa, int acao)
     novoMonstro->defesa = defesa;
     novoMonstro->acao = acao;
     novoMonstro->intencaoDefinida = 0;
+    novoMonstro->danoAtaqueMonstro = danoAtaqueMonstro;
+    novoMonstro->defesaMonstro = defesaMonstro;
 
     novoMonstro->proximo = NULL;
     novoMonstro->anterior = NULL;
@@ -280,7 +288,7 @@ TipoAcaoMonstro acaoMonstro()
 }
 
 // Criação da carta
-Carta* criarCarta(char* nome, int energia, int acao, char* descricao) 
+Carta* criarCarta(char* nome, int energia, int acao, int quantidadeAcao, char* descricao) 
 {
     Carta* novaCarta = (Carta*)malloc(sizeof(Carta));
     if (!novaCarta) 
@@ -292,6 +300,7 @@ Carta* criarCarta(char* nome, int energia, int acao, char* descricao)
     novaCarta->nome[sizeof(novaCarta->nome) - 1] = '\0'; // Garante que a string é terminada em '\0'
     novaCarta->energia = energia;
     novaCarta->acao = acao;
+    novaCarta->quantidadeAcao = quantidadeAcao;
     strncpy(novaCarta->descricao, descricao, sizeof(novaCarta->descricao));
     novaCarta->descricao[sizeof(novaCarta->descricao) - 1] = '\0';
 
@@ -356,14 +365,26 @@ void finalizarTurno(Monstro* listaMonstros)
     Monstro* monstroAtual = listaMonstros;
     while (monstroAtual != NULL) 
     {
-        monstroAtual->defesa = 0;
+        monstroAtual->defesa = 0; // Resetar a defesa do monstro para o próximo turno
         if(monstroAtual->acao == ATAQUEMONSTRO)
         {
-            hpJogador -= 2;
+            if (defesaJogador > 0) 
+            {
+                int danoAplicado = min(defesaJogador, monstroAtual->danoAtaqueMonstro);
+                defesaJogador -= danoAplicado; // Reduzir a defesa do jogador
+                if (monstroAtual->danoAtaqueMonstro > danoAplicado) 
+                {
+                    hpJogador -= (monstroAtual->danoAtaqueMonstro - danoAplicado); // Aplicar o dano restante ao HP
+                }
+            } 
+            else 
+            {
+                hpJogador -= monstroAtual->danoAtaqueMonstro;
+            }
         }
         else
         {
-            monstroAtual->defesa += 2;
+            monstroAtual->defesa += monstroAtual->defesaMonstro;
         }
 
         monstroAtual->intencaoDefinida = 0;
@@ -371,7 +392,7 @@ void finalizarTurno(Monstro* listaMonstros)
     }
 
     energiaJogador = 3;
-    defesaJogador = 0;
+    defesaJogador = 0; // Zerar a defesa do jogador para o próximo turno
     numTurno++;
     turnoFinalizado = 0;
     clearScreen();
@@ -411,33 +432,33 @@ void mostrarInformacoesTurnoMonstros(Fase* faseAtual)
         {
             if(monstroAtual->acao == 1)
             {
-                printf("%s, vai atacar com 2 de dano!\n", monstroAtual->nome);
+                printf("%s, vai atacar com %d de dano!\n", monstroAtual->nome, monstroAtual->danoAtaqueMonstro);
             }
             else
             {
-                printf("%s, vai defender com 2 de defesa!\n", monstroAtual->nome);
+                printf("%s, vai defender com %d de defesa!\n", monstroAtual->nome, monstroAtual->defesaMonstro);
             }
         }
         else if(faseAtual->nivelFase == 2)
         {
             if(monstroAtual->acao == 1)
             {
-                printf("%s, vai atacar com 4 de dano!\n", monstroAtual->nome);
+                printf("%s, vai atacar com %d de dano!\n", monstroAtual->nome, monstroAtual->danoAtaqueMonstro);
             }
             else
             {
-                printf("%s, vai defender com 3 de defesa!\n", monstroAtual->nome);
+                printf("%s, vai defender com %d de defesa!\n", monstroAtual->nome, monstroAtual->defesaMonstro);
             }
         }
         else
         {
             if(monstroAtual->acao == 1)
             {
-                printf("%s, vai atacar com 4 de dano!\n", monstroAtual->nome);
+                printf("%s, vai atacar com %d de dano!\n", monstroAtual->nome, monstroAtual->danoAtaqueMonstro);
             }
             else
             {
-                printf("%s, vai defender com 4 de defesa!\n", monstroAtual->nome);
+                printf("%s, vai defender com %d de defesa!\n", monstroAtual->nome, monstroAtual->defesaMonstro);
             }
         }
         monstroAtual = monstroAtual->proximo;
@@ -478,15 +499,32 @@ void jogarCarta(Carta* carta, Monstro* monstro, Fase* faseAtual)
         switch (carta->acao) 
         {
             case ATAQUESING:
-                monstro->hp -= 2;
-                printf("Voce causou 2 de dano ao monstro %s!\n", monstro->nome);
-                printf("================================== / /  / / ==================================\n");
-                break;
+            if (monstro->defesa > 0) 
+            {
+                int danoRestante = carta->quantidadeAcao - monstro->defesa;
+                monstro->defesa = max(0, monstro->defesa - carta->quantidadeAcao);
+                monstro->hp = max(monstro->hp, monstro->hp - danoRestante);
+            } 
+            else 
+            {
+                monstro->hp -= carta->quantidadeAcao;
+            }
+            printf("Voce causou %d de dano ao monstro %s!\n", carta->quantidadeAcao, monstro->nome);
+            break;
             case ATAQUEMULT:
                 while (monstroAtual != NULL)
                 {
-                    monstroAtual->hp -= 2;
-                    printf("Voce causou 2 de dano ao monstro %s!\n", monstroAtual->nome);
+                    if (monstro->defesa > 0) 
+                    {
+                        int danoRestante = carta->quantidadeAcao - monstro->defesa;
+                        monstro->defesa = max(0, monstro->defesa - carta->quantidadeAcao);
+                        monstro->hp = max(monstro->hp, monstro->hp - danoRestante);
+                    } 
+                    else 
+                    {
+                        monstro->hp -= carta->quantidadeAcao;
+                        printf("Voce causou %d de dano ao monstro %s!\n", carta->quantidadeAcao, monstro->nome);
+                    }
                     monstroAtual = monstroAtual->proximo;
                 }
                 free(monstroAtual);
@@ -538,28 +576,28 @@ void verificarMonstroVivo(Fase* faseAtual)
     }
 }
 
+int max(int a, int b) 
+{
+    return (a > b) ? a : b;
+}
+
+int min(int a, int b) 
+{
+    return (a < b) ? a : b;
+}
+
 // O que falta fazer:
     // Ordenação dos monstros com o menor HP ficar sempre na frente
     // Comunicação entre a ação da carta e os monstros [OK]
-        // Verificação se existe escudo no monstro antes do player bater
+        // Verificação se existe escudo no monstro antes do player bater [OK]
     // Comunicação entre a ação dos monstros e o player[OK]
-        // Verificação se existe escudo no player antes do monstro bater
+        // Verificação se existe escudo no player antes do monstro bater [OK]
     // Verificação de termino de fase (Se todos os monstros da fase morreram) [OK]
     // Troca de fase após a verificação [OK]
     // Condição do player ganhar o jogo
     // Encerrar o programa quando o HP do player chegar a 0 [OK]
     // Definir e construir o boss [OK]
     // EXTRA --> Criar o arquivo de high score que vai ser a partir da quantidad ede turnos que foram necessarios para acaber o jogo
-
-
-// Prototipo da funcionalidade de dano no escudo do monstro (deve funcionar da mesma forma para o player)
-//      if(monstro->defesa > 0)
-//      int danoTempPlayer = dano da carta
-//      monstro->defesa -= dano da carta
-//          if(monstro->defesa < 0)
-//          danoTempPlayer = | monstro->defesa | (transforma o dano extra no escudo em modulo)
-//          monstro->defesa = 0 (reseta o shield do monstro pra 0)
-// monstro->hp -= danoTempPlayer
 
 // O que eu acho que precisa ser mudado / Adicionado
 // Adicionar mais um campo nas cartas para poder ter um valor de dano/cura/escudo para poder aplicar nos monstros
