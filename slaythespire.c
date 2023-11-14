@@ -77,7 +77,7 @@ void clearScreen();
 void printCharByChar(const char *str, useconds_t delay);
 int mostrarIntro(int opcao);
 void mostrarMenuPrincipal(Fase* faseAtual);
-void escolherDificuldade();
+void escolherDificuldade(Fase** faseAtual);
 void instrucoes();
 Monstro* criarMonstro(char* nome, int hp, int defesa, int acao, int danoAtaqueMonstro, int defesaParaAdicionarMonstro);
 void definirIntencoesMonstros(Monstro* listaMonstros);
@@ -129,7 +129,7 @@ int main()
     int opcao = 0;
     //opcao = mostrarIntro(opcao);
 
-    Fase* faseInicial = criarTodasFases(); // Criando as fases e monstros
+    Fase* faseInicial = criarTodasFases(dificuldade); // Criando as fases e monstros
 
     mostrarMenuPrincipal(faseInicial);
 
@@ -220,19 +220,19 @@ void mostrarMenuPrincipal(Fase* faseAtual)
                     resetarEstadoJogo(); // Reseta o estado do jogo
                     liberarFases(faseAtual); // Libera a fase atual e monstros antes de reiniciar
                     liberarBaralho(cartas, 6); // Libera o baralho antes de reiniciar
-                    faseAtual = criarTodasFases(); // Cria novamente as fases e monstros
+                    faseAtual = criarTodasFases(dificuldade); // Cria novamente as fases e monstros
                     mostrarMenuPrincipal(faseAtual); // Mostra o menu principal novamente
                 }
                 break;
             case 2:
-                escolherDificuldade();
+                escolherDificuldade(&faseAtual); // Escolher a dificuldade
                 break;
             case 3:
                 instrucoes();
                 break;
             case 4:
                 clearScreen();
-                exibirHighScores();
+                exibirHighScores(); // Exibir os highscores
                 printf("\033[1;44m========================== / /  / / ==========================\033[0m\n");
     
                 break;
@@ -246,7 +246,7 @@ void mostrarMenuPrincipal(Fase* faseAtual)
 }
 
 // Escolha da dificuldade aqui
-void escolherDificuldade() 
+void escolherDificuldade(Fase** faseAtual) 
 {
     clearScreen();
     int opcao;
@@ -262,12 +262,13 @@ void escolherDificuldade()
     if(opcao >= 1 && opcao <= 3) 
     {
         dificuldade = opcao;
+        liberarFases(*faseAtual); // Liberar as fases antigas
+        *faseAtual = criarTodasFases(dificuldade); // Criar novas fases com a dificuldade atualizada
         clearScreen();
     } 
     else if(opcao == 4) 
     {
         clearScreen();
-        return;
     } 
     else 
     {
@@ -767,22 +768,23 @@ int min(int a, int b)
     return (a < b) ? a : b;
 }
 
-Fase* criarTodasFases() 
+Fase* criarTodasFases(int dificuldade) 
 {
+    // Nome, HP, Defesa, Acao, DanoAtaqueMonstro, DefesaParaAdicionarMonstro
     // Criando 3 monstros para fase 1
-    Monstro* monstro1 = criarMonstro("Goblin Guerreiro", 1, 0, DEFAULTMONSTRO, 2, 1); 
-    Monstro* monstro2 = criarMonstro("Goblin Arqueiro", 1, 0, DEFAULTMONSTRO, 2, 1); 
-    Monstro* monstro3 = criarMonstro("Orc Guerreiro", 1, 0, DEFAULTMONSTRO, 3, 2); 
+    Monstro* monstro1 = criarMonstro("Goblin Guerreiro", 1 * dificuldade, 0, DEFAULTMONSTRO, 2, 1); 
+    Monstro* monstro2 = criarMonstro("Goblin Arqueiro", 1 * dificuldade, 0, DEFAULTMONSTRO, 2, 1); 
+    Monstro* monstro3 = criarMonstro("Orc Guerreiro", 1 * dificuldade, 0, DEFAULTMONSTRO, 3, 2); 
 
     // Criando 3 monstros para fase 2
-    Monstro* monstro4 = criarMonstro("Hobgoblin", 1, 0, DEFAULTMONSTRO, 3, 2); 
-    Monstro* monstro5 = criarMonstro("Elfo Mago", 1, 0, DEFAULTMONSTRO, 3, 1); 
-    Monstro* monstro6 = criarMonstro("Succubus", 1, 0, DEFAULTMONSTRO, 4, 2); 
+    Monstro* monstro4 = criarMonstro("Hobgoblin", 1 * dificuldade, 0, DEFAULTMONSTRO, 3, 2); 
+    Monstro* monstro5 = criarMonstro("Elfo Mago", 1 * dificuldade, 0, DEFAULTMONSTRO, 3, 1); 
+    Monstro* monstro6 = criarMonstro("Succubus", 1 * dificuldade, 0, DEFAULTMONSTRO, 4, 2); 
 
     // Criando 2 monstros e o Boss para fase 3
-    Monstro* monstro7 = criarMonstro("Succubus", 1, 0, DEFAULTMONSTRO, 4, 2); 
-    Monstro* monstro8 = criarMonstro("Dragao", 1, 0, DEFAULTMONSTRO, 5, 3); 
-    Monstro* monstro9 = criarMonstro("Rei Demonio", 1, 0, DEFAULTMONSTRO, 6, 4); 
+    Monstro* monstro7 = criarMonstro("Succubus", 1 * dificuldade, 0, DEFAULTMONSTRO, 4, 2); 
+    Monstro* monstro8 = criarMonstro("Dragao", 1 * dificuldade, 0, DEFAULTMONSTRO, 5, 3); 
+    Monstro* monstro9 = criarMonstro("Rei Demonio", 1 * dificuldade, 0, DEFAULTMONSTRO, 6, 4); 
 
     // Conectando os monstros da fase 1 em uma lista duplamente encadeada
     monstro1->proximo = monstro2;
@@ -942,6 +944,3 @@ void registrarHighScore(const char* nomeJogador, int faseAlcancada, int numTurno
 
 // O que falta fazer:
     // EXTRA --> Deixar o jogo mais bonito
-    // EXTRA --> Criar o arquivo de high score que vai ser a partir da quantidad ede turnos que foram necessarios para acaber o jogo
-        // Criar a função de salvar o high score
-    // EXTRA --> Criar um menu para mostrar o high score
