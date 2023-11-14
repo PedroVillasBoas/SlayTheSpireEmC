@@ -49,7 +49,7 @@ typedef struct Carta
     int energia; // Energia que a carta custa para ser jogada
     TipoAcao acao; // 1 para ataque, 2 para defesa, 3 para cura
     int quantidadeAcao; // Quantidade de dano/cura/escudo que a carta vai aplicar
-    char descricao [100]; // Descrição da carta
+    char descricao [200]; // Descrição da carta
     struct Carta* proximo;
     struct Carta* anterior;
 } Carta;
@@ -394,34 +394,43 @@ Carta** criarBaralho(TipoBaralho tipoBaralho)
         exit(1);
     }
 
+    // Deixa o fundo colorido
+    // Cores:
+        // \033[1;44m AZUL \033[0m
+        // \033[1;41m VERMELHO \033[0m
+        // \033[1;42m VERDE \033[0m
+        // \033[1;43m AMARELO \033[0m
+        // \033[1;45m ROXO \033[0m
+        // \033[1;46m CIANO \033[0m
+
     switch (tipoBaralho) 
     {
         case BARALHO_GUERREIRO:
             // Nome, Energia, Acao, QuantidadeAcao, Descricao
-            cartas[0] = criarCarta("Espada Fulminante", 1, ATAQUESING, 2, "Colocar Descrição"); 
-            cartas[1] = criarCarta("Barreira de Escudos", 1, DEFESA, 3, "Colocar Descrição");
-            cartas[2] = criarCarta("Pocao de Cura", 3, CURA, 2, "Uma pocao que restaura 2 ao seu HP");
-            cartas[3] = criarCarta("Espada Bumerangue", 2, ATAQUEMULT, 1, "Colocar Descrição");
-            cartas[4] = criarCarta("Perfurar", 2, ATAQUESING, 3, "Colocar Descrição");
-            cartas[5] = criarCarta("Impacto Explosivo", 3, ATAQUEMULT, 1, "Colocar Descrição");
+            cartas[0] = criarCarta("Espada Fulminante", 1, ATAQUESING, 2, "Uma lamina carregada com energia eletrica, aplicando 2 de Dano com um impacto eletrizante e rapido."); 
+            cartas[1] = criarCarta("Barreira de Escudos", 1, DEFESA, 3, "Uma formacao defensiva impenetravel que proporciona 3 de Escudo, simbolizando a forca e resistencia do guerreiro.");
+            cartas[2] = criarCarta("Pocao de Cura", 3, CURA, 2, "Uma pocao magica que, ao ser bebida, restaura rapidamente 2 pontos do seu HP.");
+            cartas[3] = criarCarta("Espada Bumerangue", 2, ATAQUEMULT, 1, "Uma espada magica que ao ser arremessada, ataca multiplos inimigos causando 1 de Dano e retorna a mao do lancador.");
+            cartas[4] = criarCarta("Perfurar", 2, ATAQUESING, 3, "Um ataque direto e penetrante, perfurando o primeiro inimigo causando 3 de Dano.");
+            cartas[5] = criarCarta("Impacto Explosivo", 3, ATAQUEMULT, 1, "Uma poderosa onda de choque gerada pela espada do guerreiro, causando 1 de dano a todos os inimigos ao redor.");
             break;
         case BARALHO_MAGO:
             // Nome, Energia, Acao, QuantidadeAcao, Descricao
-            cartas[0] = criarCarta("Lança de Fogo", 1, ATAQUESING, 2, "Colocar Descrição"); 
-            cartas[1] = criarCarta("Barreira de Gelo", 1, DEFESA, 3, "Colocar Descrição");
-            cartas[2] = criarCarta("Toque Divino", 3, CURA, 2, "Colocar Descrição");
-            cartas[3] = criarCarta("Nevasca", 2, ATAQUEMULT, 1, "Colocar Descrição");
-            cartas[4] = criarCarta("Trovao de Jupiter", 2, ATAQUESING, 3, "Colocar Descrição");
-            cartas[5] = criarCarta("Chuva de Meteoros", 3, ATAQUEMULT, 1, "Colocar Descrição");
+            cartas[0] = criarCarta("Lança de Fogo", 1, ATAQUESING, 2, "Uma projetil mágico de fogo que se lança contra um unico inimigo, infligindo 2 de Dano."); 
+            cartas[1] = criarCarta("Barreira de Gelo", 1, DEFESA, 3, "Uma muralha de gelo conjurada para absorver 3 de Dano, representando a protecao fria e inabalavel do mago.");
+            cartas[2] = criarCarta("Toque Divino", 3, CURA, 2, "Um feitico de cura antigo que revitaliza o lancador, restaurando 2 pontos do seu HP.");
+            cartas[3] = criarCarta("Nevasca", 2, ATAQUEMULT, 1, "Uma tempestade congelante que envolve todos os inimigos, causando 1 de Dano com a forca implacavel do inverno.");
+            cartas[4] = criarCarta("Trovao de Jupiter", 2, ATAQUESING, 3, "Um relampago celestial convocado para atingir um inimigo com força divina, causando 3 de Dano eletrico.");
+            cartas[5] = criarCarta("Chuva de Meteoros", 3, ATAQUEMULT, 1, "Uma chuva apocaliptica de meteoros que cai sobre todos os inimigos, causando 1 de dano em cada um deles.");
             break;
         case BARALHO_ARQUEIRO:
             // Nome, Energia, Acao, QuantidadeAcao, Descricao
-            cartas[0] = criarCarta("Tiro Preciso", 1, ATAQUESING, 2, "Colocar Descrição"); 
-            cartas[1] = criarCarta("Manto das Sombras", 1, DEFESA, 3, "Um manto encantado que envolve o arqueiro nas sombras, dando 3 Escudo");
-            cartas[2] = criarCarta("Poção de Cura", 3, CURA, 2, "Colocar Descrição");
-            cartas[3] = criarCarta("Chuva de Flechas", 2, ATAQUEMULT, 1, "Colocar Descrição");
-            cartas[4] = criarCarta("Flecha perfurante", 2, ATAQUESING, 3, "Colocar Descrição");
-            cartas[5] = criarCarta("Rajada Tripla de Flechas", 3, ATAQUEMULT, 1, "Colocar Descrição");
+            cartas[0] = criarCarta("Tiro Preciso", 1, ATAQUESING, 2, "Uma flecha lancada com precisao cirurgica, capaz de encontrar seu alvo e causar 2 de Dano a um unico alvo."); 
+            cartas[1] = criarCarta("Manto das Sombras", 1, DEFESA, 3, "Um manto encantado que envolve o arqueiro nas sombras, proporcionando 3 Escudo");
+            cartas[2] = criarCarta("Poção de Cura", 3, CURA, 2, "Um elixir curativo que, quando consumido, restaura 2 pontos do HP do arqueiro, permitindo-lhe continuar a luta.");
+            cartas[3] = criarCarta("Chuva de Flechas", 2, ATAQUEMULT, 1, "Uma barragem de flechas lançadas ao ceu, que caem em uma area ampla causando 1 de dano a todos os inimigos.");
+            cartas[4] = criarCarta("Flecha perfurante", 2, ATAQUESING, 3, "Uma flecha reforçada capaz de penetrar o coracao do primeiro inimigo, infligindo 3 de Dano.");
+            cartas[5] = criarCarta("Rajada Tripla de Flechas", 3, ATAQUEMULT, 1, "Um disparo simultaneo de tres flechas, cada uma causando 1 de dano, ideal para alvejar multiplos adversarios.");
             break;
         default:
             fprintf(stderr, "Tipo de baralho desconhecido\n");
