@@ -74,6 +74,7 @@ void mostrarInformacoesTurnoMonstros(Fase* faseAtual);
 void escolherEJogarCarta(Fase* faseAtual, Carta** cartas);
 void jogarCarta(Carta* carta, Monstro* monstro, Fase* faseAtual);
 void verificarMonstroVivo(Fase* faseAtual); 
+void ordenarMonstrosPorHP(Monstro** listaMonstros);
 int max(int a, int b);
 int min(int a, int b);
 
@@ -95,19 +96,19 @@ int main()
     srand(time(NULL)); // Inicializa a semente do gerador de números aleatórios
 
     // Criando 3 monstros para fase 1
-    Monstro* monstro1 = criarMonstro("Goblin Guerreiro", 2, 0, DEFAULTMONSTRO, 2, 1);
-    Monstro* monstro2 = criarMonstro("Goblin Arqueiro", 3, 0, DEFAULTMONSTRO, 2, 1);
+    Monstro* monstro1 = criarMonstro("Goblin Guerreiro", 3, 0, DEFAULTMONSTRO, 2, 1);
+    Monstro* monstro2 = criarMonstro("Goblin Arqueiro", 2, 0, DEFAULTMONSTRO, 2, 1);
     Monstro* monstro3 = criarMonstro("Orc Guerreiro", 4, 0, DEFAULTMONSTRO, 3, 2);
 
     // Criando 3 monstros para fase 2
-    Monstro* monstro4 = criarMonstro("Hobgoblin", 2, 0, DEFAULTMONSTRO, 3, 2);
+    Monstro* monstro4 = criarMonstro("Hobgoblin", 4, 0, DEFAULTMONSTRO, 3, 2);
     Monstro* monstro5 = criarMonstro("Elfo Mago", 3, 0, DEFAULTMONSTRO, 3, 1);
     Monstro* monstro6 = criarMonstro("Succubus", 4, 0, DEFAULTMONSTRO, 4, 2);
 
     // Criando 2 monstros e o Boss para fase 3
-    Monstro* monstro7 = criarMonstro("Succubus", 2, 0, DEFAULTMONSTRO, 4, 2);
-    Monstro* monstro8 = criarMonstro("Dragao", 3, 0, DEFAULTMONSTRO, 5, 3);
-    Monstro* monstro9 = criarMonstro("Rei Demonio", 4, 0, DEFAULTMONSTRO, 6, 4);
+    Monstro* monstro7 = criarMonstro("Succubus", 4, 0, DEFAULTMONSTRO, 4, 2);
+    Monstro* monstro8 = criarMonstro("Dragao", 5, 0, DEFAULTMONSTRO, 5, 3);
+    Monstro* monstro9 = criarMonstro("Rei Demonio", 10, 0, DEFAULTMONSTRO, 6, 4);
 
     // Conectando os monstros da fase 1 em uma lista duplamente encadeada
     monstro1->proximo = monstro2;
@@ -347,6 +348,7 @@ void jogarTurno(Fase** faseAtual, Carta** cartas)
     while(turnoFinalizado == 0)
     {
         verificarMonstroVivo(*faseAtual);
+        ordenarMonstrosPorHP(&((*faseAtual)->monstros));
         definirIntencoesMonstros((*faseAtual)->monstros);
         printf("Fase Atual: %d\n", (*faseAtual)->nivelFase);
         mostrarInformacoesTurnoJogador(cartas);
@@ -576,6 +578,38 @@ void verificarMonstroVivo(Fase* faseAtual)
     }
 }
 
+void ordenarMonstrosPorHP(Monstro** listaMonstros) 
+{
+    Monstro *sorted = NULL;
+    Monstro *current = *listaMonstros;
+    while (current != NULL) {
+        Monstro *next = current->proximo;
+
+        // Localiza onde inserir o nodo atual na lista ordenada
+        if (sorted == NULL || sorted->hp >= current->hp) 
+        {
+            current->proximo = sorted;
+            sorted = current;
+        } 
+        else 
+        {
+            Monstro *currSorted = sorted;
+            while (currSorted->proximo != NULL && currSorted->proximo->hp < current->hp) 
+            {
+                currSorted = currSorted->proximo;
+            }
+            current->proximo = currSorted->proximo;
+            currSorted->proximo = current;
+        }
+
+        // Atualiza o nodo atual
+        current = next;
+    }
+
+    *listaMonstros = sorted;
+}
+
+
 int max(int a, int b) 
 {
     return (a > b) ? a : b;
@@ -587,7 +621,7 @@ int min(int a, int b)
 }
 
 // O que falta fazer:
-    // Ordenação dos monstros com o menor HP ficar sempre na frente
+    // Ordenação dos monstros com o menor HP ficar sempre na frente [OK]
     // Comunicação entre a ação da carta e os monstros [OK]
         // Verificação se existe escudo no monstro antes do player bater [OK]
     // Comunicação entre a ação dos monstros e o player[OK]
