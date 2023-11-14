@@ -4,6 +4,13 @@
 #include <time.h>
 #include <unistd.h>
 
+// Enum para cada Classe que o jogador pode escolher
+typedef enum {
+    BARALHO_GUERREIRO = 1,
+    BARALHO_MAGO = 2,
+    BARALHO_ARQUEIRO = 3
+} TipoBaralho;
+
 // Enum para cada tipo de ação das cartas
 typedef enum 
 {
@@ -56,12 +63,20 @@ typedef struct Fase
     struct Fase* proxima;
 } Fase;
 
+// Estrutura para representar o highscore
+typedef struct {
+    char nomeJogador[50];
+    int faseAlcancada;
+    int numTurnos;
+    int hpRestante;
+} HighScore;
+
 // Protótipos das funções
 void obterNomeJogador(char *nome, int tamanhoMaximo);
 void clearScreen();
 void printCharByChar(const char *str, useconds_t delay);
 int mostrarIntro(int opcao);
-void mostrarMenuPrincipal(Fase* faseAtual, Carta** cartas);
+void mostrarMenuPrincipal(Fase* faseAtual);
 void escolherDificuldade();
 void instrucoes();
 Monstro* criarMonstro(char* nome, int hp, int defesa, int acao, int danoAtaqueMonstro, int defesaParaAdicionarMonstro);
@@ -69,6 +84,9 @@ void definirIntencoesMonstros(Monstro* listaMonstros);
 TipoAcaoMonstro acaoMonstro();
 void resetarDefesaMonstros(Monstro* listaMonstros);
 Carta* criarCarta(char* nome, int energia, int acao, int quantidadeAcao, char* descricao); 
+int escolherClasses();
+Carta** criarBaralho(TipoBaralho tipoBaralho);
+void liberarBaralho(Carta** cartas, int numCartas);
 Fase* criarFase(int nivel, char* descricao, Monstro* listaMonstros);
 int iniciarJogo(Fase** faseAtual, Carta** cartas);
 void jogarTurno(Fase** faseAtual, Carta** cartas); 
@@ -85,6 +103,11 @@ Fase* criarTodasFases();
 void liberarMonstros(Monstro* monstro);
 void liberarFases(Fase* fase);
 void resetarEstadoJogo();
+void salvarHighScoresArquivo(const HighScore* scores, int numScores);
+void exibirHighScores();
+int compararHighScores(const void* a, const void* b);
+void ordenarHighScores(HighScore* scores, int numScores);
+void registrarHighScore(const char* nomeJogador, int faseAlcancada, int numTurnos, int hpRestante);
 
 // Variaveis globais
 // Do jogo
@@ -104,20 +127,11 @@ int main()
     srand(time(NULL)); // Inicializa a semente do gerador de números aleatórios
 
     int opcao = 0;
-    opcao = mostrarIntro(opcao);
+    //opcao = mostrarIntro(opcao);
 
     Fase* faseInicial = criarTodasFases(); // Criando as fases e monstros
 
-    // Criando 6 cartas
-    Carta* cartas[6];
-    cartas[0] = criarCarta("Espada", 1, ATAQUESING, 2, "Uma espada brilhante que aplica 2 de dano a um inimigo");
-    cartas[1] = criarCarta("Escudo", 1, DEFESA, 3, "Um escudo resistente que bloqueia 3 de dano");
-    cartas[2] = criarCarta("Pocao de Cura", 3, CURA, 2, "Uma pocao que restaura 2 ao seu HP");
-    cartas[3] = criarCarta("Arco", 2, ATAQUEMULT, 1, "Um arco para ataques a distancia que aplica 1 de dano a todos os inimigos");
-    cartas[4] = criarCarta("Flecha Envenenada", 2, ATAQUESING, 3, "Uma flecha letal que aplica 3 de dano a um inimigo");
-    cartas[5] = criarCarta("Magia de Fogo", 3, ATAQUEMULT, 1, "Uma poderosa bola de fogo que aplica 1 de dano a todos os inimigos");
-
-    mostrarMenuPrincipal(faseInicial, cartas);
+    mostrarMenuPrincipal(faseInicial);
 
     liberarFases(faseInicial);
     return 0;
@@ -126,7 +140,7 @@ int main()
 // Obtem o nome do jogador
 void obterNomeJogador(char *nome, int tamanhoMaximo) 
 {
-    printf("Qual o seu nome, guerreiro(a)?  ");
+    printf("Qual o seu nome, heroi(na)?  ");
     fgets(nome, tamanhoMaximo, stdin);
 
     // Remover a nova linha (se houver) do final da string
@@ -159,7 +173,7 @@ int mostrarIntro(int opcao)
 {
     clearScreen();
     printf("\033[1;44m==================================================================== / /  / / ====================================================================\033[0m\n");
-    const char *intro = "Em uma era de lendas e mitos, ergue-se uma figura audaz e valente: voce, um(a) guerreiro(a) em ascensao, cujo nome ecoa pelas terras como\n"
+    const char *intro = "Em uma era de lendas e mitos, ergue-se uma figura audaz e valente: voce, um(a) aventureiro(a) em ascensao, cujo nome ecoa pelas terras como\n"
                         "uma promessa de esperanca. O destino do reino, agora abalado pelas sombras do mal, repousa em seus ombros. O Rei Demonio, um ser de poder\n"
                         "inimaginavel e crueldade desmedida, lancou seu veu sombrio sobre a terra, ameacando engolir tudo em um abismo de desespero.\n\n"
                         "Em meio a tempos tao sombrios, o conselheiro do rei, um sabio de visao agucada e coracao puro, ve em voce a chama da salvacao. Ele o(a)\n"
@@ -168,9 +182,6 @@ int mostrarIntro(int opcao)
                         "Com o peso da responsabilidade e a luz da esperanca em seu coracao, voce parte em sua jornada. O caminho eh tortuoso, repleto de adversarios\n"
                         "formidaveis e desafios que testarao sua forca, sua coragem e sua determinacao. A cada passo, a escuridao tenta lhe engolir, mas sua vontade\n"
                         "eh inquebrantavel.\n\n"
-                        "A medida que avanca, enfrentando as tropas do Rei Demonio, cada vitoria eh uma centelha de luz nas trevas, cada triunfo, um passo rumo a\n"
-                        "libertacao do reino. E no topo do castelo, onde o mal se aninha, voce enfrentara o maior de todos os desafios. Mas voce nao teme, pois\n"
-                        "dentro de voce arde a chama do verdadeiro heroismo, e eh essa luz que guiara o reino de volta a paz e a prosperidade.\n\n"
                         "Voce eh mais do que um(a) guerreiro(a); voce eh a ultima esperanca de um mundo a beira da ruina. A lenda de suas facanhas sera cantada\n"
                         "por geracoes, um farol de inspiracao para todos aqueles que acreditam que, mesmo na mais escura das noites, a luz da coragem brilha eternamente.\n";
     printCharByChar(intro, 32000); // Imprime o texto letra por letra com um delay de 32 milissegundos entre os chars
@@ -182,7 +193,7 @@ int mostrarIntro(int opcao)
 
 
 
-void mostrarMenuPrincipal(Fase* faseAtual, Carta** cartas) 
+void mostrarMenuPrincipal(Fase* faseAtual) 
 {
     clearScreen();
     int opcao;
@@ -192,7 +203,8 @@ void mostrarMenuPrincipal(Fase* faseAtual, Carta** cartas)
         printf("1. Jogar\n");
         printf("2. Escolher Dificuldade (Atual: %d)\n", dificuldade);
         printf("3. Como jogar?\n");
-        printf("4. Sair\n");
+        printf("4. High Scores\n");
+        printf("5. Sair\n");
         printf("Escolha uma opcao: ");
         scanf("%d", &opcao);
         while (getchar() != '\n'); // Limpar o buffer do teclado
@@ -201,13 +213,15 @@ void mostrarMenuPrincipal(Fase* faseAtual, Carta** cartas)
         {
             case 1:
                 obterNomeJogador(nomeJogador, sizeof(nomeJogador)); // Obter o nome do jogador
+                Carta** cartas = criarBaralho(escolherClasses()); // Criar o baralho do jogador
                 if (iniciarJogo(&faseAtual, cartas)) // Se o jogador escolher reiniciar quando ele morrer ou ganhar o jogo
                 {
                     obterNomeJogador(nomeJogador, sizeof(nomeJogador)); // Obter o nome do jogador quando o jogo reiniciar
                     resetarEstadoJogo(); // Reseta o estado do jogo
                     liberarFases(faseAtual); // Libera a fase atual e monstros antes de reiniciar
+                    liberarBaralho(cartas, 6); // Libera o baralho antes de reiniciar
                     faseAtual = criarTodasFases(); // Cria novamente as fases e monstros
-                    mostrarMenuPrincipal(faseAtual, cartas); // Mostra o menu principal novamente
+                    mostrarMenuPrincipal(faseAtual); // Mostra o menu principal novamente
                 }
                 break;
             case 2:
@@ -217,12 +231,18 @@ void mostrarMenuPrincipal(Fase* faseAtual, Carta** cartas)
                 instrucoes();
                 break;
             case 4:
+                clearScreen();
+                exibirHighScores();
+                printf("\033[1;44m========================== / /  / / ==========================\033[0m\n");
+    
+                break;
+            case 5:
                 printf("Saindo...\n");
                 break;
             default:
                 printf("Opcao invalida! Por favor, escolha novamente.\n");
         }
-    } while(opcao != 4);
+    } while(opcao != 5);
 }
 
 // Escolha da dificuldade aqui
@@ -353,6 +373,75 @@ Carta* criarCarta(char* nome, int energia, int acao, int quantidadeAcao, char* d
     return novaCarta;
 }
 
+int escolherClasses()
+{
+    int opcao;
+    printf("Escolha uma classe:\n");
+    printf("1. Guerreiro\n");
+    printf("2. Mago\n");
+    printf("3. Arqueiro\n");
+    printf("Escolha uma opcao: ");
+    scanf("%d", &opcao);
+    return opcao;
+}
+
+// Criação do Baralho a partir da classe escolhida
+Carta** criarBaralho(TipoBaralho tipoBaralho) 
+{
+    Carta** cartas = malloc(sizeof(Carta*) * 6); // Assumindo 6 cartas por baralho
+    if (!cartas) {
+        perror("Falha ao alocar memória para o baralho");
+        exit(1);
+    }
+
+    switch (tipoBaralho) 
+    {
+        case BARALHO_GUERREIRO:
+            // Nome, Energia, Acao, QuantidadeAcao, Descricao
+            cartas[0] = criarCarta("Espada Fulminante", 1, ATAQUESING, 2, "Colocar Descrição"); 
+            cartas[1] = criarCarta("Barreira de Escudos", 1, DEFESA, 3, "Colocar Descrição");
+            cartas[2] = criarCarta("Pocao de Cura", 3, CURA, 2, "Uma pocao que restaura 2 ao seu HP");
+            cartas[3] = criarCarta("Espada Bumerangue", 2, ATAQUEMULT, 1, "Colocar Descrição");
+            cartas[4] = criarCarta("Perfurar", 2, ATAQUESING, 3, "Colocar Descrição");
+            cartas[5] = criarCarta("Impacto Explosivo", 3, ATAQUEMULT, 1, "Colocar Descrição");
+            break;
+        case BARALHO_MAGO:
+            // Nome, Energia, Acao, QuantidadeAcao, Descricao
+            cartas[0] = criarCarta("Lança de Fogo", 1, ATAQUESING, 2, "Colocar Descrição"); 
+            cartas[1] = criarCarta("Barreira de Gelo", 1, DEFESA, 3, "Colocar Descrição");
+            cartas[2] = criarCarta("Toque Divino", 3, CURA, 2, "Colocar Descrição");
+            cartas[3] = criarCarta("Nevasca", 2, ATAQUEMULT, 1, "Colocar Descrição");
+            cartas[4] = criarCarta("Trovao de Jupiter", 2, ATAQUESING, 3, "Colocar Descrição");
+            cartas[5] = criarCarta("Chuva de Meteoros", 3, ATAQUEMULT, 1, "Colocar Descrição");
+            break;
+        case BARALHO_ARQUEIRO:
+            // Nome, Energia, Acao, QuantidadeAcao, Descricao
+            cartas[0] = criarCarta("Tiro Preciso", 1, ATAQUESING, 2, "Colocar Descrição"); 
+            cartas[1] = criarCarta("Manto das Sombras", 1, DEFESA, 3, "Um manto encantado que envolve o arqueiro nas sombras, dando 3 Escudo");
+            cartas[2] = criarCarta("Poção de Cura", 3, CURA, 2, "Colocar Descrição");
+            cartas[3] = criarCarta("Chuva de Flechas", 2, ATAQUEMULT, 1, "Colocar Descrição");
+            cartas[4] = criarCarta("Flecha perfurante", 2, ATAQUESING, 3, "Colocar Descrição");
+            cartas[5] = criarCarta("Rajada Tripla de Flechas", 3, ATAQUEMULT, 1, "Colocar Descrição");
+            break;
+        default:
+            fprintf(stderr, "Tipo de baralho desconhecido\n");
+            free(cartas);
+            exit(1);
+    }
+
+    return cartas;
+}
+
+void liberarBaralho(Carta** cartas, int numCartas) 
+{
+    for (int i = 0; i < numCartas; i++) 
+    {
+        free(cartas[i]); 
+    }
+    free(cartas);
+}
+
+
 // Criação da Fase
 Fase* criarFase(int nivel, char* descricao, Monstro* listaMonstros) 
 {
@@ -389,7 +478,9 @@ int iniciarJogo(Fase** faseAtual, Carta** cartas)
         printf("Parabens! Voce derrotou o Rei Demonio e salvou o reino!\n");
         printf("Voce precisou de %d turnos para concluir o jogo!\n", numTurno);
     }
-
+    
+    registrarHighScore(nomeJogador, (*faseAtual)->nivelFase, numTurno, hpJogador); // Registrar o highscore do jogador
+    
     printf("Deseja jogar novamente? [1]SIM ou [2]NAO: ");
     int escolha;
     scanf("%d", &escolha);
@@ -670,19 +761,19 @@ int min(int a, int b)
 Fase* criarTodasFases() 
 {
     // Criando 3 monstros para fase 1
-    Monstro* monstro1 = criarMonstro("Goblin Guerreiro", 1, 0, DEFAULTMONSTRO, 2, 1); // Nome, HP, Defesa, Acao, DanoAtaqueMonstro, defesaParaAdicionarMonstro
-    Monstro* monstro2 = criarMonstro("Goblin Arqueiro", 1, 0, DEFAULTMONSTRO, 2, 1); // Nome, HP, Defesa, Acao, DanoAtaqueMonstro, defesaParaAdicionarMonstro
-    Monstro* monstro3 = criarMonstro("Orc Guerreiro", 1, 0, DEFAULTMONSTRO, 3, 2); // Nome, HP, Defesa, Acao, DanoAtaqueMonstro, defesaParaAdicionarMonstro
+    Monstro* monstro1 = criarMonstro("Goblin Guerreiro", 1, 0, DEFAULTMONSTRO, 2, 1); 
+    Monstro* monstro2 = criarMonstro("Goblin Arqueiro", 1, 0, DEFAULTMONSTRO, 2, 1); 
+    Monstro* monstro3 = criarMonstro("Orc Guerreiro", 1, 0, DEFAULTMONSTRO, 3, 2); 
 
     // Criando 3 monstros para fase 2
-    Monstro* monstro4 = criarMonstro("Hobgoblin", 1, 0, DEFAULTMONSTRO, 3, 2); // Nome, HP, Defesa, Acao, DanoAtaqueMonstro, defesaParaAdicionarMonstro
-    Monstro* monstro5 = criarMonstro("Elfo Mago", 1, 0, DEFAULTMONSTRO, 3, 1); // Nome, HP, Defesa, Acao, DanoAtaqueMonstro, defesaParaAdicionarMonstro
-    Monstro* monstro6 = criarMonstro("Succubus", 1, 0, DEFAULTMONSTRO, 4, 2); // Nome, HP, Defesa, Acao, DanoAtaqueMonstro, defesaParaAdicionarMonstro
+    Monstro* monstro4 = criarMonstro("Hobgoblin", 1, 0, DEFAULTMONSTRO, 3, 2); 
+    Monstro* monstro5 = criarMonstro("Elfo Mago", 1, 0, DEFAULTMONSTRO, 3, 1); 
+    Monstro* monstro6 = criarMonstro("Succubus", 1, 0, DEFAULTMONSTRO, 4, 2); 
 
     // Criando 2 monstros e o Boss para fase 3
-    Monstro* monstro7 = criarMonstro("Succubus", 1, 0, DEFAULTMONSTRO, 4, 2); // Nome, HP, Defesa, Acao, DanoAtaqueMonstro, defesaParaAdicionarMonstro
-    Monstro* monstro8 = criarMonstro("Dragao", 1, 0, DEFAULTMONSTRO, 5, 3); // Nome, HP, Defesa, Acao, DanoAtaqueMonstro, defesaParaAdicionarMonstro
-    Monstro* monstro9 = criarMonstro("Rei Demonio", 1, 0, DEFAULTMONSTRO, 6, 4); // Nome, HP, Defesa, Acao, DanoAtaqueMonstro, defesaParaAdicionarMonstro
+    Monstro* monstro7 = criarMonstro("Succubus", 1, 0, DEFAULTMONSTRO, 4, 2); 
+    Monstro* monstro8 = criarMonstro("Dragao", 1, 0, DEFAULTMONSTRO, 5, 3); 
+    Monstro* monstro9 = criarMonstro("Rei Demonio", 1, 0, DEFAULTMONSTRO, 6, 4); 
 
     // Conectando os monstros da fase 1 em uma lista duplamente encadeada
     monstro1->proximo = monstro2;
@@ -744,6 +835,99 @@ void resetarEstadoJogo()
     numTurno = 1; // Resetar o contador de turnos
     fimDeJogo = 0; // Resetar a condição de fim de jogo
     turnoFinalizado = 0; // Resetar a variável de controle do turno
+}
+
+void salvarHighScoresArquivo(const HighScore* scores, int numScores)
+{
+    FILE* arquivo = fopen("highscores.txt", "a"); // Modo de anexação
+    if (arquivo == NULL) {
+        perror("Erro ao abrir arquivo de high scores");
+        return;
+    }
+
+    for (int i = 0; i < numScores; i++) {
+        fprintf(arquivo, "%s - Fase: %d, Turnos: %d, HP: %d\n",
+                scores[i].nomeJogador, scores[i].faseAlcancada, scores[i].numTurnos, scores[i].hpRestante);
+    }
+
+    fclose(arquivo);
+}
+
+
+void exibirHighScores() 
+{
+    HighScore scores[100]; // Ajuste o tamanho conforme necessário
+    int numScores = 0;
+
+    // Carregar os scores do arquivo
+    FILE* arquivo = fopen("highscores.txt", "r");
+    if (arquivo == NULL) 
+    {
+        perror("Erro ao abrir arquivo de high scores");
+        return;
+    }
+
+    while (fscanf(arquivo, "%49s - Fase: %d, Turnos: %d, HP: %d\n", 
+                scores[numScores].nomeJogador, 
+                &scores[numScores].faseAlcancada, 
+                &scores[numScores].numTurnos, 
+                &scores[numScores].hpRestante) == 4 && numScores < 100) 
+                {
+        numScores++;
+    }
+
+    fclose(arquivo);
+
+    // Ordenar os scores
+    qsort(scores, numScores, sizeof(HighScore), compararHighScores);
+
+    // Exibir os scores
+    printf("High Scores:\n");
+    for (int i = 0; i < numScores; i++) 
+    {
+        printf("%d. %s - Fase: %d, Turnos: %d, HP: %d\n",
+               i + 1, scores[i].nomeJogador, scores[i].faseAlcancada, scores[i].numTurnos, scores[i].hpRestante);
+    }
+}
+
+
+int compararHighScores(const void* a, const void* b) 
+{
+    const HighScore* scoreA = (const HighScore*)a;
+    const HighScore* scoreB = (const HighScore*)b;
+
+    // Ordenar por maior fase alcançada
+    if (scoreA->faseAlcancada != scoreB->faseAlcancada) 
+    {
+        return scoreB->faseAlcancada - scoreA->faseAlcancada;
+    }
+    // Ordenar por menor quantidade de turnos
+    else if (scoreA->numTurnos != scoreB->numTurnos) 
+    {
+        return scoreA->numTurnos - scoreB->numTurnos;
+    }
+    // Ordenar por maior restante HP
+    else 
+    {
+        return scoreB->hpRestante - scoreA->hpRestante;
+    }
+}
+
+
+void ordenarHighScores(HighScore* scores, int numScores) 
+{
+    qsort(scores, numScores, sizeof(HighScore), compararHighScores);
+}
+
+void registrarHighScore(const char* nomeJogador, int faseAlcancada, int numTurnos, int hpRestante) 
+{
+    HighScore score;
+    strcpy(score.nomeJogador, nomeJogador);
+    score.faseAlcancada = faseAlcancada;
+    score.numTurnos = numTurnos;
+    score.hpRestante = hpRestante;
+
+    salvarHighScoresArquivo(&score, 1);
 }
 
 
