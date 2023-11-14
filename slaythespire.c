@@ -67,7 +67,7 @@ TipoAcaoMonstro acaoMonstro();
 void resetarDefesaMonstros(Monstro* listaMonstros);
 Carta* criarCarta(char* nome, int energia, int acao, int quantidadeAcao, char* descricao); 
 Fase* criarFase(int nivel, char* descricao, Monstro* listaMonstros);
-void iniciarJogo(Fase** faseAtual, Carta** cartas);
+int iniciarJogo(Fase** faseAtual, Carta** cartas);
 void jogarTurno(Fase** faseAtual, Carta** cartas); 
 void finalizarTurno(Monstro* listaMonstros);
 void mostrarInformacoesTurnoJogador(Carta** cartas); 
@@ -78,6 +78,10 @@ void verificarMonstroVivo(Fase* faseAtual);
 void ordenarMonstrosPorHP(Monstro** listaMonstros);
 int max(int a, int b);
 int min(int a, int b);
+Fase* criarTodasFases();
+void liberarMonstros(Monstro* monstro);
+void liberarFases(Fase* fase);
+void resetarEstadoJogo();
 
 
 // Variaveis globais
@@ -96,39 +100,7 @@ int main()
 {
     srand(time(NULL)); // Inicializa a semente do gerador de números aleatórios
 
-    // Criando 3 monstros para fase 1
-    Monstro* monstro1 = criarMonstro("Goblin Guerreiro", 1, 0, DEFAULTMONSTRO, 2, 1); // Nome, HP, Defesa, Acao, DanoAtaqueMonstro, defesaParaAdicionarMonstro
-    Monstro* monstro2 = criarMonstro("Goblin Arqueiro", 1, 0, DEFAULTMONSTRO, 2, 1); // Nome, HP, Defesa, Acao, DanoAtaqueMonstro, defesaParaAdicionarMonstro
-    Monstro* monstro3 = criarMonstro("Orc Guerreiro", 1, 0, DEFAULTMONSTRO, 3, 2); // Nome, HP, Defesa, Acao, DanoAtaqueMonstro, defesaParaAdicionarMonstro
-
-    // Criando 3 monstros para fase 2
-    Monstro* monstro4 = criarMonstro("Hobgoblin", 1, 0, DEFAULTMONSTRO, 3, 2); // Nome, HP, Defesa, Acao, DanoAtaqueMonstro, defesaParaAdicionarMonstro
-    Monstro* monstro5 = criarMonstro("Elfo Mago", 1, 0, DEFAULTMONSTRO, 3, 1); // Nome, HP, Defesa, Acao, DanoAtaqueMonstro, defesaParaAdicionarMonstro
-    Monstro* monstro6 = criarMonstro("Succubus", 1, 0, DEFAULTMONSTRO, 4, 2); // Nome, HP, Defesa, Acao, DanoAtaqueMonstro, defesaParaAdicionarMonstro
-
-    // Criando 2 monstros e o Boss para fase 3
-    Monstro* monstro7 = criarMonstro("Succubus", 1, 0, DEFAULTMONSTRO, 4, 2); // Nome, HP, Defesa, Acao, DanoAtaqueMonstro, defesaParaAdicionarMonstro
-    Monstro* monstro8 = criarMonstro("Dragao", 1, 0, DEFAULTMONSTRO, 5, 3); // Nome, HP, Defesa, Acao, DanoAtaqueMonstro, defesaParaAdicionarMonstro
-    Monstro* monstro9 = criarMonstro("Rei Demonio", 1, 0, DEFAULTMONSTRO, 6, 4); // Nome, HP, Defesa, Acao, DanoAtaqueMonstro, defesaParaAdicionarMonstro
-
-    // Conectando os monstros da fase 1 em uma lista duplamente encadeada
-    monstro1->proximo = monstro2;
-    monstro2->anterior = monstro1;
-    monstro2->proximo = monstro3;
-    monstro3->anterior = monstro2;
-
-    // Conectando os monstros da fase 2 em uma lista duplamente encadeada
-    monstro4->proximo = monstro5;
-    monstro5->anterior = monstro4;
-    monstro5->proximo = monstro6;
-    monstro6->anterior = monstro5;
-
-    // Conectando os monstros da fase 3 em uma lista duplamente encadeada
-    monstro7->proximo = monstro8;
-    monstro8->anterior = monstro7;
-    monstro8->proximo = monstro9;
-    monstro9->anterior = monstro8;
-
+    Fase* faseInicial = criarTodasFases();
     // Criando 6 cartas
     Carta* cartas[6];
     cartas[0] = criarCarta("Espada", 1, ATAQUESING, 2, "Uma espada brilhante que aplica 2 de dano a um inimigo");
@@ -138,17 +110,10 @@ int main()
     cartas[4] = criarCarta("Flecha Envenenada", 2, ATAQUESING, 3, "Uma flecha letal que aplica 3 de dano a um inimigo");
     cartas[5] = criarCarta("Magia de Fogo", 3, ATAQUEMULT, 1, "Uma poderosa bola de fogo que aplica 1 de dano a todos os inimigos");
 
-    // Criando uma fase
-    Fase* fase1 = criarFase(1, "A caverna escura", monstro1);
-    Fase* fase2 = criarFase(2, "O calabouco da castelo", monstro4);
-    Fase* fase3 = criarFase(3, "Castelo do Rei Demonio", monstro7);
 
-    // Conectando as fases em uma lista simplesmente encadeada
-    fase1->proxima = fase2;
-    fase2->proxima = fase3;
-    fase3->proxima = NULL;
+    mostrarMenuPrincipal(faseInicial, cartas);
 
-    mostrarMenuPrincipal(fase1, cartas);
+    liberarFases(faseInicial);
     return 0;
 }
 
@@ -174,8 +139,13 @@ void mostrarMenuPrincipal(Fase* faseAtual, Carta** cartas)
         switch(opcao) 
         {
             case 1:
-                iniciarJogo(&faseAtual, cartas);
-                printf("Jogo iniciado!\n");
+                if (iniciarJogo(&faseAtual, cartas)) 
+                {
+                    resetarEstadoJogo();
+                    liberarFases(faseAtual); // Libera a fase atual e monstros antes de reiniciar
+                    faseAtual = criarTodasFases(); // Cria novamente as fases e monstros
+                    mostrarMenuPrincipal(faseAtual, cartas);
+                }
                 break;
             case 2:
                 escolherDificuldade();
@@ -339,7 +309,8 @@ Fase* criarFase(int nivel, char* descricao, Monstro* listaMonstros)
     return novaFase;
 }
 
-void iniciarJogo(Fase** faseAtual, Carta** cartas) 
+// Retorna 1 se o jogador escolher reiniciar, 0 caso contrário
+int iniciarJogo(Fase** faseAtual, Carta** cartas) 
 {
     clearScreen();
     while(fimDeJogo == 0 && hpJogador > 0)
@@ -349,18 +320,21 @@ void iniciarJogo(Fase** faseAtual, Carta** cartas)
 
     if(hpJogador <= 0)
     {
-        printf("Voce morreu!");
-        exit(0);
+        printf("Voce morreu!\n");
     }
 
     if(fimDeJogo == 1)
     {
         printf("Parabens! Voce derrotou o Rei Demonio e salvou o reino!\n");
         printf("Voce precisou de %d turnos para concluir o jogo!\n", numTurno);
-        exit(0);
     }
-    
+
+    printf("Deseja jogar novamente? (1 para sim, 0 para nao): ");
+    int escolha;
+    scanf("%d", &escolha);
+    return escolha;
 }
+
 
 void jogarTurno(Fase** faseAtual, Carta** cartas) 
 {
@@ -632,7 +606,88 @@ int min(int a, int b)
     return (a < b) ? a : b;
 }
 
+Fase* criarTodasFases() 
+{
+    // Criando 3 monstros para fase 1
+    Monstro* monstro1 = criarMonstro("Goblin Guerreiro", 1, 0, DEFAULTMONSTRO, 2, 1); // Nome, HP, Defesa, Acao, DanoAtaqueMonstro, defesaParaAdicionarMonstro
+    Monstro* monstro2 = criarMonstro("Goblin Arqueiro", 1, 0, DEFAULTMONSTRO, 2, 1); // Nome, HP, Defesa, Acao, DanoAtaqueMonstro, defesaParaAdicionarMonstro
+    Monstro* monstro3 = criarMonstro("Orc Guerreiro", 1, 0, DEFAULTMONSTRO, 3, 2); // Nome, HP, Defesa, Acao, DanoAtaqueMonstro, defesaParaAdicionarMonstro
+
+    // Criando 3 monstros para fase 2
+    Monstro* monstro4 = criarMonstro("Hobgoblin", 1, 0, DEFAULTMONSTRO, 3, 2); // Nome, HP, Defesa, Acao, DanoAtaqueMonstro, defesaParaAdicionarMonstro
+    Monstro* monstro5 = criarMonstro("Elfo Mago", 1, 0, DEFAULTMONSTRO, 3, 1); // Nome, HP, Defesa, Acao, DanoAtaqueMonstro, defesaParaAdicionarMonstro
+    Monstro* monstro6 = criarMonstro("Succubus", 1, 0, DEFAULTMONSTRO, 4, 2); // Nome, HP, Defesa, Acao, DanoAtaqueMonstro, defesaParaAdicionarMonstro
+
+    // Criando 2 monstros e o Boss para fase 3
+    Monstro* monstro7 = criarMonstro("Succubus", 1, 0, DEFAULTMONSTRO, 4, 2); // Nome, HP, Defesa, Acao, DanoAtaqueMonstro, defesaParaAdicionarMonstro
+    Monstro* monstro8 = criarMonstro("Dragao", 1, 0, DEFAULTMONSTRO, 5, 3); // Nome, HP, Defesa, Acao, DanoAtaqueMonstro, defesaParaAdicionarMonstro
+    Monstro* monstro9 = criarMonstro("Rei Demonio", 1, 0, DEFAULTMONSTRO, 6, 4); // Nome, HP, Defesa, Acao, DanoAtaqueMonstro, defesaParaAdicionarMonstro
+
+    // Conectando os monstros da fase 1 em uma lista duplamente encadeada
+    monstro1->proximo = monstro2;
+    monstro2->anterior = monstro1;
+    monstro2->proximo = monstro3;
+    monstro3->anterior = monstro2;
+
+    // Conectando os monstros da fase 2 em uma lista duplamente encadeada
+    monstro4->proximo = monstro5;
+    monstro5->anterior = monstro4;
+    monstro5->proximo = monstro6;
+    monstro6->anterior = monstro5;
+
+    // Conectando os monstros da fase 3 em uma lista duplamente encadeada
+    monstro7->proximo = monstro8;
+    monstro8->anterior = monstro7;
+    monstro8->proximo = monstro9;
+    monstro9->anterior = monstro8;
+    
+    // Criando as fases
+    Fase* fase1 = criarFase(1, "A caverna escura", monstro1);
+    Fase* fase2 = criarFase(2, "O calabouco da castelo", monstro4);
+    Fase* fase3 = criarFase(3, "Castelo do Rei Demonio", monstro7);
+    
+    // Conectando as fases em uma lista simplesmente encadeada
+    fase1->proxima = fase2;
+    fase2->proxima = fase3;
+    fase3->proxima = NULL;
+    
+    return fase1; // Retorna a primeira fase
+}
+void liberarMonstros(Monstro* monstro) 
+{
+    while (monstro != NULL) 
+    {
+        Monstro* proximo = monstro->proximo;
+        free(monstro);
+        monstro = proximo;
+    }
+}
+
+void liberarFases(Fase* fase) 
+{
+    while (fase != NULL) 
+    {
+        Fase* proxima = fase->proxima;
+        
+        liberarMonstros(fase->monstros); // Libera os monstros da fase atual
+        free(fase); // Libera a memória da fase
+
+        fase = proxima;
+    }
+}
+
+void resetarEstadoJogo() 
+{
+    hpJogador = 10; // Valor inicial do HP do jogador
+    energiaJogador = 3; // Valor inicial da energia
+    numTurno = 1; // Resetar o contador de turnos
+    fimDeJogo = 0; // Resetar a condição de fim de jogo
+    turnoFinalizado = 0; // Resetar a variável de controle do turno
+}
+
+
 // O que falta fazer:
     // EXTRA --> Deixar o jogo mais bonito
     // EXTRA --> Criar o arquivo de high score que vai ser a partir da quantidad ede turnos que foram necessarios para acaber o jogo
+        // Criar a função de salvar o high score
     // EXTRA --> Criar um menu para mostrar o high score
