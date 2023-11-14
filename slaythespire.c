@@ -376,19 +376,25 @@ void jogarTurno(Fase** faseAtual, Carta** cartas)
 
         if((*faseAtual)->monstros == NULL)
         {
-            *faseAtual = (*faseAtual)->proxima; // Avançar para a próxima fase se todos os monstros morreram
-            if (*faseAtual != NULL) 
+            if((*faseAtual)->nivelFase == 3)
             {
+                fimDeJogo = 1; // Marcar como fim de jogo se todos os monstros da última fase foram derrotados
+                break; // Sair do loop do turno
+            }
+            else
+            {
+                *faseAtual = (*faseAtual)->proxima; // Avançar para a próxima fase se todos os monstros morreram
                 resetarDefesaMonstros((*faseAtual)->monstros); // Resetar a defesa dos monstros para a próxima fase
             }
         }
     }
+    
+    finalizarTurno((*faseAtual)->monstros); // Finalizar o turno
+    
     if((*faseAtual)->nivelFase == 3 && (*faseAtual)->monstros == NULL)
     {
         fimDeJogo = 1;
     }
-    
-    finalizarTurno((*faseAtual)->monstros); // Finalizar o turno
 
 }
 
@@ -627,18 +633,6 @@ int min(int a, int b)
 }
 
 // O que falta fazer:
-    // Ordenação dos monstros com o menor HP ficar sempre na frente [OK]
-    // Comunicação entre a ação da carta e os monstros [OK]
-        // Verificação se existe escudo no monstro antes do player bater [OK]
-    // Comunicação entre a ação dos monstros e o player[OK]
-        // Verificação se existe escudo no player antes do monstro bater [OK]
-    // Verificação de termino de fase (Se todos os monstros da fase morreram) [OK]
-    // Troca de fase após a verificação [OK]
-    // Condição do player ganhar o jogo
-    // Encerrar o programa quando o HP do player chegar a 0 [OK]
-    // Definir e construir o boss [OK]
+    // EXTRA --> Deixar o jogo mais bonito
     // EXTRA --> Criar o arquivo de high score que vai ser a partir da quantidad ede turnos que foram necessarios para acaber o jogo
-
-// O que eu acho que precisa ser mudado / Adicionado
-// Adicionar mais um campo nas cartas para poder ter um valor de dano/cura/escudo para poder aplicar nos monstros
-// Adicionar mais um campo nos monstros para poder ter um valor de dano para cada monstro para poder aplicar no player e diferenciar seus ataques
+    // EXTRA --> Criar um menu para mostrar o high score
