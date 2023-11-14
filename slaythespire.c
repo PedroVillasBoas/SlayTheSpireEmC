@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <unistd.h>
 
 // Enum para cada tipo de ação das cartas
 typedef enum 
@@ -56,8 +57,10 @@ typedef struct Fase
 } Fase;
 
 // Protótipos das funções
-
+void obterNomeJogador(char *nome, int tamanhoMaximo);
 void clearScreen();
+void printCharByChar(const char *str, useconds_t delay);
+int mostrarIntro(int opcao);
 void mostrarMenuPrincipal(Fase* faseAtual, Carta** cartas);
 void escolherDificuldade();
 void instrucoes();
@@ -83,7 +86,6 @@ void liberarMonstros(Monstro* monstro);
 void liberarFases(Fase* fase);
 void resetarEstadoJogo();
 
-
 // Variaveis globais
 // Do jogo
 int dificuldade = 2; // Salvar a escolha da dificuldade
@@ -92,6 +94,7 @@ int turnoFinalizado = 0; // Se o jogador escolheu terminar o seu turno
 int fimDeJogo = 0; // Se o jogo acabou Ou por HP do jogador == 0 ou Jogador ganhou o jogo!
 
 // Atributos do Jogador
+char nomeJogador[30]; // Salvar o nome do jogador
 int hpJogador = 10; // Salvar o hp do jogador
 int energiaJogador = 3; // Salvar a energia do jogador
 int defesaJogador = 0; // Salvar a defesa acumulada das cartas que o jogador jogou
@@ -100,7 +103,11 @@ int main()
 {
     srand(time(NULL)); // Inicializa a semente do gerador de números aleatórios
 
-    Fase* faseInicial = criarTodasFases();
+    int opcao = 0;
+    opcao = mostrarIntro(opcao);
+
+    Fase* faseInicial = criarTodasFases(); // Criando as fases e monstros
+
     // Criando 6 cartas
     Carta* cartas[6];
     cartas[0] = criarCarta("Espada", 1, ATAQUESING, 2, "Uma espada brilhante que aplica 2 de dano a um inimigo");
@@ -110,17 +117,70 @@ int main()
     cartas[4] = criarCarta("Flecha Envenenada", 2, ATAQUESING, 3, "Uma flecha letal que aplica 3 de dano a um inimigo");
     cartas[5] = criarCarta("Magia de Fogo", 3, ATAQUEMULT, 1, "Uma poderosa bola de fogo que aplica 1 de dano a todos os inimigos");
 
-
     mostrarMenuPrincipal(faseInicial, cartas);
 
     liberarFases(faseInicial);
     return 0;
 }
 
+// Obtem o nome do jogador
+void obterNomeJogador(char *nome, int tamanhoMaximo) 
+{
+    printf("Qual o seu nome, guerreiro(a)?  ");
+    fgets(nome, tamanhoMaximo, stdin);
+
+    // Remover a nova linha (se houver) do final da string
+    size_t length = strlen(nome);
+    if (length > 0 && nome[length - 1] == '\n') 
+    {
+        nome[length - 1] = '\0';
+    }
+}
+
+// Limpa a tela
 void clearScreen() 
 {
     printf("\033[H\033[J");
 }
+
+// Imprime um texto letra por letra com um delay entre os chars
+void printCharByChar(const char *str, useconds_t delay) 
+{
+    for (int i = 0; str[i] != '\0'; i++) 
+    {
+        printf("%c", str[i]);
+        fflush(stdout);
+        usleep(delay);
+    }
+}
+
+// Mostra a introdução do jogo
+int mostrarIntro(int opcao) 
+{
+    clearScreen();
+    printf("\033[1;44m==================================================================== / /  / / ====================================================================\033[0m\n");
+    const char *intro = "Em uma era de lendas e mitos, ergue-se uma figura audaz e valente: voce, um(a) guerreiro(a) em ascensao, cujo nome ecoa pelas terras como\n"
+                        "uma promessa de esperanca. O destino do reino, agora abalado pelas sombras do mal, repousa em seus ombros. O Rei Demonio, um ser de poder\n"
+                        "inimaginavel e crueldade desmedida, lancou seu veu sombrio sobre a terra, ameacando engolir tudo em um abismo de desespero.\n\n"
+                        "Em meio a tempos tao sombrios, o conselheiro do rei, um sabio de visao agucada e coracao puro, ve em voce a chama da salvacao. Ele o(a)\n"
+                        "escolhe, dentre tantos, para uma missao que decidira o destino de todos: infiltrar-se no castelo corrompido, um labirinto de perigos\n"
+                        "e horrores, e ascender ao topo, onde o mal reina supremo.\n\n"
+                        "Com o peso da responsabilidade e a luz da esperanca em seu coracao, voce parte em sua jornada. O caminho eh tortuoso, repleto de adversarios\n"
+                        "formidaveis e desafios que testarao sua forca, sua coragem e sua determinacao. A cada passo, a escuridao tenta lhe engolir, mas sua vontade\n"
+                        "eh inquebrantavel.\n\n"
+                        "A medida que avanca, enfrentando as tropas do Rei Demonio, cada vitoria eh uma centelha de luz nas trevas, cada triunfo, um passo rumo a\n"
+                        "libertacao do reino. E no topo do castelo, onde o mal se aninha, voce enfrentara o maior de todos os desafios. Mas voce nao teme, pois\n"
+                        "dentro de voce arde a chama do verdadeiro heroismo, e eh essa luz que guiara o reino de volta a paz e a prosperidade.\n\n"
+                        "Voce eh mais do que um(a) guerreiro(a); voce eh a ultima esperanca de um mundo a beira da ruina. A lenda de suas facanhas sera cantada\n"
+                        "por geracoes, um farol de inspiracao para todos aqueles que acreditam que, mesmo na mais escura das noites, a luz da coragem brilha eternamente.\n";
+    printCharByChar(intro, 32000); // Imprime o texto letra por letra com um delay de 32 milissegundos entre os chars
+    printf("\033[1;44m==================================================================== / /  / / ====================================================================\033[0m\n");
+    printf("Precione [1] para jogar.\n");
+    scanf("%d", &opcao);
+    return opcao;
+}
+
+
 
 void mostrarMenuPrincipal(Fase* faseAtual, Carta** cartas) 
 {
@@ -128,7 +188,6 @@ void mostrarMenuPrincipal(Fase* faseAtual, Carta** cartas)
     int opcao;
     do 
     {
-        //printf("\033[1;44mThis text has a blue background\033[0m\n");
         printf("Menu Principal\n");
         printf("1. Jogar\n");
         printf("2. Escolher Dificuldade (Atual: %d)\n", dificuldade);
@@ -136,15 +195,19 @@ void mostrarMenuPrincipal(Fase* faseAtual, Carta** cartas)
         printf("4. Sair\n");
         printf("Escolha uma opcao: ");
         scanf("%d", &opcao);
+        while (getchar() != '\n'); // Limpar o buffer do teclado
+
         switch(opcao) 
         {
             case 1:
-                if (iniciarJogo(&faseAtual, cartas)) 
+                obterNomeJogador(nomeJogador, sizeof(nomeJogador)); // Obter o nome do jogador
+                if (iniciarJogo(&faseAtual, cartas)) // Se o jogador escolher reiniciar quando ele morrer ou ganhar o jogo
                 {
-                    resetarEstadoJogo();
+                    obterNomeJogador(nomeJogador, sizeof(nomeJogador)); // Obter o nome do jogador quando o jogo reiniciar
+                    resetarEstadoJogo(); // Reseta o estado do jogo
                     liberarFases(faseAtual); // Libera a fase atual e monstros antes de reiniciar
                     faseAtual = criarTodasFases(); // Cria novamente as fases e monstros
-                    mostrarMenuPrincipal(faseAtual, cartas);
+                    mostrarMenuPrincipal(faseAtual, cartas); // Mostra o menu principal novamente
                 }
                 break;
             case 2:
@@ -195,9 +258,7 @@ void escolherDificuldade()
 void instrucoes()
 {
     clearScreen();
-    printf("Voce eh um(a) guerreiro(a) em ascencao e foi designado(a) para proteger o reino contra o Rei Demonio e suas tropas.\n"
-            "O conselheiro do rei escalou voce para ir ate ao castelo, chegar ao topo e destruir todo o mal.\n"
-            "O jogo eh dividido em 3 fases contendo, cada uma, 3 monstros.\n"
+    printf( "O jogo eh dividido em 3 fases contendo, cada uma, 3 monstros.\n"
             "Os monstros podem escolher lhe atacar ou se defender de seus ataques.\n"
             "Voce vai utilizar suas cartas para destruir os monstros, se defender ou recuperar seu HP.\n"
             "Mas cuidado! Voce apenas possui 3 de energia por turno e suas cartas custam energia!\n"
@@ -329,7 +390,7 @@ int iniciarJogo(Fase** faseAtual, Carta** cartas)
         printf("Voce precisou de %d turnos para concluir o jogo!\n", numTurno);
     }
 
-    printf("Deseja jogar novamente? (1 para sim, 0 para nao): ");
+    printf("Deseja jogar novamente? [1]SIM ou [2]NAO: ");
     int escolha;
     scanf("%d", &escolha);
     return escolha;
