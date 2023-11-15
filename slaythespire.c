@@ -127,7 +127,7 @@ int main()
     srand(time(NULL)); // Inicializa a semente do gerador de números aleatórios
 
     int opcao = 0;
-    opcao = mostrarIntro(opcao);
+    //opcao = mostrarIntro(opcao);
 
     Fase* faseInicial = criarTodasFases(dificuldade); // Criando as fases e monstros
 
@@ -622,6 +622,7 @@ void escolherEJogarCarta(Fase* faseAtual, Carta** cartas)
     if(escolha == 7)
     {
         turnoFinalizado = 1;
+        return;
     }
     
     Carta* cartaEscolhida = cartas[escolha - 1];
