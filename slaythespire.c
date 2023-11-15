@@ -248,7 +248,7 @@ void mostrarMenuPrincipal(Fase* faseAtual)
     } while(opcao != 5);
 }
 
-// Escolha da dificuldade aqui
+// Escolha da dificuldade
 void escolherDificuldade(Fase** faseAtual) 
 {
     clearScreen();
@@ -403,7 +403,7 @@ Carta** criarBaralho(TipoBaralho tipoBaralho)
         case BARALHO_GUERREIRO:
             // Nome, Energia, Acao, QuantidadeAcao, Descricao
             cartas[0] = criarCarta("Espada Fulminante", 1, ATAQUESING, 2, "Uma lamina carregada com energia eletrica, aplicando \033[1;41m2 de Dano\033[0m com um impacto eletrizante e rapido."); 
-            cartas[1] = criarCarta("Barreira de Escudos", 1, DEFESA, 3, "Uma formacao defensiva impenetravel que proporciona \033[1;44m3 de Escudo\033[0m, simbolizando a forca e resistencia do guerreiro.");
+            cartas[1] = criarCarta("Barreira de Escudos", 1, DEFESA, 3, "Uma formacao defensiva impenetravel que proporciona \033[1;43m3 de Escudo\033[0m, simbolizando a forca e resistencia do guerreiro.");
             cartas[2] = criarCarta("Pocao de Cura", 3, CURA, 2, "Uma pocao magica que, ao ser bebida, restaura rapidamente \033[1;42m2 pontos do seu HP\033[0m.");
             cartas[3] = criarCarta("Espada Bumerangue", 2, ATAQUEMULT, 1, "Uma espada magica que ao ser arremessada, ataca multiplos inimigos causando \033[1;41m1 de Dano\033[0m e retorna a mao do lancador.");
             cartas[4] = criarCarta("Perfurar", 2, ATAQUESING, 3, "Um ataque direto e penetrante, perfurando o primeiro inimigo causando \033[1;41m3 de Dano\033[0m.");
@@ -412,7 +412,7 @@ Carta** criarBaralho(TipoBaralho tipoBaralho)
         case BARALHO_MAGO:
             // Nome, Energia, Acao, QuantidadeAcao, Descricao
             cartas[0] = criarCarta("Lanca de Fogo", 1, ATAQUESING, 2, "Uma projetil magico de fogo que se lanca contra um unico inimigo, infligindo \033[1;41m2 de Dano\033[0m."); 
-            cartas[1] = criarCarta("Barreira de Gelo", 1, DEFESA, 3, "Uma muralha de gelo conjurada para lhe conceder \033[1;44m3 Escudo\033[0m, representando a protecao fria e inabalavel do mago.");
+            cartas[1] = criarCarta("Barreira de Gelo", 1, DEFESA, 3, "Uma muralha de gelo conjurada para lhe conceder \033[1;43m3 Escudo\033[0m, representando a protecao fria e inabalavel do mago.");
             cartas[2] = criarCarta("Toque Divino", 3, CURA, 2, "Um feitico de cura antigo que revitaliza o lancador, restaurando \033[1;42m2 pontos do seu HP\033[0m.");
             cartas[3] = criarCarta("Nevasca", 2, ATAQUEMULT, 1, "Uma tempestade congelante que envolve todos os inimigos, causando \033[1;41m1 de Dano\033[0m com a forca implacavel do inverno.");
             cartas[4] = criarCarta("Trovao de Jupiter", 2, ATAQUESING, 3, "Um relampago celestial convocado para atingir um inimigo com forca divina, causando \033[1;41m3 de Dano\033[0m eletrico.");
@@ -422,7 +422,7 @@ Carta** criarBaralho(TipoBaralho tipoBaralho)
             // Nome, Energia, Acao, QuantidadeAcao, Descricao
             cartas[0] = criarCarta("Tiro Preciso", 1, ATAQUESING, 2, "Uma flecha lancada com precisao cirurgica, capaz de encontrar seu alvo e causar \033[1;41m2 de Dano\033[0m a um unico alvo."); 
             cartas[1] = criarCarta("Manto das Sombras", 1, DEFESA, 3, "Um manto encantado que envolve o arqueiro nas sombras, proporcionando \033[1;44m3 Escudo\033[0m");
-            cartas[2] = criarCarta("Pocao de Cura", 3, CURA, 2, "Um elixir curativo que, quando consumido, restaura \033[1;42m2 pontos do HP\033[0m do arqueiro, permitindo-lhe continuar a luta.");
+            cartas[2] = criarCarta("Pocao de Cura", 3, CURA, 2, "Um elixir curativo que, quando consumido, restaura \033[1;43m2 pontos do HP\033[0m do arqueiro, permitindo-lhe continuar a luta.");
             cartas[3] = criarCarta("Chuva de Flechas", 2, ATAQUEMULT, 1, "Uma barragem de flechas lancadas ao ceu, que caem em uma area ampla causando \033[1;41m1 de dano\033[0m a todos os inimigos.");
             cartas[4] = criarCarta("Flecha perfurante", 2, ATAQUESING, 3, "Uma flecha reforcada capaz de penetrar o coracao do primeiro inimigo, infligindo \033[1;41m3 de Dano\033[0m.");
             cartas[5] = criarCarta("Rajada Tripla de Flechas", 3, ATAQUEMULT, 1, "Um disparo simultaneo de tres flechas, cada uma causando \033[1;41m1 de dano\033[0m, ideal para alvejar multiplos adversarios.");
@@ -571,9 +571,9 @@ void finalizarTurno(Monstro* listaMonstros)
 void mostrarInformacoesTurnoJogador(Carta** cartas) 
 {
     printf("\033[4mTurno Atual: %d\033[0m\n", numTurno);
-    printf("\033[1;41mHP do Jogador: %d\033[0m\n", hpJogador);
+    printf("\033[1;42mHP do Jogador: %d\033[0m\n", hpJogador);
     printf("\033[1;44mEnergia: %d\033[0m\n", energiaJogador);
-    printf("\033[1;45mEscudos: %d\033[0m\n", defesaJogador);
+    printf("\033[1;43mEscudos: %d\033[0m\n", defesaJogador);
 
     printf("================================== / /  / / ==================================\n\n");
     
