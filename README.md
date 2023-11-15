@@ -15,16 +15,17 @@ O código é organizado nas seguintes partes principais:
 * Fases são criadas e encadeadas em uma lista simplesmente encadeada.
 
 ## Menu Principal:
-O jogador pode optar por começar o jogo, escolher a dificuldade, aprender como jogar ou sair do jogo.
+O jogador pode optar por começar o jogo, escolher a dificuldade, aprender como jogar, ver o High-Score ou sair do jogo.
 
 ## Jogo:
+* O jogador primeiro escolhe sua Classe. Onde cada classe possui um conjunto diferente de cartas.
 * O jogo é jogado em turnos, onde o jogador pode jogar uma carta de sua mão utilizando a energia disponivel.
-* O jogador pode atacar monstros ou defender-se de ataques com suas cartas.
-* As intenções dos monstros são definidas no inicio do turno e executadas após o turno do jogador.
+* O jogador pode atacar monstros ou defender-se de ataques ou curar-se com suas cartas.
+* As intenções dos monstros são definidas no inicio do turno e executadas após o jogador escolher encerrar seu turno.
 * O jogo continua até que o jogador derrote todos os monstros, em todas as fases, ou seja derrotado.
 
 ## Utilitários:
-Funções adicionais para limpar a tela, mostrar instruções, gerenciar o estado do jogo e criação dos Nodes para as cartas, fases e monstros.
+Funções adicionais para limpar a tela, mostrar instruções, mostrar tela de vitoria e derrota, gerenciar o estado do jogo e criação dos Nodes para as cartas, fases e monstros, entre outras.
 
 ## Como Compilar e Executar
 1. Certifique-se de que você tem um compilador C instalado em seu sistema.
@@ -33,9 +34,9 @@ Funções adicionais para limpar a tela, mostrar instruções, gerenciar o estad
 4. Compile o código usando o comando gcc -o jogo slaythespire.c.
 5. Execute o programa usando o comando ./slaythespire.
 
-## Funcionalidades Futuras
-* Adicionar mais tipos de cartas e monstros para aumentar a variedade do jogo.
-* Implementar um sistema de progressão onde o jogador pode ganhar experiência e adicionar mais cartas ao baralho.
+## Jogo Desenvolvido por:
+* Pedro Vilas Bôas
+* Guilherme Lopes
 
 ## Licença
 Este projeto é licenciado sob a licença MIT - veja o arquivo LICENSE para mais detalhes.
