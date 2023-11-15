@@ -131,7 +131,7 @@ int main()
     srand(time(NULL)); // Inicializa a semente do gerador de numeros aleatorios
 
     int opcao = 0;
-    //opcao = mostrarIntro(opcao);
+    opcao = mostrarIntro(opcao);
 
     Fase* faseInicial = criarTodasFases(dificuldade); // Criando as fases e monstros
 
@@ -952,14 +952,14 @@ void registrarHighScore(const char* nomeJogador, int faseAlcancada, int numTurno
 void telaVitoria()
 {
     printf("\033[1;44m==================================================================== / /  / / ====================================================================\033[0m\n");
-    const char *intro = "Apos uma jornada ardua e repleta de desafios, voce, um(a) valente aventureiro(a), finalmente confronta e vence o Rei Demonio, restaurando a\n"
+    const char *intro = "\033[1;43mApos uma jornada ardua e repleta de desafios, voce, um(a) valente aventureiro(a), finalmente confronta e vence o Rei Demonio, restaurando a\n"
                         "paz e a luz ao reino. O veu sombrio que uma vez ameacava engolir tudo em desespero agora se desfaz, como nevoa ao amanhecer.\n\n"
                         "Em um ato final de bravura e forca, voce triunfa sobre a escuridao. As sombras que assolavam a terra se dissipam, e o sol brilha novamente,\n"
                         "mais brilhante do que nunca. O reino, antes sufocado pelo medo, agora ressoa com cânticos de vitoria e alegria.\n\n"
                         "Voce retorna ao castelo, nao mais como um(a) mero(a) aventureiro(a), mas como um(a) heroi(ina) cujo nome sera lembrado por todas as geracões\n"
                         "futuras. O conselheiro do rei, com lagrimas nos olhos, agradece por sua coragem inabalavel que salvou o reino da ruina.\n\n"
                         "Sua jornada se torna uma lenda, um conto de esperanca e coragem que sera passado adiante, inspirando outros a acreditar que mesmo na mais\n"
-                        "escura das batalhas, a luz da bravura nunca se apaga.\n\n";
+                        "escura das batalhas, a luz da bravura nunca se apaga.\033[0m\n\n";
     printCharByChar(intro, 30500); // Imprime o texto letra por letra com um delay de 30ms entre cada letra
     printf("\033[1;44m==================================================================== / /  / / ====================================================================\033[0m\n");
     printf("Voce precisou de %d turnos para concluir o jogo!\n", numTurno);
@@ -968,15 +968,14 @@ void telaVitoria()
 void telaDerrota()
 {
     printf("\033[1;44m==================================================================== / /  / / ====================================================================\033[0m\n");
-    const char *intro = "Apos uma jornada ardua e repleta de desafios, voce, um(a) valente aventureiro(a), finalmente confronta e vence o Rei Demonio, restaurando a\n"
-                        "paz e a luz ao reino. O veu sombrio que uma vez ameacava engolir tudo em desespero agora se desfaz, como nevoa ao amanhecer.\n\n"
-                        "Em um ato final de bravura e forca, voce triunfa sobre a escuridao. As sombras que assolavam a terra se dissipam, e o sol brilha novamente,\n"
-                        "mais brilhante do que nunca. O reino, antes sufocado pelo medo, agora ressoa com cânticos de vitoria e alegria.\n\n"
-                        "Voce retorna ao castelo, nao mais como um(a) mero(a) aventureiro(a), mas como um(a) heroi(ina) cujo nome sera lembrado por todas as geracões\n"
-                        "futuras. O conselheiro do rei, com lagrimas nos olhos, agradece por sua coragem inabalavel que salvou o reino da ruina.\n\n"
-                        "Sua jornada se torna uma lenda, um conto de esperanca e coragem que sera passado adiante, inspirando outros a acreditar que mesmo na mais\n"
-                        "escura das batalhas, a luz da bravura nunca se apaga.\n\n";
-    printCharByChar(intro, 30500); // Imprime o texto letra por letra com um delay de 30ms entre cada letra
+    const char *intro = "\033[7;45mAo cair, derrotado(a) e exausto(a), um silencio sepulcral toma conta do campo de batalha. O Rei Demonio ergue-se, imponente, sobre o reino\n"
+                        "agora sem esperanca. As sombras, como garras frias e mortais, se estendem por cada canto, extinguindo a luz e a vida por onde passam.\n\n"
+                        "Os sobreviventes, escondidos nas sombras de um mundo agora irreconhecivel, murmuram seu nome com um misto de respeito e desespero. Voce se\n"
+                        "torna uma lembranca de uma ultima tentativa fracassada de salvacao, um simbolo da coragem que, no fim, foi insuficiente diante do avanco\n"
+                        "implacavel das trevas.\n\n"
+                        "Nas ruinas do que ja foi um reino prospero e cheio de vida, o lamento por sua queda eh eterno. Seu sacrificio eh lembrado, mas a sombra do\n"
+                        "Rei Demonio eh longa e opressora, sufocando ate mesmo a memoria dos mais bravos herois.\033[0m\n\n";
+    printCharByChar(intro, 30000); // Imprime o texto letra por letra com um delay de 30ms entre cada letra
     printf("\033[1;44m==================================================================== / /  / / ====================================================================\033[0m\n");
-    printf("Voce passou por %d turnos ate morrer!\n", numTurno);
+    printf("Voce passou por %d turnos antes de morrer!\n", numTurno);
 }
