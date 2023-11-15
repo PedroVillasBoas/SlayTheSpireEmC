@@ -1,4 +1,0 @@
-Juninho - Fase: 2, Turnos: 6, HP: 0
-Pedro - Fase: 3, Turnos: 4, HP: 10
-Fulano - Fase: 2, Turnos: 6, HP: 0
-Sicrano - Fase: 3, Turnos: 4, HP: -1

@@ -129,7 +129,7 @@ int main()
     srand(time(NULL)); // Inicializa a semente do gerador de números aleatórios
 
     int opcao = 0;
-    //opcao = mostrarIntro(opcao);
+    opcao = mostrarIntro(opcao);
 
     Fase* faseInicial = criarTodasFases(dificuldade); // Criando as fases e monstros
 
@@ -649,31 +649,42 @@ void jogarCarta(Carta* carta, Monstro* monstro, Fase* faseAtual)
                 int danoRestante = carta->quantidadeAcao - monstro->defesa;
                 monstro->defesa = max(0, monstro->defesa - carta->quantidadeAcao);
                 monstro->hp = max(monstro->hp, monstro->hp - danoRestante);
+                if (danoRestante > 0) 
+                {
+                    monstro->hp = max(0, monstro->hp - danoRestante);
+                }
             } 
             else 
             {
-                monstro->hp -= carta->quantidadeAcao;
+                monstro->hp = max(0, monstro->hp - carta->quantidadeAcao);
             }
             printf("\033[4;41mVoce causou %d de dano ao monstro %s!\033[0m\n", carta->quantidadeAcao, monstro->nome);
             break;
             case ATAQUEMULT:
-                while (monstroAtual != NULL)
+            while (monstroAtual != NULL)
+            {
+                if (monstroAtual->defesa > 0) 
                 {
-                    if (monstroAtual->defesa > 0) 
+                    int danoRestante = carta->quantidadeAcao - monstroAtual->defesa;
+                    monstroAtual->defesa = max(0, monstroAtual->defesa - carta->quantidadeAcao);
+                    if (danoRestante > 0) 
                     {
-                        int danoRestante = carta->quantidadeAcao - monstroAtual->defesa;
-                        monstroAtual->defesa = max(0, monstroAtual->defesa - carta->quantidadeAcao);
-                        monstroAtual->hp = max(monstroAtual->hp, monstroAtual->hp - danoRestante);
-                    } 
-                    else 
-                    {
-                        monstroAtual->hp -= carta->quantidadeAcao;
-                        printf("Voce causou %d de dano ao monstro %s!\n", carta->quantidadeAcao, monstroAtual->nome);
+                        monstroAtual->hp = max(0, monstroAtual->hp - danoRestante);
+                        printf("Voce causou %d de dano ao monstro %s!\n", danoRestante, monstroAtual->nome);
                     }
-                    monstroAtual = monstroAtual->proximo;
+                    else
+                    {
+                        printf("Voce atingiu a defesa do monstro %s!\n", monstroAtual->nome);
+                    }
+                } 
+                else 
+                {
+                    monstroAtual->hp = max(0, monstroAtual->hp - carta->quantidadeAcao);
+                    printf("Voce causou %d de dano ao monstro %s!\n", carta->quantidadeAcao, monstroAtual->nome);
                 }
-                free(monstroAtual);
-                break;
+                monstroAtual = monstroAtual->proximo;
+            }
+            break;
             case DEFESA:
                 defesaJogador += carta->quantidadeAcao;
                 break;
@@ -767,19 +778,19 @@ Fase* criarTodasFases(int dificuldade)
 {
     // Nome, HP, Defesa, Acao, DanoAtaqueMonstro, DefesaParaAdicionarMonstro
     // Criando 3 monstros para fase 1
-    Monstro* monstro1 = criarMonstro("Goblin Guerreiro", 1 * dificuldade, 0, DEFAULTMONSTRO, 2, 1); 
+    Monstro* monstro1 = criarMonstro("Goblin Guerreiro", 2 * dificuldade, 0, DEFAULTMONSTRO, 2, 1); 
     Monstro* monstro2 = criarMonstro("Goblin Arqueiro", 1 * dificuldade, 0, DEFAULTMONSTRO, 2, 1); 
-    Monstro* monstro3 = criarMonstro("Orc Guerreiro", 1 * dificuldade, 0, DEFAULTMONSTRO, 3, 2); 
+    Monstro* monstro3 = criarMonstro("Orc Guerreiro", 2 * dificuldade, 0, DEFAULTMONSTRO, 3, 2); 
 
     // Criando 3 monstros para fase 2
-    Monstro* monstro4 = criarMonstro("Hobgoblin", 1 * dificuldade, 0, DEFAULTMONSTRO, 3, 2); 
-    Monstro* monstro5 = criarMonstro("Elfo Mago", 1 * dificuldade, 0, DEFAULTMONSTRO, 3, 1); 
-    Monstro* monstro6 = criarMonstro("Succubus", 1 * dificuldade, 0, DEFAULTMONSTRO, 4, 2); 
+    Monstro* monstro4 = criarMonstro("Hobgoblin", 3 * dificuldade, 0, DEFAULTMONSTRO, 3, 2); 
+    Monstro* monstro5 = criarMonstro("Elfo Mago", 2 * dificuldade, 0, DEFAULTMONSTRO, 3, 1); 
+    Monstro* monstro6 = criarMonstro("Succubus", 3 * dificuldade, 0, DEFAULTMONSTRO, 4, 2); 
 
     // Criando 2 monstros e o Boss para fase 3
-    Monstro* monstro7 = criarMonstro("Succubus", 1 * dificuldade, 0, DEFAULTMONSTRO, 4, 2); 
-    Monstro* monstro8 = criarMonstro("Dragao", 1 * dificuldade, 0, DEFAULTMONSTRO, 5, 3); 
-    Monstro* monstro9 = criarMonstro("Rei Demonio", 1 * dificuldade, 0, DEFAULTMONSTRO, 6, 4); 
+    Monstro* monstro7 = criarMonstro("Succubus", 3 * dificuldade, 0, DEFAULTMONSTRO, 4, 2); 
+    Monstro* monstro8 = criarMonstro("Dragao", 4 * dificuldade, 0, DEFAULTMONSTRO, 5, 3); 
+    Monstro* monstro9 = criarMonstro("Rei Demonio", 5 * dificuldade, 0, DEFAULTMONSTRO, 6, 4); 
 
     // Conectando os monstros da fase 1 em uma lista duplamente encadeada
     monstro1->proximo = monstro2;
