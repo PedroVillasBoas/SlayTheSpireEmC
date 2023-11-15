@@ -57,9 +57,9 @@ typedef struct Carta
 // Estrutura para representar uma fase
 typedef struct Fase 
 {
-    int nivelFase;
-    Monstro* monstros;
-    char descricao[100];
+    int nivelFase; // Nível da fase
+    Monstro* monstros; // Lista duplamente encadeada de monstros da fase
+    char descricao[100]; // Descrição da fase
     struct Fase* proxima;
 } Fase;
 
@@ -99,7 +99,7 @@ void verificarMonstroVivo(Fase* faseAtual);
 void ordenarMonstrosPorHP(Monstro** listaMonstros);
 int max(int a, int b);
 int min(int a, int b);
-Fase* criarTodasFases();
+Fase* criarTodasFases(int dificuldade);
 void liberarMonstros(Monstro* monstro);
 void liberarFases(Fase* fase);
 void resetarEstadoJogo();
@@ -127,7 +127,7 @@ int main()
     srand(time(NULL)); // Inicializa a semente do gerador de números aleatórios
 
     int opcao = 0;
-    //opcao = mostrarIntro(opcao);
+    opcao = mostrarIntro(opcao);
 
     Fase* faseInicial = criarTodasFases(dificuldade); // Criando as fases e monstros
 
@@ -143,7 +143,7 @@ void obterNomeJogador(char *nome, int tamanhoMaximo)
     printf("Qual o seu nome, heroi(na)?  ");
     fgets(nome, tamanhoMaximo, stdin);
 
-    // Remover a nova linha (se houver) do final da string
+    // Remove a nova linha (se tiver) do final da string
     size_t length = strlen(nome);
     if (length > 0 && nome[length - 1] == '\n') 
     {
@@ -174,37 +174,36 @@ int mostrarIntro(int opcao)
     clearScreen();
     printf("\033[1;44m==================================================================== / /  / / ====================================================================\033[0m\n");
     const char *intro = "Em uma era de lendas e mitos, ergue-se uma figura audaz e valente: voce, um(a) aventureiro(a) em ascensao, cujo nome ecoa pelas terras como\n"
-                        "uma promessa de esperanca. O destino do reino, agora abalado pelas sombras do mal, repousa em seus ombros. O Rei Demonio, um ser de poder\n"
+                        "uma promessa de esperanca. O destino do reino, agora abalado pelas \033[1;45msombras do mal\033[0m, repousa em seus ombros. \033[1;41mO Rei Demonio\033[0m, um ser de poder\n"
                         "inimaginavel e crueldade desmedida, lancou seu veu sombrio sobre a terra, ameacando engolir tudo em um abismo de desespero.\n\n"
-                        "Em meio a tempos tao sombrios, o conselheiro do rei, um sabio de visao agucada e coracao puro, ve em voce a chama da salvacao. Ele o(a)\n"
+                        "Em meio a tempos tao sombrios, o conselheiro do rei, um sabio de visao agucada e coracao puro, ve em voce a \033[1;43mchama da salvacao\033[0m. Ele o(a)\n"
                         "escolhe, dentre tantos, para uma missao que decidira o destino de todos: infiltrar-se no castelo corrompido, um labirinto de perigos\n"
                         "e horrores, e ascender ao topo, onde o mal reina supremo.\n\n"
                         "Com o peso da responsabilidade e a luz da esperanca em seu coracao, voce parte em sua jornada. O caminho eh tortuoso, repleto de adversarios\n"
                         "formidaveis e desafios que testarao sua forca, sua coragem e sua determinacao. A cada passo, a escuridao tenta lhe engolir, mas sua vontade\n"
-                        "eh inquebrantavel.\n\n"
-                        "Voce eh mais do que um(a) guerreiro(a); voce eh a ultima esperanca de um mundo a beira da ruina. A lenda de suas facanhas sera cantada\n"
+                        "eh \033[4;43minquebrantavel\033[0m.\n\n"
+                        "Voce eh mais do que um(a) aventureiro(a); voce eh a \033[1;44multima esperanca de um mundo\033[0m a beira da ruina. A lenda de suas facanhas sera cantada\n"
                         "por geracoes, um farol de inspiracao para todos aqueles que acreditam que, mesmo na mais escura das noites, a luz da coragem brilha eternamente.\n";
     printCharByChar(intro, 32000); // Imprime o texto letra por letra com um delay de 32 milissegundos entre os chars
     printf("\033[1;44m==================================================================== / /  / / ====================================================================\033[0m\n");
-    printf("Precione [1] para jogar.\n");
+    printf("\033[42mPrecione [1] para jogar.\033[0m\n");
     scanf("%d", &opcao);
     return opcao;
 }
 
-
-
+// Mostra o menu principal
 void mostrarMenuPrincipal(Fase* faseAtual) 
 {
     clearScreen();
     int opcao;
     do 
     {
-        printf("Menu Principal\n");
-        printf("1. Jogar\n");
+        printf("\033[1;44m| Menu Principal |\033[0m\n\n");
+        printf("\033[42m1. Jogar\033[0m\n");
         printf("2. Escolher Dificuldade (Atual: %d)\n", dificuldade);
         printf("3. Como jogar?\n");
         printf("4. High Scores\n");
-        printf("5. Sair\n");
+        printf("\033[41m5. Sair\033[0m\n");
         printf("Escolha uma opcao: ");
         scanf("%d", &opcao);
         while (getchar() != '\n'); // Limpar o buffer do teclado
@@ -394,15 +393,6 @@ Carta** criarBaralho(TipoBaralho tipoBaralho)
         perror("Falha ao alocar memória para o baralho");
         exit(1);
     }
-
-    // Deixa o fundo colorido
-    // Cores:
-        // \033[1;44m AZUL \033[0m
-        // \033[1;41m VERMELHO \033[0m
-        // \033[1;42m VERDE \033[0m
-        // \033[1;43m AMARELO \033[0m
-        // \033[1;45m ROXO \033[0m
-        // \033[1;46m CIANO \033[0m
 
     switch (tipoBaralho) 
     {
@@ -730,7 +720,8 @@ void ordenarMonstrosPorHP(Monstro** listaMonstros)
 {
     Monstro *sorted = NULL;
     Monstro *current = *listaMonstros;
-    while (current != NULL) {
+    while (current != NULL) 
+    {
         Monstro *next = current->proximo;
 
         // Localiza onde inserir o nodo atual na lista ordenada
@@ -750,7 +741,7 @@ void ordenarMonstrosPorHP(Monstro** listaMonstros)
             currSorted->proximo = current;
         }
 
-        // Atualiza o nodo atual
+        // Atualiza o node atual
         current = next;
     }
 
