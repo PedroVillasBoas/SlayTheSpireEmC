@@ -5,7 +5,8 @@
 #include <unistd.h>
 
 // Enum para cada Classe que o jogador pode escolher
-typedef enum {
+typedef enum 
+{
     BARALHO_GUERREIRO = 1,
     BARALHO_MAGO = 2,
     BARALHO_ARQUEIRO = 3
@@ -64,7 +65,8 @@ typedef struct Fase
 } Fase;
 
 // Estrutura para representar o highscore
-typedef struct {
+typedef struct HighScore
+{
     char nomeJogador[50];
     int faseAlcancada;
     int numTurnos;
@@ -251,9 +253,9 @@ void escolherDificuldade(Fase** faseAtual)
     int opcao;
     printf("A dificuldade afeta apenas a quantidade de HP que cada monstro vai possuir...\n");
     printf("Dificuldade atual: %d\n", dificuldade);
-    printf("1. Facil\n");
-    printf("2. Medio\n");
-    printf("3. Dificil\n");
+    printf("\033[1;42m1. Facil\033[0m\n");
+    printf("\033[1;46m2. Medio\033[0m\n");
+    printf("\033[1;41m3. Dificil\033[0m\n");
     printf("4. Voltar\n");
     printf("Escolha uma opcao: ");
     scanf("%d", &opcao);
@@ -284,7 +286,7 @@ void instrucoes()
             "Mas cuidado! Voce apenas possui 3 de energia por turno e suas cartas custam energia!\n"
             "Porem, tambem nao se preocupe que ao encerrar o turno, a sua energia sera restaurada totalmente.\n"
             "Voce deve concluir as 3 fases na menor quantidade de turnos possiveis. Por isso, pense com cuidado em suas acoes.\n"
-            "Boa sorte, guerreiro(a)!\n"
+            "Boa sorte, aventureiro(a)!\n"
             "================================== / /  / / ==================================\n");
 
 }
@@ -376,10 +378,10 @@ Carta* criarCarta(char* nome, int energia, int acao, int quantidadeAcao, char* d
 int escolherClasses()
 {
     int opcao;
-    printf("Escolha uma classe:\n");
-    printf("1. Guerreiro\n");
-    printf("2. Mago\n");
-    printf("3. Arqueiro\n");
+    printf("\n\033[4;43m| Escolha uma classe: |\033[0m\n\n");
+    printf("\033[1;44m1. Guerreiro\033[0m\n");
+    printf("\033[1;45m2. Mago\033[0m\n");
+    printf("\033[1;42m3. Arqueiro\033[0m\n");
     printf("Escolha uma opcao: ");
     scanf("%d", &opcao);
     return opcao;
@@ -398,30 +400,30 @@ Carta** criarBaralho(TipoBaralho tipoBaralho)
     {
         case BARALHO_GUERREIRO:
             // Nome, Energia, Acao, QuantidadeAcao, Descricao
-            cartas[0] = criarCarta("Espada Fulminante", 1, ATAQUESING, 2, "Uma lamina carregada com energia eletrica, aplicando 2 de Dano com um impacto eletrizante e rapido."); 
-            cartas[1] = criarCarta("Barreira de Escudos", 1, DEFESA, 3, "Uma formacao defensiva impenetravel que proporciona 3 de Escudo, simbolizando a forca e resistencia do guerreiro.");
-            cartas[2] = criarCarta("Pocao de Cura", 3, CURA, 2, "Uma pocao magica que, ao ser bebida, restaura rapidamente 2 pontos do seu HP.");
-            cartas[3] = criarCarta("Espada Bumerangue", 2, ATAQUEMULT, 1, "Uma espada magica que ao ser arremessada, ataca multiplos inimigos causando 1 de Dano e retorna a mao do lancador.");
-            cartas[4] = criarCarta("Perfurar", 2, ATAQUESING, 3, "Um ataque direto e penetrante, perfurando o primeiro inimigo causando 3 de Dano.");
-            cartas[5] = criarCarta("Impacto Explosivo", 3, ATAQUEMULT, 1, "Uma poderosa onda de choque gerada pela espada do guerreiro, causando 1 de dano a todos os inimigos ao redor.");
+            cartas[0] = criarCarta("Espada Fulminante", 1, ATAQUESING, 2, "Uma lamina carregada com energia eletrica, aplicando \033[1;41m2 de Dano\033[0m com um impacto eletrizante e rapido."); 
+            cartas[1] = criarCarta("Barreira de Escudos", 1, DEFESA, 3, "Uma formacao defensiva impenetravel que proporciona \033[1;44m3 de Escudo\033[0m, simbolizando a forca e resistencia do guerreiro.");
+            cartas[2] = criarCarta("Pocao de Cura", 3, CURA, 2, "Uma pocao magica que, ao ser bebida, restaura rapidamente \033[1;42m2 pontos do seu HP\033[0m.");
+            cartas[3] = criarCarta("Espada Bumerangue", 2, ATAQUEMULT, 1, "Uma espada magica que ao ser arremessada, ataca multiplos inimigos causando \033[1;41m1 de Dano\033[0m e retorna a mao do lancador.");
+            cartas[4] = criarCarta("Perfurar", 2, ATAQUESING, 3, "Um ataque direto e penetrante, perfurando o primeiro inimigo causando \033[1;41m3 de Dano\033[0m.");
+            cartas[5] = criarCarta("Impacto Explosivo", 3, ATAQUEMULT, 1, "Uma poderosa onda de choque gerada pela espada do guerreiro, causando \033[1;41m1 de dano\033[0m a todos os inimigos ao redor.");
             break;
         case BARALHO_MAGO:
             // Nome, Energia, Acao, QuantidadeAcao, Descricao
-            cartas[0] = criarCarta("Lança de Fogo", 1, ATAQUESING, 2, "Uma projetil mágico de fogo que se lança contra um unico inimigo, infligindo 2 de Dano."); 
-            cartas[1] = criarCarta("Barreira de Gelo", 1, DEFESA, 3, "Uma muralha de gelo conjurada para absorver 3 de Dano, representando a protecao fria e inabalavel do mago.");
-            cartas[2] = criarCarta("Toque Divino", 3, CURA, 2, "Um feitico de cura antigo que revitaliza o lancador, restaurando 2 pontos do seu HP.");
-            cartas[3] = criarCarta("Nevasca", 2, ATAQUEMULT, 1, "Uma tempestade congelante que envolve todos os inimigos, causando 1 de Dano com a forca implacavel do inverno.");
-            cartas[4] = criarCarta("Trovao de Jupiter", 2, ATAQUESING, 3, "Um relampago celestial convocado para atingir um inimigo com força divina, causando 3 de Dano eletrico.");
-            cartas[5] = criarCarta("Chuva de Meteoros", 3, ATAQUEMULT, 1, "Uma chuva apocaliptica de meteoros que cai sobre todos os inimigos, causando 1 de dano em cada um deles.");
+            cartas[0] = criarCarta("Lança de Fogo", 1, ATAQUESING, 2, "Uma projetil mágico de fogo que se lança contra um unico inimigo, infligindo \033[1;41m2 de Dano\033[0m."); 
+            cartas[1] = criarCarta("Barreira de Gelo", 1, DEFESA, 3, "Uma muralha de gelo conjurada para lhe conceder \033[1;44m3 Escudo\033[0m, representando a protecao fria e inabalavel do mago.");
+            cartas[2] = criarCarta("Toque Divino", 3, CURA, 2, "Um feitico de cura antigo que revitaliza o lancador, restaurando \033[1;42m2 pontos do seu HP\033[0m.");
+            cartas[3] = criarCarta("Nevasca", 2, ATAQUEMULT, 1, "Uma tempestade congelante que envolve todos os inimigos, causando \033[1;41m1 de Dano\033[0m com a forca implacavel do inverno.");
+            cartas[4] = criarCarta("Trovao de Jupiter", 2, ATAQUESING, 3, "Um relampago celestial convocado para atingir um inimigo com força divina, causando \033[1;41m3 de Dano\033[0m eletrico.");
+            cartas[5] = criarCarta("Chuva de Meteoros", 3, ATAQUEMULT, 1, "Uma chuva apocaliptica de meteoros que cai sobre todos os inimigos, causando \033[1;41m1 de dano\033[0m em cada um deles.");
             break;
         case BARALHO_ARQUEIRO:
             // Nome, Energia, Acao, QuantidadeAcao, Descricao
-            cartas[0] = criarCarta("Tiro Preciso", 1, ATAQUESING, 2, "Uma flecha lancada com precisao cirurgica, capaz de encontrar seu alvo e causar 2 de Dano a um unico alvo."); 
-            cartas[1] = criarCarta("Manto das Sombras", 1, DEFESA, 3, "Um manto encantado que envolve o arqueiro nas sombras, proporcionando 3 Escudo");
-            cartas[2] = criarCarta("Poção de Cura", 3, CURA, 2, "Um elixir curativo que, quando consumido, restaura 2 pontos do HP do arqueiro, permitindo-lhe continuar a luta.");
-            cartas[3] = criarCarta("Chuva de Flechas", 2, ATAQUEMULT, 1, "Uma barragem de flechas lançadas ao ceu, que caem em uma area ampla causando 1 de dano a todos os inimigos.");
-            cartas[4] = criarCarta("Flecha perfurante", 2, ATAQUESING, 3, "Uma flecha reforçada capaz de penetrar o coracao do primeiro inimigo, infligindo 3 de Dano.");
-            cartas[5] = criarCarta("Rajada Tripla de Flechas", 3, ATAQUEMULT, 1, "Um disparo simultaneo de tres flechas, cada uma causando 1 de dano, ideal para alvejar multiplos adversarios.");
+            cartas[0] = criarCarta("Tiro Preciso", 1, ATAQUESING, 2, "Uma flecha lancada com precisao cirurgica, capaz de encontrar seu alvo e causar \033[1;41m2 de Dano\033[0m a um unico alvo."); 
+            cartas[1] = criarCarta("Manto das Sombras", 1, DEFESA, 3, "Um manto encantado que envolve o arqueiro nas sombras, proporcionando \033[1;44m3 Escudo\033[0m");
+            cartas[2] = criarCarta("Poção de Cura", 3, CURA, 2, "Um elixir curativo que, quando consumido, restaura \033[1;42m2 pontos do HP\033[0m do arqueiro, permitindo-lhe continuar a luta.");
+            cartas[3] = criarCarta("Chuva de Flechas", 2, ATAQUEMULT, 1, "Uma barragem de flechas lançadas ao ceu, que caem em uma area ampla causando \033[1;41m1 de dano\033[0m a todos os inimigos.");
+            cartas[4] = criarCarta("Flecha perfurante", 2, ATAQUESING, 3, "Uma flecha reforçada capaz de penetrar o coracao do primeiro inimigo, infligindo \033[1;41m3 de Dano\033[0m.");
+            cartas[5] = criarCarta("Rajada Tripla de Flechas", 3, ATAQUEMULT, 1, "Um disparo simultaneo de tres flechas, cada uma causando \033[1;41m1 de dano\033[0m, ideal para alvejar multiplos adversarios.");
             break;
         default:
             fprintf(stderr, "Tipo de baralho desconhecido\n");
@@ -566,40 +568,40 @@ void finalizarTurno(Monstro* listaMonstros)
 // Mostra as informações do jogador no turno atual
 void mostrarInformacoesTurnoJogador(Carta** cartas) 
 {
-    printf("Turno Atual: %d\n", numTurno);
-    printf("HP do Jogador: %d\n", hpJogador);
-    printf("Energia: %d\n", energiaJogador);
-    printf("Escudos: %d\n", defesaJogador);
+    printf("\033[4mTurno Atual: %d\033[0m\n", numTurno);
+    printf("\033[1;41mHP do Jogador: %d\033[0m\n", hpJogador);
+    printf("\033[1;44mEnergia: %d\033[0m\n", energiaJogador);
+    printf("\033[1;45mEscudos: %d\033[0m\n", defesaJogador);
 
-    printf("================================== / /  / / ==================================\n");
+    printf("================================== / /  / / ==================================\n\n");
     
     printf("Suas Cartas:\n");
     for (int i = 0; i < 6; i++) 
     {
-        printf("[%d]Nome: %s, Energia: %d, Descricao: %s\n", 
+        printf("[%d]Nome: %s, \033[1;46mEnergia: %d\033[0m, Descricao: %s\n", 
         i+1,
         cartas[i]->nome, 
         cartas[i]->energia, 
         cartas[i]->descricao);
     }
-    printf("================================== / /  / / ==================================\n");
+    printf("\n================================== / /  / / ==================================\n");
 }
 
 // Mostra as informações dos monstros no turno atual
 void mostrarInformacoesTurnoMonstros(Fase* faseAtual)
 {
-    printf("Monstros:\n");
+    printf("\033[1;45m| Monstros: |\033[0m\n\n");
     Monstro* monstroAtual = faseAtual->monstros;
     while (monstroAtual != NULL) 
     {
-        printf("Nome: %s, |HP: %d| |Escudos: %d|\n", monstroAtual->nome, monstroAtual->hp, monstroAtual->defesa);
+        printf("\033[1;45mNome: %s\033[0m, |HP: %d| |Escudos: %d|\n", monstroAtual->nome, monstroAtual->hp, monstroAtual->defesa);
         if(monstroAtual->acao == 1)
         {
-            printf("%s, vai atacar com %d de dano!\n", monstroAtual->nome, monstroAtual->danoAtaqueMonstro);
+            printf("%s, vai atacar com \033[1;41m%d de dano!\033[0m\n\n", monstroAtual->nome, monstroAtual->danoAtaqueMonstro);
         }
         else
         {
-            printf("%s, vai defender com %d de defesa!\n", monstroAtual->nome, monstroAtual->defesaParaAdicionarMonstro);
+            printf("%s, vai defender com \033[1;44m%d de defesa!\033[0m\n\n", monstroAtual->nome, monstroAtual->defesaParaAdicionarMonstro);
         }
         monstroAtual = monstroAtual->proximo;
     }
@@ -610,8 +612,6 @@ void escolherEJogarCarta(Fase* faseAtual, Carta** cartas)
     int escolha;
     printf("Escolha uma carta para jogar (1-6) OU [7] Para encerrar o turno: ");
     scanf("%d", &escolha);
-
-    printf("================================== Consequencias das suas acoes ==================================\n");
     
     if (escolha < 1 || escolha > 7) 
     {
@@ -624,19 +624,23 @@ void escolherEJogarCarta(Fase* faseAtual, Carta** cartas)
         turnoFinalizado = 1;
         return;
     }
-    
+
     Carta* cartaEscolhida = cartas[escolha - 1];
     jogarCarta(cartaEscolhida, faseAtual->monstros, faseAtual);
+
+    printf("\033[1;43m================================== FIM das Consequencias das suas acoes ==================================\033[0m\n");
 }
 
 void jogarCarta(Carta* carta, Monstro* monstro, Fase* faseAtual)
 {
+    clearScreen();
+    printf("\033[1;43m================================== Consequencias das suas acoes ==================================\033[0m\n");
     Monstro* monstroAtual = faseAtual->monstros;
     if (energiaJogador >= carta->energia) 
     {
         energiaJogador -= carta->energia;
         printf("Voce jogou a carta %s!\n", carta->nome);
-        
+
         switch (carta->acao) 
         {
             case ATAQUESING:
@@ -650,7 +654,7 @@ void jogarCarta(Carta* carta, Monstro* monstro, Fase* faseAtual)
             {
                 monstro->hp -= carta->quantidadeAcao;
             }
-            printf("Voce causou %d de dano ao monstro %s!\n", carta->quantidadeAcao, monstro->nome);
+            printf("\033[4;41mVoce causou %d de dano ao monstro %s!\033[0m\n", carta->quantidadeAcao, monstro->nome);
             break;
             case ATAQUEMULT:
                 while (monstroAtual != NULL)
@@ -669,7 +673,6 @@ void jogarCarta(Carta* carta, Monstro* monstro, Fase* faseAtual)
                     monstroAtual = monstroAtual->proximo;
                 }
                 free(monstroAtual);
-                printf("================================== / /  / / ==================================\n");
                 break;
             case DEFESA:
                 defesaJogador += carta->quantidadeAcao;
