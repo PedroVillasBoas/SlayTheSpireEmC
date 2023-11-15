@@ -1,8 +1,8 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
-#include <unistd.h>
+#include <stdio.h> // Biblioteca padrao de entrada e saida
+#include <stdlib.h> // Biblioteca padrao do C
+#include <string.h> // Biblioteca para manipulaçao de strings
+#include <time.h> // Biblioteca para manipulaçao de tempo
+#include <unistd.h> // Biblioteca para usar a funçao usleep
 
 // Enum para cada Classe que o jogador pode escolher
 typedef enum 
@@ -12,7 +12,7 @@ typedef enum
     BARALHO_ARQUEIRO = 3
 } TipoBaralho;
 
-// Enum para cada tipo de ação das cartas
+// Enum para cada tipo de açao das cartas
 typedef enum 
 {
     ATAQUESING = 1,
@@ -21,7 +21,7 @@ typedef enum
     CURA = 4,
 } TipoAcao;
 
-//Enum para cada tipo de ação dos monstros
+//Enum para cada tipo de açao dos monstros
 typedef enum
 {
     DEFAULTMONSTRO = 0,
@@ -38,7 +38,7 @@ typedef struct Monstro
     TipoAcaoMonstro acao; // 1 para ataque, 2 para defesa
     int danoAtaqueMonstro; // Dano que o monstro vai causar ao jogador
     int defesaParaAdicionarMonstro; // Defesa que o monstro vai ter
-    int intencaoDefinida; // 1 se a intenção já foi definida para o turno atual, 0 caso contrário
+    int intencaoDefinida; // 1 se a intençao ja foi definida para o turno atual, 0 caso contrario
     struct Monstro* proximo;
     struct Monstro* anterior;
 } Monstro;
@@ -50,7 +50,7 @@ typedef struct Carta
     int energia; // Energia que a carta custa para ser jogada
     TipoAcao acao; // 1 para ataque, 2 para defesa, 3 para cura
     int quantidadeAcao; // Quantidade de dano/cura/escudo que a carta vai aplicar
-    char descricao [200]; // Descrição da carta
+    char descricao [200]; // Descriçao da carta
     struct Carta* proximo;
     struct Carta* anterior;
 } Carta;
@@ -58,9 +58,9 @@ typedef struct Carta
 // Estrutura para representar uma fase
 typedef struct Fase 
 {
-    int nivelFase; // Nível da fase
+    int nivelFase; // Nivel da fase
     Monstro* monstros; // Lista duplamente encadeada de monstros da fase
-    char descricao[100]; // Descrição da fase
+    char descricao[100]; // Descriçao da fase
     struct Fase* proxima;
 } Fase;
 
@@ -73,7 +73,7 @@ typedef struct HighScore
     int hpRestante;
 } HighScore;
 
-// Protótipos das funções
+// Prototipos das funções
 void obterNomeJogador(char *nome, int tamanhoMaximo);
 void clearScreen();
 void printCharByChar(const char *str, useconds_t delay);
@@ -110,6 +110,8 @@ void exibirHighScores();
 int compararHighScores(const void* a, const void* b);
 void ordenarHighScores(HighScore* scores, int numScores);
 void registrarHighScore(const char* nomeJogador, int faseAlcancada, int numTurnos, int hpRestante);
+void telaVitoria();
+void telaDerrota();
 
 // Variaveis globais
 // Do jogo
@@ -126,10 +128,10 @@ int defesaJogador = 0; // Salvar a defesa acumulada das cartas que o jogador jog
 
 int main() 
 {
-    srand(time(NULL)); // Inicializa a semente do gerador de números aleatórios
+    srand(time(NULL)); // Inicializa a semente do gerador de numeros aleatorios
 
     int opcao = 0;
-    opcao = mostrarIntro(opcao);
+    //opcao = mostrarIntro(opcao);
 
     Fase* faseInicial = criarTodasFases(dificuldade); // Criando as fases e monstros
 
@@ -170,7 +172,7 @@ void printCharByChar(const char *str, useconds_t delay)
     }
 }
 
-// Mostra a introdução do jogo
+// Mostra a introduçao do jogo
 int mostrarIntro(int opcao) 
 {
     clearScreen();
@@ -291,17 +293,17 @@ void instrucoes()
 
 }
 
-// Criação do Monstro
+// Criaçao do Monstro
 Monstro* criarMonstro(char* nome, int hp, int defesa, int acao, int danoAtaqueMonstro, int defesaParaAdicionarMonstro) 
 {
     Monstro* novoMonstro = (Monstro*)malloc(sizeof(Monstro));
     if (!novoMonstro) 
     {
-        printf("Erro ao alocar memória para o monstro.\n");
+        printf("Erro ao alocar memoria para o monstro.\n");
         exit(1);
     }
     strncpy(novoMonstro->nome, nome, sizeof(novoMonstro->nome));
-    novoMonstro->nome[sizeof(novoMonstro->nome) - 1] = '\0'; // Garante que a string é terminada em '\0'
+    novoMonstro->nome[sizeof(novoMonstro->nome) - 1] = '\0'; // Garante que a string e terminada em '\0'
     novoMonstro->hp = hp;
     novoMonstro->defesa = defesa;
     novoMonstro->acao = acao;
@@ -330,7 +332,7 @@ void definirIntencoesMonstros(Monstro* listaMonstros)
 
 TipoAcaoMonstro acaoMonstro() 
 {
-    int numeroAleatorio = rand() % 100 + 1; // Gera um número aleatório entre 1 e 100
+    int numeroAleatorio = rand() % 100 + 1; // Gera um numero aleatorio entre 1 e 100
 
     if (numeroAleatorio <= 50) 
     {
@@ -353,17 +355,17 @@ void resetarDefesaMonstros(Monstro* listaMonstros)
 }
 
 
-// Criação da carta
+// Criaçao da carta
 Carta* criarCarta(char* nome, int energia, int acao, int quantidadeAcao, char* descricao) 
 {
     Carta* novaCarta = (Carta*)malloc(sizeof(Carta));
     if (!novaCarta) 
     {
-        printf("Erro ao alocar memória para a carta.\n");
+        printf("Erro ao alocar memoria para a carta.\n");
         exit(1);
     }
     strncpy(novaCarta->nome, nome, sizeof(novaCarta->nome));
-    novaCarta->nome[sizeof(novaCarta->nome) - 1] = '\0'; // Garante que a string é terminada em '\0'
+    novaCarta->nome[sizeof(novaCarta->nome) - 1] = '\0'; // Garante que a string e terminada em '\0'
     novaCarta->energia = energia;
     novaCarta->acao = acao;
     novaCarta->quantidadeAcao = quantidadeAcao;
@@ -387,12 +389,12 @@ int escolherClasses()
     return opcao;
 }
 
-// Criação do Baralho a partir da classe escolhida
+// Criaçao do Baralho a partir da classe escolhida
 Carta** criarBaralho(TipoBaralho tipoBaralho) 
 {
     Carta** cartas = malloc(sizeof(Carta*) * 6); // Assumindo 6 cartas por baralho
     if (!cartas) {
-        perror("Falha ao alocar memória para o baralho");
+        perror("Falha ao alocar memoria para o baralho");
         exit(1);
     }
 
@@ -409,20 +411,20 @@ Carta** criarBaralho(TipoBaralho tipoBaralho)
             break;
         case BARALHO_MAGO:
             // Nome, Energia, Acao, QuantidadeAcao, Descricao
-            cartas[0] = criarCarta("Lança de Fogo", 1, ATAQUESING, 2, "Uma projetil mágico de fogo que se lança contra um unico inimigo, infligindo \033[1;41m2 de Dano\033[0m."); 
+            cartas[0] = criarCarta("Lanca de Fogo", 1, ATAQUESING, 2, "Uma projetil magico de fogo que se lanca contra um unico inimigo, infligindo \033[1;41m2 de Dano\033[0m."); 
             cartas[1] = criarCarta("Barreira de Gelo", 1, DEFESA, 3, "Uma muralha de gelo conjurada para lhe conceder \033[1;44m3 Escudo\033[0m, representando a protecao fria e inabalavel do mago.");
             cartas[2] = criarCarta("Toque Divino", 3, CURA, 2, "Um feitico de cura antigo que revitaliza o lancador, restaurando \033[1;42m2 pontos do seu HP\033[0m.");
             cartas[3] = criarCarta("Nevasca", 2, ATAQUEMULT, 1, "Uma tempestade congelante que envolve todos os inimigos, causando \033[1;41m1 de Dano\033[0m com a forca implacavel do inverno.");
-            cartas[4] = criarCarta("Trovao de Jupiter", 2, ATAQUESING, 3, "Um relampago celestial convocado para atingir um inimigo com força divina, causando \033[1;41m3 de Dano\033[0m eletrico.");
+            cartas[4] = criarCarta("Trovao de Jupiter", 2, ATAQUESING, 3, "Um relampago celestial convocado para atingir um inimigo com forca divina, causando \033[1;41m3 de Dano\033[0m eletrico.");
             cartas[5] = criarCarta("Chuva de Meteoros", 3, ATAQUEMULT, 1, "Uma chuva apocaliptica de meteoros que cai sobre todos os inimigos, causando \033[1;41m1 de dano\033[0m em cada um deles.");
             break;
         case BARALHO_ARQUEIRO:
             // Nome, Energia, Acao, QuantidadeAcao, Descricao
             cartas[0] = criarCarta("Tiro Preciso", 1, ATAQUESING, 2, "Uma flecha lancada com precisao cirurgica, capaz de encontrar seu alvo e causar \033[1;41m2 de Dano\033[0m a um unico alvo."); 
             cartas[1] = criarCarta("Manto das Sombras", 1, DEFESA, 3, "Um manto encantado que envolve o arqueiro nas sombras, proporcionando \033[1;44m3 Escudo\033[0m");
-            cartas[2] = criarCarta("Poção de Cura", 3, CURA, 2, "Um elixir curativo que, quando consumido, restaura \033[1;42m2 pontos do HP\033[0m do arqueiro, permitindo-lhe continuar a luta.");
-            cartas[3] = criarCarta("Chuva de Flechas", 2, ATAQUEMULT, 1, "Uma barragem de flechas lançadas ao ceu, que caem em uma area ampla causando \033[1;41m1 de dano\033[0m a todos os inimigos.");
-            cartas[4] = criarCarta("Flecha perfurante", 2, ATAQUESING, 3, "Uma flecha reforçada capaz de penetrar o coracao do primeiro inimigo, infligindo \033[1;41m3 de Dano\033[0m.");
+            cartas[2] = criarCarta("Pocao de Cura", 3, CURA, 2, "Um elixir curativo que, quando consumido, restaura \033[1;42m2 pontos do HP\033[0m do arqueiro, permitindo-lhe continuar a luta.");
+            cartas[3] = criarCarta("Chuva de Flechas", 2, ATAQUEMULT, 1, "Uma barragem de flechas lancadas ao ceu, que caem em uma area ampla causando \033[1;41m1 de dano\033[0m a todos os inimigos.");
+            cartas[4] = criarCarta("Flecha perfurante", 2, ATAQUESING, 3, "Uma flecha reforcada capaz de penetrar o coracao do primeiro inimigo, infligindo \033[1;41m3 de Dano\033[0m.");
             cartas[5] = criarCarta("Rajada Tripla de Flechas", 3, ATAQUEMULT, 1, "Um disparo simultaneo de tres flechas, cada uma causando \033[1;41m1 de dano\033[0m, ideal para alvejar multiplos adversarios.");
             break;
         default:
@@ -444,13 +446,13 @@ void liberarBaralho(Carta** cartas, int numCartas)
 }
 
 
-// Criação da Fase
+// Criaçao da Fase
 Fase* criarFase(int nivel, char* descricao, Monstro* listaMonstros) 
 {
     Fase* novaFase = (Fase*)malloc(sizeof(Fase));
     if (!novaFase) 
     {
-        printf("Erro ao alocar memória para a fase.\n");
+        printf("Erro ao alocar memoria para a fase.\n");
         exit(1);
     }
     novaFase->nivelFase = nivel;
@@ -461,7 +463,7 @@ Fase* criarFase(int nivel, char* descricao, Monstro* listaMonstros)
     return novaFase;
 }
 
-// Retorna 1 se o jogador escolher reiniciar, 0 caso contrário
+// Retorna 1 se o jogador escolher reiniciar, 0 caso contrario
 int iniciarJogo(Fase** faseAtual, Carta** cartas) 
 {
     clearScreen();
@@ -473,12 +475,12 @@ int iniciarJogo(Fase** faseAtual, Carta** cartas)
     if(hpJogador <= 0)
     {
         printf("Voce morreu!\n");
+        telaDerrota();
     }
 
     if(fimDeJogo == 1)
     {
-        printf("Parabens! Voce derrotou o Rei Demonio e salvou o reino!\n");
-        printf("Voce precisou de %d turnos para concluir o jogo!\n", numTurno);
+        telaVitoria();
     }
     
     registrarHighScore(nomeJogador, (*faseAtual)->nivelFase, numTurno, hpJogador); // Registrar o highscore do jogador
@@ -506,13 +508,13 @@ void jogarTurno(Fase** faseAtual, Carta** cartas)
         {
             if((*faseAtual)->nivelFase == 3)
             {
-                fimDeJogo = 1; // Marcar como fim de jogo se todos os monstros da última fase foram derrotados
+                fimDeJogo = 1; // Marcar como fim de jogo se todos os monstros da ultima fase foram derrotados
                 break; // Sair do loop do turno
             }
             else
             {
-                *faseAtual = (*faseAtual)->proxima; // Avançar para a próxima fase se todos os monstros morreram
-                resetarDefesaMonstros((*faseAtual)->monstros); // Resetar a defesa dos monstros para a próxima fase
+                *faseAtual = (*faseAtual)->proxima; // Avançar para a proxima fase se todos os monstros morreram
+                resetarDefesaMonstros((*faseAtual)->monstros); // Resetar a defesa dos monstros para a proxima fase
             }
         }
     }
@@ -531,14 +533,14 @@ void finalizarTurno(Monstro* listaMonstros)
     Monstro* monstroAtual = listaMonstros;
     while (monstroAtual != NULL) 
     {
-        monstroAtual->defesa = 0; // Resetar a defesa do monstro para o próximo turno
+        monstroAtual->defesa = 0; // Resetar a defesa do monstro para o proximo turno
         if(monstroAtual->acao == ATAQUEMONSTRO) // Se o monstro escolheu atacar
         {
             if (defesaJogador > 0) // Verificar se o jogador tem escudo para se defender
             {
-                int danoAplicado = min(defesaJogador, monstroAtual->danoAtaqueMonstro); // Verificar se a defesa do jogador é maior que o dano do monstro
+                int danoAplicado = min(defesaJogador, monstroAtual->danoAtaqueMonstro); // Verificar se a defesa do jogador e maior que o dano do monstro
                 defesaJogador -= danoAplicado; // Reduzir a defesa do jogador
-                if (monstroAtual->danoAtaqueMonstro > danoAplicado) // Verificar se o dano do monstro é maior que a defesa do jogador
+                if (monstroAtual->danoAtaqueMonstro > danoAplicado) // Verificar se o dano do monstro e maior que a defesa do jogador
                 {
                     hpJogador -= (monstroAtual->danoAtaqueMonstro - danoAplicado); // Aplicar o dano restante ao HP
                 }
@@ -553,15 +555,15 @@ void finalizarTurno(Monstro* listaMonstros)
             monstroAtual->defesa = monstroAtual->defesaParaAdicionarMonstro; // Adicionar a defesa do monstro
         }
 
-        monstroAtual->intencaoDefinida = 0; // Resetar a variável de controle para o próximo turno
-        monstroAtual->acao = DEFAULTMONSTRO; // Resetar a ação do monstro para o próximo turno
-        monstroAtual = monstroAtual->proximo; // Avançar para o próximo monstro
+        monstroAtual->intencaoDefinida = 0; // Resetar a variavel de controle para o proximo turno
+        monstroAtual->acao = DEFAULTMONSTRO; // Resetar a açao do monstro para o proximo turno
+        monstroAtual = monstroAtual->proximo; // Avançar para o proximo monstro
     }
 
     energiaJogador = 3; // Restaurar a energia do jogador ao finalizar o turno
-    defesaJogador = 0; // Zerar a defesa do jogador para o próximo turno
-    numTurno++; // Incrementar o número do turno
-    turnoFinalizado = 0; // Resetar a variável de controle para o próximo turno
+    defesaJogador = 0; // Zerar a defesa do jogador para o proximo turno
+    numTurno++; // Incrementar o numero do turno
+    turnoFinalizado = 0; // Resetar a variavel de controle para o proximo turno
     clearScreen(); // Limpar a tela
 }
 
@@ -839,7 +841,7 @@ void liberarFases(Fase* fase)
         Fase* proxima = fase->proxima;
         
         liberarMonstros(fase->monstros); // Libera os monstros da fase atual
-        free(fase); // Libera a memória da fase
+        free(fase); // Libera a memoria da fase
 
         fase = proxima;
     }
@@ -850,13 +852,13 @@ void resetarEstadoJogo()
     hpJogador = 10; // Valor inicial do HP do jogador
     energiaJogador = 3; // Valor inicial da energia
     numTurno = 1; // Resetar o contador de turnos
-    fimDeJogo = 0; // Resetar a condição de fim de jogo
-    turnoFinalizado = 0; // Resetar a variável de controle do turno
+    fimDeJogo = 0; // Resetar a condiçao de fim de jogo
+    turnoFinalizado = 0; // Resetar a variavel de controle do turno
 }
 
 void salvarHighScoresArquivo(const HighScore* scores, int numScores)
 {
-    FILE* arquivo = fopen("highscores.txt", "a"); // Modo de anexação
+    FILE* arquivo = fopen("highscores.txt", "a"); // Modo de anexaçao
     if (arquivo == NULL) {
         perror("Erro ao abrir arquivo de high scores");
         return;
@@ -873,7 +875,7 @@ void salvarHighScoresArquivo(const HighScore* scores, int numScores)
 
 void exibirHighScores() 
 {
-    HighScore scores[100]; // Ajuste o tamanho conforme necessário
+    HighScore scores[100]; // Ajuste o tamanho conforme necessario
     int numScores = 0;
 
     // Carregar os scores do arquivo
@@ -947,6 +949,34 @@ void registrarHighScore(const char* nomeJogador, int faseAlcancada, int numTurno
     salvarHighScoresArquivo(&score, 1);
 }
 
+void telaVitoria()
+{
+    printf("\033[1;44m==================================================================== / /  / / ====================================================================\033[0m\n");
+    const char *intro = "Apos uma jornada ardua e repleta de desafios, voce, um(a) valente aventureiro(a), finalmente confronta e vence o Rei Demonio, restaurando a\n"
+                        "paz e a luz ao reino. O veu sombrio que uma vez ameacava engolir tudo em desespero agora se desfaz, como nevoa ao amanhecer.\n\n"
+                        "Em um ato final de bravura e forca, voce triunfa sobre a escuridao. As sombras que assolavam a terra se dissipam, e o sol brilha novamente,\n"
+                        "mais brilhante do que nunca. O reino, antes sufocado pelo medo, agora ressoa com cânticos de vitoria e alegria.\n\n"
+                        "Voce retorna ao castelo, nao mais como um(a) mero(a) aventureiro(a), mas como um(a) heroi(ina) cujo nome sera lembrado por todas as geracões\n"
+                        "futuras. O conselheiro do rei, com lagrimas nos olhos, agradece por sua coragem inabalavel que salvou o reino da ruina.\n\n"
+                        "Sua jornada se torna uma lenda, um conto de esperanca e coragem que sera passado adiante, inspirando outros a acreditar que mesmo na mais\n"
+                        "escura das batalhas, a luz da bravura nunca se apaga.\n\n";
+    printCharByChar(intro, 30500); // Imprime o texto letra por letra com um delay de 30ms entre cada letra
+    printf("\033[1;44m==================================================================== / /  / / ====================================================================\033[0m\n");
+    printf("Voce precisou de %d turnos para concluir o jogo!\n", numTurno);
+}
 
-// O que falta fazer:
-    // EXTRA --> Deixar o jogo mais bonito
+void telaDerrota()
+{
+    printf("\033[1;44m==================================================================== / /  / / ====================================================================\033[0m\n");
+    const char *intro = "Apos uma jornada ardua e repleta de desafios, voce, um(a) valente aventureiro(a), finalmente confronta e vence o Rei Demonio, restaurando a\n"
+                        "paz e a luz ao reino. O veu sombrio que uma vez ameacava engolir tudo em desespero agora se desfaz, como nevoa ao amanhecer.\n\n"
+                        "Em um ato final de bravura e forca, voce triunfa sobre a escuridao. As sombras que assolavam a terra se dissipam, e o sol brilha novamente,\n"
+                        "mais brilhante do que nunca. O reino, antes sufocado pelo medo, agora ressoa com cânticos de vitoria e alegria.\n\n"
+                        "Voce retorna ao castelo, nao mais como um(a) mero(a) aventureiro(a), mas como um(a) heroi(ina) cujo nome sera lembrado por todas as geracões\n"
+                        "futuras. O conselheiro do rei, com lagrimas nos olhos, agradece por sua coragem inabalavel que salvou o reino da ruina.\n\n"
+                        "Sua jornada se torna uma lenda, um conto de esperanca e coragem que sera passado adiante, inspirando outros a acreditar que mesmo na mais\n"
+                        "escura das batalhas, a luz da bravura nunca se apaga.\n\n";
+    printCharByChar(intro, 30500); // Imprime o texto letra por letra com um delay de 30ms entre cada letra
+    printf("\033[1;44m==================================================================== / /  / / ====================================================================\033[0m\n");
+    printf("Voce passou por %d turnos ate morrer!\n", numTurno);
+}
