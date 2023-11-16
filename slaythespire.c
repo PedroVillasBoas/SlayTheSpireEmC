@@ -131,7 +131,7 @@ int main()
     srand(time(NULL)); // Inicializa a semente do gerador de numeros aleatorios
 
     int opcao = 0;
-    //opcao = mostrarIntro(opcao);
+    opcao = mostrarIntro(opcao);
 
     Fase* faseInicial = criarTodasFases(dificuldade); // Criando as fases e monstros
 
