@@ -499,7 +499,7 @@ void jogarTurno(Fase** faseAtual, Carta** cartas)
         verificarMonstroVivo(*faseAtual); // Verificar se algum monstro morreu
         ordenarMonstrosPorHP(&((*faseAtual)->monstros)); // Ordenar os monstros por HP
         definirIntencoesMonstros((*faseAtual)->monstros); // Definir as intenções dos monstros
-        printf("Fase Atual: %d\n", (*faseAtual)->nivelFase); // Mostrar a fase atual
+        printf("\033[4mFase Atual: %d\033[0m\n", (*faseAtual)->nivelFase); // Mostrar a fase atual
         mostrarInformacoesTurnoJogador(cartas); // Mostrar as informações do jogador
         mostrarInformacoesTurnoMonstros(*faseAtual); // Mostrar as informações dos monstros
         escolherEJogarCarta(*faseAtual, cartas); // Escolher e jogar uma carta
@@ -577,7 +577,7 @@ void mostrarInformacoesTurnoJogador(Carta** cartas)
 
     printf("================================== / /  / / ==================================\n\n");
     
-    printf("Suas Cartas:\n");
+    printf("\033[1;7;44mSuas Cartas:\033[0m\n");
     for (int i = 0; i < 6; i++) 
     {
         printf("[%d]Nome: %s, \033[1;46mEnergia: %d\033[0m, Descricao: %s\n", 
@@ -596,7 +596,7 @@ void mostrarInformacoesTurnoMonstros(Fase* faseAtual)
     Monstro* monstroAtual = faseAtual->monstros;
     while (monstroAtual != NULL) 
     {
-        printf("\033[1;45mNome: %s\033[0m, |HP: %d| |Escudos: %d|\n", monstroAtual->nome, monstroAtual->hp, monstroAtual->defesa);
+        printf("\033[1;45mNome: %s\033[0m |HP: %d| |Escudos: %d|\n", monstroAtual->nome, monstroAtual->hp, monstroAtual->defesa);
         if(monstroAtual->acao == 1)
         {
             printf("%s, vai atacar com \033[1;41m%d de dano!\033[0m\n\n", monstroAtual->nome, monstroAtual->danoAtaqueMonstro);
@@ -622,6 +622,12 @@ void escolherEJogarCarta(Fase* faseAtual, Carta** cartas)
     }
 
     if(escolha == 7)
+    {
+        turnoFinalizado = 1;
+        return;
+    }
+
+    if(faseAtual->monstros == NULL) // Passa o turno mesmo o player apertando outro numero que nao seja 7 apos todos os monstros morrerem
     {
         turnoFinalizado = 1;
         return;
