@@ -108,7 +108,6 @@ void resetarEstadoJogo();
 void salvarHighScoresArquivo(const HighScore* scores, int numScores);
 void exibirHighScores();
 int compararHighScores(const void* a, const void* b);
-void ordenarHighScores(HighScore* scores, int numScores);
 void registrarHighScore(const char* nomeJogador, int faseAlcancada, int numTurnos, int hpRestante);
 void telaVitoria();
 void telaDerrota();
