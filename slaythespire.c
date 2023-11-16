@@ -131,7 +131,7 @@ int main()
     srand(time(NULL)); // Inicializa a semente do gerador de numeros aleatorios
 
     int opcao = 0;
-    opcao = mostrarIntro(opcao);
+    //opcao = mostrarIntro(opcao);
 
     Fase* faseInicial = criarTodasFases(dificuldade); // Criando as fases e monstros
 
@@ -421,8 +421,8 @@ Carta** criarBaralho(TipoBaralho tipoBaralho)
         case BARALHO_ARQUEIRO:
             // Nome, Energia, Acao, QuantidadeAcao, Descricao
             cartas[0] = criarCarta("Tiro Preciso", 1, ATAQUESING, 2, "Uma flecha lancada com precisao cirurgica, capaz de encontrar seu alvo e causar \033[1;41m2 de Dano\033[0m a um unico alvo."); 
-            cartas[1] = criarCarta("Manto das Sombras", 1, DEFESA, 3, "Um manto encantado que envolve o arqueiro nas sombras, proporcionando \033[1;44m3 Escudo\033[0m");
-            cartas[2] = criarCarta("Pocao de Cura", 3, CURA, 2, "Um elixir curativo que, quando consumido, restaura \033[1;43m2 pontos do HP\033[0m do arqueiro, permitindo-lhe continuar a luta.");
+            cartas[1] = criarCarta("Manto das Sombras", 1, DEFESA, 3, "Um manto encantado que envolve o arqueiro nas sombras, proporcionando \033[1;43m3 Escudo\033[0m");
+            cartas[2] = criarCarta("Pocao de Cura", 3, CURA, 2, "Um elixir curativo que, quando consumido, restaura \033[1;42m2 pontos do HP\033[0m do arqueiro, permitindo-lhe continuar a luta.");
             cartas[3] = criarCarta("Chuva de Flechas", 2, ATAQUEMULT, 1, "Uma barragem de flechas lancadas ao ceu, que caem em uma area ampla causando \033[1;41m1 de dano\033[0m a todos os inimigos.");
             cartas[4] = criarCarta("Flecha perfurante", 2, ATAQUESING, 3, "Uma flecha reforcada capaz de penetrar o coracao do primeiro inimigo, infligindo \033[1;41m3 de Dano\033[0m.");
             cartas[5] = criarCarta("Rajada Tripla de Flechas", 3, ATAQUEMULT, 1, "Um disparo simultaneo de tres flechas, cada uma causando \033[1;41m1 de dano\033[0m, ideal para alvejar multiplos adversarios.");

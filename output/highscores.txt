@@ -1,1 +1,2 @@
 Julio - Fase: 3, Turnos: 8, HP: 0
+Juillerms - Fase: 2, Turnos: 8, HP: 0
