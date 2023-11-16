@@ -279,6 +279,7 @@ void escolherDificuldade(Fase** faseAtual)
     }
 }
 
+// Mostra o tutorial do jogo
 void instrucoes()
 {
     clearScreen();
@@ -316,6 +317,7 @@ Monstro* criarMonstro(char* nome, int hp, int defesa, int acao, int danoAtaqueMo
     return novoMonstro;
 }
 
+// Definir as intenções dos monstros
 void definirIntencoesMonstros(Monstro* listaMonstros) 
 {
     Monstro* monstroAtual = listaMonstros;
@@ -330,6 +332,7 @@ void definirIntencoesMonstros(Monstro* listaMonstros)
     }
 }
 
+// Escolhe uma açao para o monstro
 TipoAcaoMonstro acaoMonstro() 
 {
     int numeroAleatorio = rand() % 100 + 1; // Gera um numero aleatorio entre 1 e 100
@@ -344,6 +347,7 @@ TipoAcaoMonstro acaoMonstro()
     }
 }
 
+// Resetar a defesa dos monstros para o proximo turno
 void resetarDefesaMonstros(Monstro* listaMonstros) 
 {
     Monstro* monstroAtual = listaMonstros;
@@ -377,6 +381,7 @@ Carta* criarCarta(char* nome, int energia, int acao, int quantidadeAcao, char* d
     return novaCarta;
 }
 
+// Escolha da classe que define o baralho que o player vai usar
 int escolherClasses()
 {
     int opcao;
@@ -436,6 +441,7 @@ Carta** criarBaralho(TipoBaralho tipoBaralho)
     return cartas;
 }
 
+// Liberar a memoria do baralho
 void liberarBaralho(Carta** cartas, int numCartas) 
 {
     for (int i = 0; i < numCartas; i++) 
@@ -463,7 +469,7 @@ Fase* criarFase(int nivel, char* descricao, Monstro* listaMonstros)
     return novaFase;
 }
 
-// Retorna 1 se o jogador escolher reiniciar, 0 caso contrario
+// Iniciar o jogo | Contem a Tela de Derrota e Vitoria
 int iniciarJogo(Fase** faseAtual, Carta** cartas) 
 {
     clearScreen();
@@ -491,7 +497,7 @@ int iniciarJogo(Fase** faseAtual, Carta** cartas)
     return escolha;
 }
 
-
+// Jogar o turno (Loop principal do jogo)
 void jogarTurno(Fase** faseAtual, Carta** cartas) 
 {
     while(turnoFinalizado == 0)
@@ -528,6 +534,7 @@ void jogarTurno(Fase** faseAtual, Carta** cartas)
 
 }
 
+// Finaliza o turno e aplica as açoes dos monstros
 void finalizarTurno(Monstro* listaMonstros) 
 {
     Monstro* monstroAtual = listaMonstros;
@@ -609,6 +616,7 @@ void mostrarInformacoesTurnoMonstros(Fase* faseAtual)
     }
 }
 
+// Recebe o input do jogador e joga a carta escolhida
 void escolherEJogarCarta(Fase* faseAtual, Carta** cartas) 
 {
     int escolha;
@@ -639,6 +647,7 @@ void escolherEJogarCarta(Fase* faseAtual, Carta** cartas)
     printf("\033[1;43m================================== FIM das Consequencias das suas acoes ==================================\033[0m\n");
 }
 
+// Jogar uma carta e aplciar suas consequencias
 void jogarCarta(Carta* carta, Monstro* monstro, Fase* faseAtual)
 {
     clearScreen();
@@ -710,6 +719,7 @@ void jogarCarta(Carta* carta, Monstro* monstro, Fase* faseAtual)
     }
 }
 
+// Verifica se algum monstro morreu
 void verificarMonstroVivo(Fase* faseAtual) 
 {
     Monstro* monstroAtual = faseAtual->monstros;
@@ -739,6 +749,7 @@ void verificarMonstroVivo(Fase* faseAtual)
     }
 }
 
+// Ordena os monstros por HP usando Insertion Sort
 void ordenarMonstrosPorHP(Monstro** listaMonstros) 
 {
     Monstro *sorted = NULL;
@@ -771,17 +782,19 @@ void ordenarMonstrosPorHP(Monstro** listaMonstros)
     *listaMonstros = sorted;
 }
 
-
+// Retorna o maior valor entre a e b
 int max(int a, int b) 
 {
     return (a > b) ? a : b;
 }
 
+// Retorna o menor valor entre a e b
 int min(int a, int b) 
 {
     return (a < b) ? a : b;
 }
 
+// Cria todas as fases e monstros
 Fase* criarTodasFases(int dificuldade) 
 {
     // Nome, HP, Defesa, Acao, DanoAtaqueMonstro, DefesaParaAdicionarMonstro
@@ -830,6 +843,8 @@ Fase* criarTodasFases(int dificuldade)
     
     return fase1; // Retorna a primeira fase
 }
+
+// Libera a memoria de todos os monstros
 void liberarMonstros(Monstro* monstro) 
 {
     while (monstro != NULL) 
@@ -840,6 +855,7 @@ void liberarMonstros(Monstro* monstro)
     }
 }
 
+// Libera a memoria de todas as fases
 void liberarFases(Fase* fase) 
 {
     while (fase != NULL) 
@@ -853,6 +869,7 @@ void liberarFases(Fase* fase)
     }
 }
 
+// Reseta o estado do jogo para o estado inicial
 void resetarEstadoJogo() 
 {
     hpJogador = 10; // Valor inicial do HP do jogador
@@ -862,6 +879,7 @@ void resetarEstadoJogo()
     turnoFinalizado = 0; // Resetar a variavel de controle do turno
 }
 
+// Salva os highscores no arquivo
 void salvarHighScoresArquivo(const HighScore* scores, int numScores)
 {
     FILE* arquivo = fopen("highscores.txt", "a"); // Modo de anexaçao
@@ -878,7 +896,7 @@ void salvarHighScoresArquivo(const HighScore* scores, int numScores)
     fclose(arquivo);
 }
 
-
+// Exibe os highscores salvos no arquivo
 void exibirHighScores() 
 {
     HighScore scores[100]; // Ajuste o tamanho conforme necessario
@@ -915,7 +933,7 @@ void exibirHighScores()
     }
 }
 
-
+// Funçao para comparar os highscores (usada no qsort)
 int compararHighScores(const void* a, const void* b) 
 {
     const HighScore* scoreA = (const HighScore*)a;
@@ -938,12 +956,7 @@ int compararHighScores(const void* a, const void* b)
     }
 }
 
-
-void ordenarHighScores(HighScore* scores, int numScores) 
-{
-    qsort(scores, numScores, sizeof(HighScore), compararHighScores);
-}
-
+// Salva na Struct o nome do jogador, a fase alcançada, o numero de turnos e o HP restante para serem salvos no arquivo
 void registrarHighScore(const char* nomeJogador, int faseAlcancada, int numTurnos, int hpRestante) 
 {
     HighScore score;
@@ -955,6 +968,7 @@ void registrarHighScore(const char* nomeJogador, int faseAlcancada, int numTurno
     salvarHighScoresArquivo(&score, 1);
 }
 
+// Mostra a tela de vitoria após player vencer o jogo
 void telaVitoria()
 {
     printf("\033[1;44m==================================================================== / /  / / ====================================================================\033[0m\n");
@@ -971,6 +985,7 @@ void telaVitoria()
     printf("Voce precisou de %d turnos para concluir o jogo!\n", numTurno);
 }
 
+// Mostra a tela de derrota após player perder o jogo
 void telaDerrota()
 {
     printf("\033[1;44m==================================================================== / /  / / ====================================================================\033[0m\n");
