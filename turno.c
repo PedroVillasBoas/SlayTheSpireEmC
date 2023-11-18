@@ -142,7 +142,7 @@ void mostrarInformacoesTurnoMonstros(Fase* faseAtual)
     Monstro* monstroAtual = faseAtual->monstros;
     while (monstroAtual != NULL) 
     {
-        printf("\033[1;45mNome: %s\033[0m |HP: %d| |Escudos: %d|\n", monstroAtual->nome, monstroAtual->hp, monstroAtual->defesa);
+        printf("\033[1;45mNome: %s\033[0m \033[1;7;41m|HP: %d|\033[0m \033[1;7;43m|Escudos: %d|\033[0m\n", monstroAtual->nome, monstroAtual->hp, monstroAtual->defesa);
         if(monstroAtual->acao == 1)
         {
             printf("%s, vai atacar com \033[1;41m%d de dano!\033[0m\n\n", monstroAtual->nome, monstroAtual->danoAtaqueMonstro);
