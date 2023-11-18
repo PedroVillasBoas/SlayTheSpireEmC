@@ -14,6 +14,10 @@
 #include "player.h"
 #include "highscore.h"
 
+// Pra fazer funcionar no windows executar os seguintes comandos no terminal de forma sequencial
+// gcc -c slaythespire.c util.c turno.c player.c monstro.c menu.c highscore.c fases.c carta.c
+// gcc -o SlayTheSpireGame slaythespire.o util.o turno.o player.o monstro.o menu.o highscore.o fases.o carta.o
+// .\SlayTheSpireGame.exe
 
 int main() 
 {
