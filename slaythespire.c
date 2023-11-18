@@ -51,6 +51,7 @@ typedef struct Carta
     TipoAcao acao; // 1 para ataque, 2 para defesa, 3 para cura
     int quantidadeAcao; // Quantidade de dano/cura/escudo que a carta vai aplicar
     char descricao [200]; // Descriçao da carta
+    int jaJogada; // 1 se a carta ja foi jogada no turno atual, 0 caso contrario
     struct Carta* proximo;
     struct Carta* anterior;
 } Carta;
@@ -109,6 +110,7 @@ void salvarHighScoresArquivo(const HighScore* scores, int numScores);
 void exibirHighScores();
 int compararHighScores(const void* a, const void* b);
 void registrarHighScore(const char* nomeJogador, int faseAlcancada, int numTurnos, int hpRestante);
+void resetarEstadoCartas(Carta** cartas, int numCartas);
 void telaVitoria();
 void telaDerrota();
 
@@ -130,7 +132,7 @@ int main()
     srand(time(NULL)); // Inicializa a semente do gerador de numeros aleatorios
 
     int opcao = 0;
-    opcao = mostrarIntro(opcao);
+    //opcao = mostrarIntro(opcao);
 
     Fase* faseInicial = criarTodasFases(dificuldade); // Criando as fases e monstros
 
@@ -374,6 +376,7 @@ Carta* criarCarta(char* nome, int energia, int acao, int quantidadeAcao, char* d
     novaCarta->quantidadeAcao = quantidadeAcao;
     strncpy(novaCarta->descricao, descricao, sizeof(novaCarta->descricao));
     novaCarta->descricao[sizeof(novaCarta->descricao) - 1] = '\0';
+    novaCarta->jaJogada = 0;
 
     novaCarta->proximo = NULL;
     novaCarta->anterior = NULL;
@@ -525,6 +528,7 @@ void jogarTurno(Fase** faseAtual, Carta** cartas)
     }
     
     finalizarTurno((*faseAtual)->monstros); // Finalizar o turno
+    resetarEstadoCartas(cartas, 6); // Resetar o estado das cartas para o proximo turno
     
     if((*faseAtual)->nivelFase == 3 && (*faseAtual)->monstros == NULL)
     {
@@ -649,6 +653,14 @@ void escolherEJogarCarta(Fase* faseAtual, Carta** cartas)
 // Jogar uma carta e aplciar suas consequencias
 void jogarCarta(Carta* carta, Monstro* monstro, Fase* faseAtual)
 {
+    if(carta->jaJogada == 1)
+    {
+        clearScreen();
+        printf("\033[1;43m================================== Consequencias das suas acoes ==================================\033[0m\n");
+        printf("Voce ja jogou esta carta!\n");
+        return;
+    }
+
     clearScreen();
     printf("\033[1;43m================================== Consequencias das suas acoes ==================================\033[0m\n");
     Monstro* monstroAtual = faseAtual->monstros;
@@ -716,6 +728,7 @@ void jogarCarta(Carta* carta, Monstro* monstro, Fase* faseAtual)
     {
         printf("Energia insuficiente para jogar esta carta!\n");
     }
+    carta->jaJogada = 1;
 }
 
 // Verifica se algum monstro morreu
@@ -966,6 +979,15 @@ void registrarHighScore(const char* nomeJogador, int faseAlcancada, int numTurno
 
     salvarHighScoresArquivo(&score, 1);
 }
+
+void resetarEstadoCartas(Carta** cartas, int numCartas) 
+{
+    for (int i = 0; i < numCartas; i++) 
+    {
+        cartas[i]->jaJogada = 0; // Reinicializa a carta para o próximo turno
+    }
+}
+
 
 // Mostra a tela de vitoria após player vencer o jogo
 void telaVitoria()
