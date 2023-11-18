@@ -142,8 +142,8 @@ void telaVitoria()
     const char *intro = "\033[1;43mApos uma jornada ardua e repleta de desafios, voce, um(a) valente aventureiro(a), finalmente confronta e vence o Rei Demonio, restaurando a\n"
                         "paz e a luz ao reino. O veu sombrio que uma vez ameacava engolir tudo em desespero agora se desfaz, como nevoa ao amanhecer.\n\n"
                         "Em um ato final de bravura e forca, voce triunfa sobre a escuridao. As sombras que assolavam a terra se dissipam, e o sol brilha novamente,\n"
-                        "mais brilhante do que nunca. O reino, antes sufocado pelo medo, agora ressoa com cânticos de vitoria e alegria.\n\n"
-                        "Voce retorna ao castelo, nao mais como um(a) mero(a) aventureiro(a), mas como um(a) heroi(ina) cujo nome sera lembrado por todas as geracões\n"
+                        "mais brilhante do que nunca. O reino, antes sufocado pelo medo, agora ressoa com canticos de vitoria e alegria.\n\n"
+                        "Voce retorna ao castelo, nao mais como um(a) mero(a) aventureiro(a), mas como um(a) heroi(ina) cujo nome sera lembrado por todas as geracoes\n"
                         "futuras. O conselheiro do rei, com lagrimas nos olhos, agradece por sua coragem inabalavel que salvou o reino da ruina.\n\n"
                         "Sua jornada se torna uma lenda, um conto de esperanca e coragem que sera passado adiante, inspirando outros a acreditar que mesmo na mais\n"
                         "escura das batalhas, a luz da bravura nunca se apaga.\033[0m\n\n";
