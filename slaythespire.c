@@ -126,6 +126,7 @@ char nomeJogador[30]; // Salvar o nome do jogador
 int hpJogador = 10; // Salvar o hp do jogador
 int energiaJogador = 3; // Salvar a energia do jogador
 int defesaJogador = 0; // Salvar a defesa acumulada das cartas que o jogador jogou
+int numCartasBaralho = 6;
 
 int main() 
 {
@@ -399,7 +400,7 @@ int escolherClasses()
 // Criaçao do Baralho a partir da classe escolhida
 Carta** criarBaralho(TipoBaralho tipoBaralho) 
 {
-    Carta** cartas = malloc(sizeof(Carta*) * 6); // Assumindo 6 cartas por baralho
+    Carta** cartas = malloc(sizeof(Carta*) * numCartasBaralho); // Alocar memoria para o baralho de acordo com o numero de cartas
     if (!cartas) {
         perror("Falha ao alocar memoria para o baralho");
         exit(1);
@@ -528,7 +529,7 @@ void jogarTurno(Fase** faseAtual, Carta** cartas)
     }
     
     finalizarTurno((*faseAtual)->monstros); // Finalizar o turno
-    resetarEstadoCartas(cartas, 6); // Resetar o estado das cartas para o proximo turno
+    resetarEstadoCartas(cartas, numCartasBaralho); // Resetar o estado das cartas para o proximo turno
     
     if((*faseAtual)->nivelFase == 3 && (*faseAtual)->monstros == NULL)
     {
@@ -634,7 +635,8 @@ void escolherEJogarCarta(Fase* faseAtual, Carta** cartas)
     
     if (escolha < 1 || escolha > 7) 
     {
-        printf("Escolha invalida! Tente novamente.\n");
+        clearScreen();
+        printf("\033[1;41mEscolha invalida! Tente novamente.\033[0m\n");
         return;
     }
 
