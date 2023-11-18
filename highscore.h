@@ -6,9 +6,10 @@ typedef struct HighScore {
     int faseAlcancada;
     int numTurnos;
     int hpRestante;
+    int dificuldade;
 } HighScore;
 
-void registrarHighScore(const char* nomeJogador, int faseAlcancada, int numTurnos, int hpRestante);
+void registrarHighScore(const char* nomeJogador,int dificuldade, int faseAlcancada, int numTurnos, int hpRestante);
 void exibirHighScores();
 void salvarHighScoresArquivo(const HighScore* scores, int numScores);
 int compararHighScores(const void* a, const void* b);

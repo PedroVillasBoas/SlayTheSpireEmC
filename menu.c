@@ -69,6 +69,7 @@ void mostrarMenuPrincipal(Fase* faseAtual)
                 break;
             case 5:
                 printf("Saindo...\n");
+                exit(0);
                 break;
             default:
                 printf("Opcao invalida! Por favor, escolha novamente.\n");
@@ -115,7 +116,8 @@ void instrucoes()
             "Os monstros podem escolher lhe atacar ou se defender de seus ataques.\n"
             "Voce vai utilizar suas cartas para destruir os monstros, se defender ou recuperar seu HP.\n"
             "Mas cuidado! Voce apenas possui 3 de energia por turno e suas cartas custam energia!\n"
-            "Porem, tambem nao se preocupe que ao encerrar o turno, a sua energia sera restaurada totalmente.\n"
+            "Voce nao pode usar a mesma carta mais de 1 vez por turno! Entao pense com cuidado nas suas acoes\n"
+            "Porem, tambem nao se preocupe que ao encerrar o turno, a sua energia sera restaurada totalmente e suas cartas resetadas.\n"
             "Voce deve concluir as 3 fases na menor quantidade de turnos possiveis. Por isso, pense com cuidado em suas acoes.\n"
             "Boa sorte, aventureiro(a)!\n"
             "================================== / /  / / ==================================\n");

@@ -21,7 +21,7 @@ int iniciarJogo(Fase** faseAtual, Carta** cartas)
         telaVitoria();
     }
     
-    registrarHighScore(nomeJogador, (*faseAtual)->nivelFase, numTurno, hpJogador); // Registrar o highscore do jogador
+    registrarHighScore(nomeJogador, dificuldade, (*faseAtual)->nivelFase, numTurno, hpJogador); // Registrar o highscore do jogador
     
     printf("Deseja jogar novamente? [1]SIM ou [2]NAO: ");
     int escolha;

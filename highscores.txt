@@ -1,4 +1,4 @@
-Julio - Fase: 3, Turnos: 8, HP: 0
-Juillerms - Fase: 2, Turnos: 8, HP: 0
-Chavinho - Fase: 3, Turnos: 14, HP: 0
-Peupz - Fase: 3, Turnos: 10, HP: 3
+Peupz - Dificuldade: 3, Fase: 3, Turnos: 10, HP: 3
+Julio - Dificuldade: 2, Fase: 3, Turnos: 8, HP: 0
+Juillerms - Dificuldade: 1, Fase: 2, Turnos: 8, HP: 0
+Chavinho - Dificuldade: 1, Fase: 3, Turnos: 14, HP: 0
