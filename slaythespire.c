@@ -590,11 +590,17 @@ void mostrarInformacoesTurnoJogador(Carta** cartas)
     printf("\033[1;7;44mSuas Cartas:\033[0m\n");
     for (int i = 0; i < 6; i++) 
     {
-        printf("[%d]Nome: %s, \033[1;46mEnergia: %d\033[0m, Descricao: %s\n", 
+        printf("[%d] %s \033[1;46mEnergia: %d\033[0m Desc.: %s", 
         i+1,
         cartas[i]->nome, 
         cartas[i]->energia, 
         cartas[i]->descricao);
+        if (cartas[i]->jaJogada) 
+        {
+            printf(" - \033[1;41m(Carta Jogada)\033[0m");
+        }
+
+        printf("\n");
     }
     printf("\n================================== / /  / / ==================================\n");
 }
