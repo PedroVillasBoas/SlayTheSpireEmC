@@ -2,3 +2,6 @@ Peupz - Dificuldade: 3, Fase: 3, Turnos: 10, HP: 3
 Julio - Dificuldade: 2, Fase: 3, Turnos: 8, HP: 0
 Juillerms - Dificuldade: 1, Fase: 2, Turnos: 8, HP: 0
 Chavinho - Dificuldade: 1, Fase: 3, Turnos: 14, HP: 0
+Peu - Dificuldade: 2, Fase: 3, Turnos: 5, HP: -6
+Pedro - Dificuldade: 1, Fase: 3, Turnos: 4, HP: -1
+Pepeu - Dificuldade: 1, Fase: 3, Turnos: 9, HP: 1
