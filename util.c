@@ -78,17 +78,20 @@ void verificarMonstroVivo(Fase* faseAtual)
 
 void ordenarMonstrosPorHP(Monstro **listaMonstros) 
 {
-    Monstro *sorted = NULL;
-    Monstro *current = *listaMonstros;
-    while (current != NULL) 
+    Monstro *sorted = NULL;            // Lista ordenada
+    Monstro *current = *listaMonstros; // Lista original
+
+    while (current != NULL) // Enquanto nao chegar no final da lista
     {
-        Monstro *next = current->proximo;
+        Monstro *next = current->proximo; // Salva o proximo nodo da lista original
 
         // Desconecta o nó atual da lista original
-        if (current->anterior != NULL) {
+        if (current->anterior != NULL) 
+        {
             current->anterior->proximo = current->proximo;
         }
-        if (current->proximo != NULL) {
+        if (current->proximo != NULL) 
+        {
             current->proximo->anterior = current->anterior;
         }
 
@@ -97,21 +100,23 @@ void ordenarMonstrosPorHP(Monstro **listaMonstros)
         {
             current->proximo = sorted;
             current->anterior = NULL;
-            if (sorted != NULL) {
+            if (sorted != NULL) 
+            {
                 sorted->anterior = current;
             }
             sorted = current;
         } 
-        else 
+        else // Se o nodo atual for maior que o primeiro da lista ordenada
         {
             Monstro *currSorted = sorted;
-            while (currSorted->proximo != NULL && currSorted->proximo->hp < current->hp) 
+            while (currSorted->proximo != NULL && currSorted->proximo->hp < current->hp)  // Enquanto nao chegar no final da lista ordenada
             {
                 currSorted = currSorted->proximo;
             }
             current->proximo = currSorted->proximo;
             current->anterior = currSorted;
-            if (currSorted->proximo != NULL) {
+            if (currSorted->proximo != NULL) // Se nao for o ultimo da lista ordenada
+            {
                 currSorted->proximo->anterior = current;
             }
             currSorted->proximo = current;
@@ -121,7 +126,7 @@ void ordenarMonstrosPorHP(Monstro **listaMonstros)
         current = next;
     }
 
-    *listaMonstros = sorted;
+    *listaMonstros = sorted; // Atualiza a lista original
 }
 
 // Reseta o estado do jogo para o estado inicial
