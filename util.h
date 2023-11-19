@@ -19,6 +19,7 @@ extern int defesaJogador;    // Salvar a defesa acumulada das cartas que o jogad
 extern int numCartasBaralho; // Numero de cartas no baralho do jogador
 
 void clearScreen();
+void tituloGame();
 void printCharByChar(const char* str, useconds_t delay);
 int max(int a, int b);
 int min(int a, int b);

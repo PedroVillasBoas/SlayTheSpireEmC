@@ -29,6 +29,7 @@ int mostrarIntro(int opcao)
 void mostrarMenuPrincipal(Fase* faseAtual) 
 {
     clearScreen();
+    tituloGame();
     int opcao;
     do 
     {
