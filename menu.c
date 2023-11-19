@@ -1,3 +1,5 @@
+// Inclui todas as funcionalidades do Menu Principal, assim como a Introdução, Tela de Vitoria e Tela de Derrota
+
 #include "menu.h"
 
 // Mostra a introduçao do jogo
@@ -13,10 +15,10 @@ int mostrarIntro(int opcao)
                         "e horrores, e ascender ao topo, onde o mal reina supremo.\n\n"
                         "Com o peso da responsabilidade e a luz da esperanca em seu coracao, voce parte em sua jornada. O caminho eh tortuoso, repleto de adversarios\n"
                         "formidaveis e desafios que testarao sua forca, sua coragem e sua determinacao. A cada passo, a escuridao tenta lhe engolir, mas sua vontade\n"
-                        "eh \033[4;43minquebrantavel\033[0m.\n\n"
-                        "Voce eh mais do que um(a) aventureiro(a); voce eh a \033[1;44multima esperanca de um mundo\033[0m a beira da ruina. A lenda de suas facanhas sera cantada\n"
+                        "eh \033[1;43minquebrantavel\033[0m.\n\n"
+                        "Voce eh mais do que um(a) aventureiro(a); voce eh a \033[1;44multima esperanca\033[0m de um mundo a beira da ruina. A lenda de suas facanhas sera cantada\n"
                         "por geracoes, um farol de inspiracao para todos aqueles que acreditam que, mesmo na mais escura das noites, a luz da coragem brilha eternamente.\n";
-    printCharByChar(intro, 32000); // Imprime o texto letra por letra com um delay de 32 milissegundos entre os chars
+    printCharByChar(intro, 20000); // Imprime o texto letra por letra com um delay de 32 milissegundos entre os chars
     printf("\033[1;44m==================================================================== / /  / / ====================================================================\033[0m\n");
     printf("\033[42mPrecione [1] para jogar.\033[0m\n");
     scanf("%d", &opcao);
@@ -43,29 +45,28 @@ void mostrarMenuPrincipal(Fase* faseAtual)
         switch(opcao) 
         {
             case 1:
-                obterNomeJogador(nomeJogador, sizeof(nomeJogador)); // Obter o nome do jogador
-                Carta** cartas = criarBaralho(escolherClasses()); // Criar o baralho do jogador
-                if (iniciarJogo(&faseAtual, cartas)) // Se o jogador escolher reiniciar quando ele morrer ou ganhar o jogo
+                obterNomeJogador(nomeJogador, sizeof(nomeJogador));     // Obter o nome do jogador
+                Carta** cartas = criarBaralho(escolherClasses());       // Criar o baralho do jogador
+                if (iniciarJogo(&faseAtual, cartas))                    // Se o jogador escolher reiniciar quando ele morrer ou ganhar o jogo
                 {
                     obterNomeJogador(nomeJogador, sizeof(nomeJogador)); // Obter o nome do jogador quando o jogo reiniciar
-                    resetarEstadoJogo(); // Reseta o estado do jogo
-                    liberarFases(faseAtual); // Libera a fase atual e monstros antes de reiniciar
-                    liberarBaralho(cartas, 6); // Libera o baralho antes de reiniciar
-                    faseAtual = criarTodasFases(dificuldade); // Cria novamente as fases e monstros
-                    mostrarMenuPrincipal(faseAtual); // Mostra o menu principal novamente
+                    resetarEstadoJogo();                                // Reseta o estado do jogo
+                    liberarFases(faseAtual);                            // Libera a fase atual e monstros antes de reiniciar
+                    liberarBaralho(cartas, 6);                          // Libera o baralho antes de reiniciar
+                    faseAtual = criarTodasFases(dificuldade);           // Cria novamente as fases e monstros
+                    mostrarMenuPrincipal(faseAtual);                    // Mostra o menu principal novamente
                 }
                 break;
             case 2:
                 escolherDificuldade(&faseAtual); // Escolher a dificuldade
                 break;
             case 3:
-                instrucoes();
+                instrucoes();                   // Mostrar as instruçoes do jogo
                 break;
             case 4:
                 clearScreen();
-                exibirHighScores(); // Exibir os highscores
+                exibirHighScores();             // Exibir os highscores
                 printf("\033[1;44m========================== / /  / / ==========================\033[0m\n");
-    
                 break;
             case 5:
                 printf("Saindo...\n");
@@ -94,7 +95,7 @@ void escolherDificuldade(Fase** faseAtual)
     if(opcao >= 1 && opcao <= 3) 
     {
         dificuldade = opcao;
-        liberarFases(*faseAtual); // Liberar as fases antigas
+        liberarFases(*faseAtual);                  // Liberar as fases antigas
         *faseAtual = criarTodasFases(dificuldade); // Criar novas fases com a dificuldade atualizada
         clearScreen();
     } 
@@ -112,14 +113,14 @@ void escolherDificuldade(Fase** faseAtual)
 void instrucoes()
 {
     clearScreen();
-    printf( "O jogo eh dividido em 3 fases contendo, cada uma, 3 monstros.\n"
-            "Os monstros podem escolher lhe atacar ou se defender de seus ataques.\n"
-            "Voce vai utilizar suas cartas para destruir os monstros, se defender ou recuperar seu HP.\n"
-            "Mas cuidado! Voce apenas possui 3 de energia por turno e suas cartas custam energia!\n"
-            "Voce nao pode usar a mesma carta mais de 1 vez por turno! Entao pense com cuidado nas suas acoes\n"
-            "Porem, tambem nao se preocupe que ao encerrar o turno, a sua energia sera restaurada totalmente e suas cartas resetadas.\n"
-            "Voce deve concluir as 3 fases na menor quantidade de turnos possiveis. Por isso, pense com cuidado em suas acoes.\n"
-            "Boa sorte, aventureiro(a)!\n"
+    printf( "- O jogo eh dividido em 3 fases contendo, cada uma, 3 monstros.\n"
+            "- Os monstros podem escolher lhe atacar ou se defender de seus ataques.\n"
+            "- Voce vai utilizar suas cartas para destruir os monstros, se defender ou recuperar seu HP.\n"
+            "- Mas cuidado! Voce apenas possui 3 de energia por turno e suas cartas custam energia!\n"
+            "- Voce nao pode usar a mesma carta mais de 1 vez por turno! Entao pense com cuidado nas suas acoes\n"
+            "- Porem, tambem nao se preocupe que ao encerrar o turno, a sua energia sera restaurada totalmente e suas cartas resetadas.\n"
+            "- Voce deve concluir as 3 fases na menor quantidade de turnos possiveis. Por isso, pense com cuidado em suas acoes.\n"
+            "- Boa sorte, aventureiro(a)!\n"
             "================================== / /  / / ==================================\n");
 
 }
@@ -149,7 +150,7 @@ void telaVitoria()
                         "futuras. O conselheiro do rei, com lagrimas nos olhos, agradece por sua coragem inabalavel que salvou o reino da ruina.\n\n"
                         "Sua jornada se torna uma lenda, um conto de esperanca e coragem que sera passado adiante, inspirando outros a acreditar que mesmo na mais\n"
                         "escura das batalhas, a luz da bravura nunca se apaga.\033[0m\n\n";
-    printCharByChar(intro, 30500); // Imprime o texto letra por letra com um delay de 30ms entre cada letra
+    printCharByChar(intro, 20500); // Imprime o texto letra por letra com um delay de 20ms entre cada letra
     printf("\033[1;44m==================================================================== / /  / / ====================================================================\033[0m\n");
     printf("Voce precisou de %d turnos para concluir o jogo!\n", numTurno);
 }
@@ -165,7 +166,7 @@ void telaDerrota()
                         "implacavel das trevas.\n\n"
                         "Nas ruinas do que ja foi um reino prospero e cheio de vida, o lamento por sua queda eh eterno. Seu sacrificio eh lembrado, mas a sombra do\n"
                         "Rei Demonio eh longa e opressora, sufocando ate mesmo a memoria dos mais bravos herois.\033[0m\n\n";
-    printCharByChar(intro, 30000); // Imprime o texto letra por letra com um delay de 30ms entre cada letra
+    printCharByChar(intro, 20000); // Imprime o texto letra por letra com um delay de 20ms entre cada letra
     printf("\033[1;44m==================================================================== / /  / / ====================================================================\033[0m\n");
     printf("Voce passou por %d turnos antes de morrer!\n", numTurno);
 }

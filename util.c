@@ -1,18 +1,21 @@
+// Inclui todas as funcionalidades de utilidade do jogo
+
 #include "util.h"
 #include <stdio.h>
 #include <stdlib.h>
 
-    int dificuldade = 2; // Salvar a escolha da dificuldade
-    int numTurno = 1; // Quantidade de turnos que passaram desde que o jogador começou o jogo
-    int turnoFinalizado = 0; // Se o jogador escolheu terminar o seu turno
-    int fimDeJogo = 0; // Se o jogo acabou Ou por HP do jogador == 0 ou Jogador ganhou o jogo!
+// Variaveis globais
+    int dificuldade = 2;      // Salvar a escolha da dificuldade
+    int numTurno = 1;         // Quantidade de turnos que passaram desde que o jogador começou o jogo
+    int turnoFinalizado = 0;  // Se o jogador escolheu terminar o seu turno
+    int fimDeJogo = 0;        // Se o jogo acabou Ou por HP do jogador == 0 ou Jogador ganhou o jogo!
 
 // Atributos do Jogador
-    char nomeJogador[30]; // Salvar o nome do jogador
-    int hpJogador = 10; // Salvar o hp do jogador
-    int energiaJogador = 3; // Salvar a energia do jogador
-    int defesaJogador = 0; // Salvar a defesa acumulada das cartas que o jogador jogou
-    int numCartasBaralho = 6;
+    char nomeJogador[30];     // Salvar o nome do jogador
+    int hpJogador = 10;       // Salvar o hp do jogador
+    int energiaJogador = 3;   // Salvar a energia do jogador
+    int defesaJogador = 0;    // Salvar a defesa acumulada das cartas que o jogador jogou
+    int numCartasBaralho = 6; // Numero de cartas no baralho do jogador
 
 // Limpa a tela
 void clearScreen() 
@@ -51,19 +54,19 @@ void verificarMonstroVivo(Fase* faseAtual)
     
     while(monstroAtual != NULL) 
     {
-        if(monstroAtual->hp <= 0) 
+        if(monstroAtual->hp <= 0) // Se o monstro morreu
         {
-            if(monstroAnterior != NULL) 
+            if(monstroAnterior != NULL)                           // Se o monstro nao for o primeiro da lista
             {
-                monstroAnterior->proximo = monstroAtual->proximo;
+                monstroAnterior->proximo = monstroAtual->proximo; // O anterior aponta para o proximo do atual
             } 
             else 
             {
-                faseAtual->monstros = monstroAtual->proximo;
+                faseAtual->monstros = monstroAtual->proximo;     // O primeiro da lista aponta para o proximo do atual
             }
-            Monstro* monstroParaLiberar = monstroAtual;
-            monstroAtual = monstroAtual->proximo;
-            free(monstroParaLiberar);
+            Monstro* monstroParaLiberar = monstroAtual;          // Salva o monstro atual para liberar a memoria
+            monstroAtual = monstroAtual->proximo;                // Atualiza o monstro atual
+            free(monstroParaLiberar);                            // Libera a memoria do monstro morto
         } 
         else 
         {
@@ -73,8 +76,7 @@ void verificarMonstroVivo(Fase* faseAtual)
     }
 }
 
-// Ordena os monstros por HP usando Insertion Sort
-void ordenarMonstrosPorHP(Monstro** listaMonstros) 
+void ordenarMonstrosPorHP(Monstro **listaMonstros) 
 {
     Monstro *sorted = NULL;
     Monstro *current = *listaMonstros;
@@ -82,10 +84,22 @@ void ordenarMonstrosPorHP(Monstro** listaMonstros)
     {
         Monstro *next = current->proximo;
 
+        // Desconecta o nó atual da lista original
+        if (current->anterior != NULL) {
+            current->anterior->proximo = current->proximo;
+        }
+        if (current->proximo != NULL) {
+            current->proximo->anterior = current->anterior;
+        }
+
         // Localiza onde inserir o nodo atual na lista ordenada
         if (sorted == NULL || sorted->hp >= current->hp) 
         {
             current->proximo = sorted;
+            current->anterior = NULL;
+            if (sorted != NULL) {
+                sorted->anterior = current;
+            }
             sorted = current;
         } 
         else 
@@ -96,6 +110,10 @@ void ordenarMonstrosPorHP(Monstro** listaMonstros)
                 currSorted = currSorted->proximo;
             }
             current->proximo = currSorted->proximo;
+            current->anterior = currSorted;
+            if (currSorted->proximo != NULL) {
+                currSorted->proximo->anterior = current;
+            }
             currSorted->proximo = current;
         }
 
@@ -109,9 +127,9 @@ void ordenarMonstrosPorHP(Monstro** listaMonstros)
 // Reseta o estado do jogo para o estado inicial
 void resetarEstadoJogo() 
 {
-    hpJogador = 10; // Valor inicial do HP do jogador
-    energiaJogador = 3; // Valor inicial da energia
-    numTurno = 1; // Resetar o contador de turnos
-    fimDeJogo = 0; // Resetar a condiçao de fim de jogo
+    hpJogador = 10;      // Valor inicial do HP do jogador
+    energiaJogador = 3;  // Valor inicial da energia
+    numTurno = 1;        // Resetar o contador de turnos
+    fimDeJogo = 0;       // Resetar a condiçao de fim de jogo
     turnoFinalizado = 0; // Resetar a variavel de controle do turno
 }

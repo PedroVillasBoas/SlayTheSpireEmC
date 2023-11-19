@@ -1,47 +1,49 @@
+// Inclui todas as funcionalidades do High Score
+
 #include "highscore.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-// Salva na Struct o nome do jogador, a fase alcançada, o numero de turnos e o HP restante para serem salvos no arquivo
+// Salva na Struct HighScore os dados do jogador(nome, dificuldade, faseAlcancada, numTurnos, hpRestante)
 void registrarHighScore(const char* nomeJogador,int dificuldade, int faseAlcancada, int numTurnos, int hpRestante) 
 {
-    HighScore score;
-    strcpy(score.nomeJogador, nomeJogador);
-    score.dificuldade = dificuldade;
-    score.faseAlcancada = faseAlcancada;
-    score.numTurnos = numTurnos;
-    score.hpRestante = hpRestante;
+    HighScore score;                        // Struct HighScore
+    strcpy(score.nomeJogador, nomeJogador); // Copia o nome do jogador para a Struct
+    score.dificuldade = dificuldade;        // Copia a dificuldade para a Struct
+    score.faseAlcancada = faseAlcancada;    // Copia a fase alcancada para a Struct
+    score.numTurnos = numTurnos;            // Copia o numero de turnos para a Struct
+    score.hpRestante = hpRestante;          // Copia o HP restante para a Struct
 
-    salvarHighScoresArquivo(&score, 1);
+    salvarHighScoresArquivo(&score, 1);     // Salva os highscores no arquivo
 }
 
 // Exibe os highscores salvos no arquivo
 void exibirHighScores() 
 {
     HighScore scores[100]; // Ajuste o tamanho conforme necessário
-    int numScores = 0;
-    char linha[200]; // Buffer para ler cada linha do arquivo
+    int numScores = 0;     // Numero de scores lidos do arquivo
+    char linha[200];       // Buffer para ler cada linha do arquivo
 
     // Carregar os scores do arquivo
-    FILE* arquivo = fopen("highscores.txt", "r");
+    FILE* arquivo = fopen("highscores.txt", "r"); // Modo de leitura
     if (arquivo == NULL) 
     {
         perror("Erro ao abrir arquivo de high scores");
         return;
     }
 
-    while (fscanf(arquivo, "%49s - Dificuldade: %d, Fase: %d, Turnos: %d, HP: %d\n", 
+    while (fscanf(arquivo, "%49s - Dificuldade: %d, Fase: %d, Turnos: %d, HP: %d\n", // Lendo os dados do arquivo
                 scores[numScores].nomeJogador, 
                 &scores[numScores].dificuldade,
                 &scores[numScores].faseAlcancada, 
                 &scores[numScores].numTurnos, 
-                &scores[numScores].hpRestante) == 5 && numScores < 100) 
+                &scores[numScores].hpRestante) == 5 && numScores < 100)
     {
         numScores++;
     }
 
-    fclose(arquivo);
+    fclose(arquivo); // Fechando o arquivo
 
     // Ordenar os scores
     qsort(scores, numScores, sizeof(HighScore), compararHighScores);
@@ -66,7 +68,7 @@ void salvarHighScoresArquivo(const HighScore* scores, int numScores)
         return;
     }
 
-    for (int i = 0; i < numScores; i++) 
+    for (int i = 0; i < numScores; i++) // Escrevendo os dados no arquivo
     {
         fprintf(arquivo, "%s - Dificuldade: %d, Fase: %d, Turnos: %d, HP: %d\n",
                 scores[i].nomeJogador, scores[i].dificuldade, scores[i].faseAlcancada, scores[i].numTurnos, scores[i].hpRestante);
@@ -78,8 +80,8 @@ void salvarHighScoresArquivo(const HighScore* scores, int numScores)
 // Funçao para comparar os highscores (usada no qsort)
 int compararHighScores(const void* a, const void* b) 
 {
-    const HighScore* scoreA = (const HighScore*)a;
-    const HighScore* scoreB = (const HighScore*)b;
+    const HighScore* scoreA = (const HighScore*)a; // Cast para o tipo HighScore
+    const HighScore* scoreB = (const HighScore*)b; // Cast para o tipo HighScore
 
     // Prioridade 1: Maior nível de dificuldade
     if (scoreA->dificuldade != scoreB->dificuldade) 

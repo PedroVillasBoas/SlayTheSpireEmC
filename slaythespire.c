@@ -14,22 +14,22 @@
 #include "player.h"
 #include "highscore.h"
 
-// Pra fazer funcionar no windows executar os seguintes comandos no terminal de forma sequencial
+// Pra fazer funcionar no windows executar os seguintes comandos no terminal (1 por vez):
 // gcc -c slaythespire.c util.c turno.c player.c monstro.c menu.c highscore.c fases.c carta.c
 // gcc -o SlayTheSpireGame slaythespire.o util.o turno.o player.o monstro.o menu.o highscore.o fases.o carta.o
 // .\SlayTheSpireGame.exe
 
 int main() 
 {
-    srand(time(NULL)); // Inicializa a semente do gerador de numeros aleatorios
+    srand(time(NULL)); // Inicializa a seed do gerador de numeros aleatorios
 
     int opcao = 0;
-    opcao = mostrarIntro(opcao);
+    opcao = mostrarIntro(opcao); // Mostra a introduçao do jogo
 
     Fase* faseInicial = criarTodasFases(dificuldade); // Criando as fases e monstros
 
-    mostrarMenuPrincipal(faseInicial);
+    mostrarMenuPrincipal(faseInicial); // Mostra o menu principal do jogo
 
-    liberarFases(faseInicial);
+    liberarFases(faseInicial); // Libera a memoria alocada para as fases e monstros
     return 0;
 }

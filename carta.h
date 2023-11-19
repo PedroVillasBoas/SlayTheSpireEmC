@@ -17,21 +17,21 @@ typedef enum
 // Enum para cada tipo de açao das cartas
 typedef enum 
 {
-    ATAQUESING = 1,
-    ATAQUEMULT = 2,
-    DEFESA = 3,
-    CURA = 4,
+    ATAQUESING = 1, // Ataca apenas um inimigo
+    ATAQUEMULT = 2, // Ataca multiplos inimigos
+    DEFESA = 3,     // Gera escudo
+    CURA = 4,       // Cura o jogador
 } TipoAcao;
 
 // Estrutura para representar a carta
 typedef struct Carta 
 {
-    char nome[20]; // Nome da carta
-    int energia; // Energia que a carta custa para ser jogada
-    TipoAcao acao; // 1 para ataque, 2 para defesa, 3 para cura
-    int quantidadeAcao; // Quantidade de dano/cura/escudo que a carta vai aplicar
+    char nome[20];        // Nome da carta
+    int energia;          // Energia que a carta custa para ser jogada
+    TipoAcao acao;        // 1 para ataque, 2 para defesa, 3 para cura
+    int quantidadeAcao;   // Quantidade de dano/cura/escudo que a carta vai aplicar
     char descricao [200]; // Descriçao da carta
-    int jaJogada; // 1 se a carta ja foi jogada no turno atual, 0 caso contrario
+    int jaJogada;         // 1 se a carta ja foi jogada no turno atual, 0 caso contrario
     struct Carta* proximo;
     struct Carta* anterior;
 } Carta;

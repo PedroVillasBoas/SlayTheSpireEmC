@@ -6,10 +6,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct Fase {
-    int nivelFase;
-    Monstro* monstros;
-    char descricao[100];
+// Estrutura da Fase
+typedef struct Fase 
+{
+    int nivelFase;       // Nivel da fase
+    Monstro* monstros;   // Lista duplamente encadeada de monstros
+    char descricao[100]; // Descriçao da fase
     struct Fase* proxima;
 } Fase;
 

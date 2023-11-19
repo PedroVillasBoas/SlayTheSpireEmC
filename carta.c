@@ -1,23 +1,25 @@
+// Inclui todas as funcionalidades das cartas
+
 #include "carta.h"
 #include "util.h"
 
 // Criaçao da carta
 Carta* criarCarta(char* nome, int energia, int acao, int quantidadeAcao, char* descricao) 
 {
-    Carta* novaCarta = (Carta*)malloc(sizeof(Carta));
+    Carta* novaCarta = (Carta*)malloc(sizeof(Carta)); // Alocar memoria para a carta
     if (!novaCarta) 
     {
         printf("Erro ao alocar memoria para a carta.\n");
         exit(1);
     }
-    strncpy(novaCarta->nome, nome, sizeof(novaCarta->nome));
-    novaCarta->nome[sizeof(novaCarta->nome) - 1] = '\0'; // Garante que a string e terminada em '\0'
-    novaCarta->energia = energia;
-    novaCarta->acao = acao;
-    novaCarta->quantidadeAcao = quantidadeAcao;
-    strncpy(novaCarta->descricao, descricao, sizeof(novaCarta->descricao));
-    novaCarta->descricao[sizeof(novaCarta->descricao) - 1] = '\0';
-    novaCarta->jaJogada = 0;
+    strncpy(novaCarta->nome, nome, sizeof(novaCarta->nome));                // Copia o nome para a carta
+    novaCarta->nome[sizeof(novaCarta->nome) - 1] = '\0';                    // Garante que a string e terminada em '\0'
+    novaCarta->energia = energia;                                           // Copia a energia para a carta
+    novaCarta->acao = acao;                                                 // Copia a açao para a carta
+    novaCarta->quantidadeAcao = quantidadeAcao;                             // Copia a quantidade de açao para a carta
+    strncpy(novaCarta->descricao, descricao, sizeof(novaCarta->descricao)); // Copia a descriçao para a carta
+    novaCarta->descricao[sizeof(novaCarta->descricao) - 1] = '\0';          // Garante que a string e terminada em '\0'
+    novaCarta->jaJogada = 0;                                                // Inicializa a carta como nao jogada
 
     novaCarta->proximo = NULL;
     novaCarta->anterior = NULL;
@@ -27,7 +29,7 @@ Carta* criarCarta(char* nome, int energia, int acao, int quantidadeAcao, char* d
 // Criaçao do Baralho a partir da classe escolhida
 Carta** criarBaralho(TipoBaralho tipoBaralho) 
 {
-    Carta** cartas = malloc(sizeof(Carta*) * numCartasBaralho); // Alocar memoria para o baralho de acordo com o numero de cartas
+    Carta** cartas = malloc(sizeof(Carta*) * numCartasBaralho);             // Alocar memoria para o baralho de acordo com o numero de cartas
     if (!cartas) {
         perror("Falha ao alocar memoria para o baralho");
         exit(1);

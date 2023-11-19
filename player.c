@@ -1,3 +1,4 @@
+// Inclui todas as funcionalidades do Player
 #include "player.h"
 
 // Obtem o nome do jogador

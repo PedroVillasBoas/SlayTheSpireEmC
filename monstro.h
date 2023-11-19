@@ -5,20 +5,24 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef enum {
-    DEFAULTMONSTRO = 0,
-    ATAQUEMONSTRO = 1,
-    DEFESAMONSTRO = 2
+// Enum para definir as açoes do monstro
+typedef enum 
+{
+    DEFAULTMONSTRO = 0, // Inicia o monstro sem nenhuma açao definida
+    ATAQUEMONSTRO = 1,  // O monstro vai atacar
+    DEFESAMONSTRO = 2   // O monstro vai se defender
 } TipoAcaoMonstro;
 
-typedef struct Monstro {
-    char nome[20];
-    int hp;
-    int defesa;
-    TipoAcaoMonstro acao;
-    int danoAtaqueMonstro;
-    int defesaParaAdicionarMonstro;
-    int intencaoDefinida;
+// Struct do Monstro
+typedef struct Monstro 
+{
+    char nome[20];                  // Nome do monstro
+    int hp;                         // HP do monstro
+    int defesa;                     // Defesa do monstro
+    TipoAcaoMonstro acao;           // Açao que o monstro vai tomar
+    int danoAtaqueMonstro;          // Dano que o monstro vai causar ao player
+    int defesaParaAdicionarMonstro; // Defesa que o monstro vai adicionar ao seu hp
+    int intencaoDefinida;           // Flag para saber se a intençao do monstro ja foi definida
     struct Monstro* proximo;
     struct Monstro* anterior;
 } Monstro;
