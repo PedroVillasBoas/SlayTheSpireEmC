@@ -20,7 +20,7 @@ int mostrarIntro(int opcao)
                         "por geracoes, um farol de inspiracao para todos aqueles que acreditam que, mesmo na mais escura das noites, a luz da coragem brilha eternamente.\n";
     printCharByChar(intro, 20000); // Imprime o texto letra por letra com um delay de 32 milissegundos entre os chars
     printf("\033[1;44m==================================================================== / /  / / ====================================================================\033[0m\n");
-    printf("\033[42mPrecione [1] para jogar.\033[0m\n");
+    printf("\033[42mPressione [1] para jogar.\033[0m\n");
     scanf("%d", &opcao);
     return opcao;
 }
