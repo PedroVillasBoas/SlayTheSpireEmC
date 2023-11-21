@@ -78,6 +78,30 @@ void salvarHighScoresArquivo(const HighScore* scores, int numScores)
 }
 
 // Funçao para comparar os highscores (usada no qsort)
+//int compararHighScores(const void* a, const void* b) 
+//{
+//    const HighScore* scoreA = (const HighScore*)a; // Cast para o tipo HighScore
+//    const HighScore* scoreB = (const HighScore*)b; // Cast para o tipo HighScore
+//
+//    // Prioridade 1: Maior nível de dificuldade
+//    if (scoreA->dificuldade != scoreB->dificuldade) 
+//    {
+//        return scoreB->dificuldade - scoreA->dificuldade;
+//    }
+//    // Prioridade 2: Maior fase alcançada (se a dificuldade for a mesma)
+//    if (scoreA->faseAlcancada != scoreB->faseAlcancada) 
+//    {
+//        return scoreB->faseAlcancada - scoreA->faseAlcancada;
+//    }
+//    // Prioridade 3: Menor número de turnos (se a fase for a mesma)
+//    if (scoreA->numTurnos != scoreB->numTurnos) 
+//    {
+//        return scoreA->numTurnos - scoreB->numTurnos;
+//    }
+//    // Prioridade 4: Maior HP restante (se a fase e o número de turnos forem os mesmos)
+//    return scoreB->hpRestante - scoreA->hpRestante;
+//}
+
 int compararHighScores(const void* a, const void* b) 
 {
     const HighScore* scoreA = (const HighScore*)a; // Cast para o tipo HighScore
@@ -93,12 +117,11 @@ int compararHighScores(const void* a, const void* b)
     {
         return scoreB->faseAlcancada - scoreA->faseAlcancada;
     }
-    // Prioridade 3: Menor número de turnos (se a fase for a mesma)
-    if (scoreA->numTurnos != scoreB->numTurnos) 
+    // Prioridade 3: Maior HP restante (se a fase e o número de turnos forem os mesmos)
+    if (scoreA->hpRestante != scoreB->hpRestante) 
     {
-        return scoreA->numTurnos - scoreB->numTurnos;
+        return scoreB->hpRestante - scoreA->hpRestante;
     }
-    // Prioridade 4: Maior HP restante (se a fase e o número de turnos forem os mesmos)
-    return scoreB->hpRestante - scoreA->hpRestante;
+        // Prioridade 4: Menor número de turnos (se a fase for a mesma)
+    return scoreB->numTurnos - scoreA->numTurnos;
 }
-
