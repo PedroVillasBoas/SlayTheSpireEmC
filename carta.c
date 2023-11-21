@@ -44,7 +44,7 @@ Carta** criarBaralho(TipoBaralho tipoBaralho)
             cartas[2] = criarCarta("Pocao de Cura", 3, CURA, 3, "Uma pocao magica que, ao ser bebida, restaura rapidamente \033[1;42m3 pontos do seu HP\033[0m.");
             cartas[3] = criarCarta("Espada Bumerangue", 2, ATAQUEMULT, 2, "Uma espada magica que ao ser arremessada, ataca multiplos inimigos causando \033[1;41m2 de Dano\033[0m e retorna a mao do lancador.");
             cartas[4] = criarCarta("Perfurar", 2, ATAQUESING, 3, "Um ataque direto e penetrante, perfurando o primeiro inimigo causando \033[1;41m3 de Dano\033[0m.");
-            cartas[5] = criarCarta("Impacto Explosivo", 2, DEFESA, 4, "Uma poderosa onda de choque é gerada, deixando os monstros confusos e lhe da \033[1;43m4 de Escudo\033[0m.");
+            cartas[5] = criarCarta("Impacto Explosivo", 2, DEFESA, 4, "Uma poderosa onda de choque eh gerada, deixando os monstros confusos e lhe da \033[1;43m4 de Escudo\033[0m.");
             break;
         case BARALHO_MAGO:
             // Nome, Energia, Acao, QuantidadeAcao, Descricao

@@ -29,10 +29,10 @@ int mostrarIntro(int opcao)
 void mostrarMenuPrincipal(Fase* faseAtual) 
 {
     clearScreen();
-    tituloGame();
     int opcao;
     do 
     {
+        tituloGame();
         printf("\033[1;44m| Menu Principal |\033[0m\n\n");
         printf("\033[42m1. Jogar\033[0m\n");
         printf("2. Escolher Dificuldade (Atual: %d)\n", dificuldade);
