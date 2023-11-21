@@ -31,8 +31,10 @@ Funções adicionais para limpar a tela, mostrar instruções, mostrar tela de v
 1. Certifique-se de que você tem um compilador C instalado em seu sistema.
 2. Abra um terminal ou prompt de comando.
 3. Navegue até o diretório onde o arquivo slaythespire.c está localizado.
-4. Compile o código usando o comando gcc -o jogo slaythespire.c.
-5. Execute o programa usando o comando ./slaythespire.
+4. Pra fazer funcionar no windows executar os seguintes comandos no terminal (1 por vez):
+5. gcc -c slaythespire.c util.c turno.c player.c monstro.c menu.c highscore.c fases.c carta.c
+6. gcc -o SlayTheSpireGame slaythespire.o util.o turno.o player.o monstro.o menu.o highscore.o fases.o carta.o
+7. E pode executar o arquivo: SlayTheSpireGame.exe
 
 ## Jogo Desenvolvido por:
 * Pedro Vilas Bôas
