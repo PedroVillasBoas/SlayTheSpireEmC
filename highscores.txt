@@ -7,3 +7,4 @@ Pedro - Dificuldade: 1, Fase: 3, Turnos: 4, HP: -1
 Pepeu - Dificuldade: 1, Fase: 3, Turnos: 9, HP: 1
 cachorrofrioesucoquente - Dificuldade: 2, Fase: 3, Turnos: 7, HP: -5
 Zedatapioca - Dificuldade: 1, Fase: 3, Turnos: 10, HP: 5
+guilhermepeu - Dificuldade: 1, Fase: 2, Turnos: 5, HP: 0

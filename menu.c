@@ -7,17 +7,12 @@ int mostrarIntro(int opcao)
 {
     clearScreen();
     printf("\033[1;44m==================================================================== / /  / / ====================================================================\033[0m\n");
-    const char *intro = "Em uma era de lendas e mitos, ergue-se uma figura audaz e valente: voce, um(a) aventureiro(a) em ascensao, cujo nome ecoa pelas terras como\n"
-                        "uma promessa de esperanca. O destino do reino, agora abalado pelas \033[1;45msombras do mal\033[0m, repousa em seus ombros. \033[1;41mO Rei Demonio\033[0m, um ser de poder\n"
-                        "inimaginavel e crueldade desmedida, lancou seu veu sombrio sobre a terra, ameacando engolir tudo em um abismo de desespero.\n\n"
-                        "Em meio a tempos tao sombrios, o conselheiro do rei, um sabio de visao agucada e coracao puro, ve em voce a \033[1;43mchama da salvacao\033[0m. Ele o(a)\n"
-                        "escolhe, dentre tantos, para uma missao que decidira o destino de todos: infiltrar-se no castelo corrompido, um labirinto de perigos\n"
-                        "e horrores, e ascender ao topo, onde o mal reina supremo.\n\n"
-                        "Com o peso da responsabilidade e a luz da esperanca em seu coracao, voce parte em sua jornada. O caminho eh tortuoso, repleto de adversarios\n"
-                        "formidaveis e desafios que testarao sua forca, sua coragem e sua determinacao. A cada passo, a escuridao tenta lhe engolir, mas sua vontade\n"
-                        "eh \033[1;43minquebrantavel\033[0m.\n\n"
-                        "Voce eh mais do que um(a) aventureiro(a); voce eh a \033[1;44multima esperanca\033[0m de um mundo a beira da ruina. A lenda de suas facanhas sera cantada\n"
-                        "por geracoes, um farol de inspiracao para todos aqueles que acreditam que, mesmo na mais escura das noites, a luz da coragem brilha eternamente.\n";
+    const char *intro = "Em uma era de lendas e mitos, voce eh um(a) aventureiro(a) em ascensao, cujo nome representa esperanca. O destino do reino,\n"
+                        "afetado pelas \033[1;45msombras do mal\033[0m, depende de voce. \033[1;41mO Rei Demonio\033[0m, um ser poderoso e cruel, ameaca a terra com desespero.\n\n"
+                        "O conselheiro do rei ve em voce a \033[1;43mchama da salvacao\033[0m e o(a) escolhe para uma missao crucial:\n" 
+                        "infiltrar-se no castelo corrompido, enfrentando perigos e horrores, para derrotar o mal.\n\n"
+                        "Sua jornada eh cheia de adversidades, mas sua vontade eh \033[1;43minquebrantavel\033[0m. Voce representa a \033[1;44multima esperanca\033[0m"
+                        " em um mundo a beira do colapso.\nSua lenda, um simbolo de coragem, inspirara geracoes, mostrando que mesmo na escuridao, a luz da coragem permanece.\n";
     printCharByChar(intro, 20000); // Imprime o texto letra por letra com um delay de 32 milissegundos entre os chars
     printf("\033[1;44m==================================================================== / /  / / ====================================================================\033[0m\n");
     printf("\033[42mPressione [1] para jogar.\033[0m\n");
