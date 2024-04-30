@@ -36,6 +36,11 @@ Funções adicionais para limpar a tela, mostrar instruções, mostrar tela de v
 6. gcc -o SlayTheSpireGame slaythespire.o util.o turno.o player.o monstro.o menu.o highscore.o fases.o carta.o
 7. E pode executar o arquivo: SlayTheSpireGame.exe
 
+## Imagens:
+![image](https://github.com/PedroVillasBoas/SlayTheSpireEmC/assets/47667167/ea46fc1b-86fd-417c-b95b-3ccbafd44c82)
+![image](https://github.com/PedroVillasBoas/SlayTheSpireEmC/assets/47667167/bd6263e0-99a2-4174-be31-5ab17f93794b)
+
+
 ## Jogo Desenvolvido por:
 * Pedro Vilas Bôas
 * Guilherme Lopes
